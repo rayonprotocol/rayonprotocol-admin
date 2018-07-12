@@ -1,29 +1,22 @@
-import * as React from 'react';
-import { render } from 'react-dom';
+import '!script-loader!console-polyfill';
+import 'babel-polyfill';
+import React from 'react';
+import ReactDom from 'react-dom';
+import { Router } from 'react-router-dom';
 import { AppContainer } from 'react-hot-loader';
+
+import history from 'common/util/Histroy';
+
 import App from './App';
 
-const rootEl = document.getElementById('root');
+// style
+import './assets/style.scss';
 
-render(
+ReactDom.render(
   <AppContainer>
-    <App />
+    <Router history={history}>
+      <App />
+    </Router>
   </AppContainer>,
-  rootEl
+  document.getElementById('root'),
 );
-
-// Hot Module Replacement API
-declare let module: { hot: any };
-
-if (module.hot) {
-  module.hot.accept('./components/App', () => {
-    const NewApp = require('./components/App').default;
-
-    render(
-      <AppContainer>
-        <NewApp />
-      </AppContainer>,
-      rootEl
-    );
-  });
-}

@@ -11,7 +11,7 @@ module.exports = {
             src = tsc.transpileModule(
                 src,
                 {
-                    compilerOptions: tsConfig.compilerOptions,
+                    compilerOptions: {...tsConfig.compilerOptions, target:'es5'},
                     fileName:        path
                 }
             ).outputText;

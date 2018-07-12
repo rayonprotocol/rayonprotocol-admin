@@ -1,14 +1,10 @@
 import React, { Component, Fragment } from 'react';
 
-// // dc
-// import ContractDC from 'common/dc/ContractDC';
+// dc
+import ContractDC from 'common/dc/ContractDC';
 
-// // model
-// import User from './user/model/User';
-
-// // view
-// import Router from './Router';
-// import Nav from './common/view/Nav';
+// view
+import Router from './Router';
 
 interface AppState {
   isInstanceReady: boolean;
@@ -16,13 +12,14 @@ interface AppState {
 
 class App extends Component<{}, AppState> {
   state = {
-    ...this.state,
+    isInstanceReady: false,
   };
 
-//   componentWillMount() {
-//     ContractDC.setInstanceReadyListner(this.instanceGetReady.bind(this));
-//     ContractDC.contractInit();
-//   }
+  componentWillMount() {
+    // add contract instance listner for instance loading
+    ContractDC.setInstanceReadyListner(this.instanceGetReady.bind(this));
+    ContractDC.contractInit();
+  }
 
   instanceGetReady() {
     this.setState({ ...this.state, isInstanceReady: true });
@@ -32,10 +29,11 @@ class App extends Component<{}, AppState> {
     const { isInstanceReady } = this.state;
     return (
       <div>
-        {isInstanceReady && (
-          <Fragment>
-          </Fragment>
-        )}
+        {/* {isInstanceReady && ( */}
+        <Fragment>
+          <Router />
+        </Fragment>
+        {/* )} */}
       </div>
     );
   }
