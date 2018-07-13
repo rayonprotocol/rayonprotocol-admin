@@ -28,7 +28,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
     this.state = {
       ...this.state,
       labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange', 'Green', 'Purple', 'Orange'],
-      data: [12, 19, 3, 5, 2, 3, 4, 5, 6, 7],
+      data: [12, 14, 3, 5, 7, 3, 4, 5, 6, 7],
       transactions: TransactionDC.getTransactions(),
     };
   }

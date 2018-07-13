@@ -3,4 +3,12 @@
 .tokenHolderGraphView {
   margin-top: 30px;
   width: 32%;
+  .subtitle {
+    margin-bottom: 20px;
+    @include rayon-admin-subtitle();
+  }
+  .detailBtn {
+    width: 100%;
+    margin-top: 25px;
+  }
 }

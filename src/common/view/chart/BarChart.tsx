@@ -36,6 +36,9 @@ class BarChart extends Component<BarChartProps, BarChartState> {
           options={{
             maintainAspectRatio: false,
             barThickness: 2,
+            legend: {
+              display: false,
+            },
           }}
         />
       </div>

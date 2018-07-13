@@ -9,6 +9,7 @@ import { Holder } from 'transaction/model/Transaction';
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import DoughnutChart from 'common/view/chart/DoughnutChart';
+import RayonButton from 'common/view/button/RayonButton';
 
 // styles
 import styles from './TokenHolderGraphView.scss';
@@ -21,7 +22,7 @@ interface TokenHolderGraphViewState {
 
 class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
   backgroundColor = [
-    'rgba(0,105,146,0.7)',
+    'rgba(240, 102, 111,0.7)',
     'rgba(234,248,191,0.7)',
     'rgba(170,189,140,0.7)',
     'rgba(233,227,180,0.7)',
@@ -40,6 +41,10 @@ class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
     };
   }
 
+  onClickDetailButton() {
+    console.log('click');
+  }
+
   render() {
     const { holders } = this.state;
     const data = holders.map(item => item.percentage);
@@ -47,12 +52,19 @@ class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
 
     return (
       <DashboardContainer className={styles.tokenHolderGraphView} title={'Top 10 Holders'}>
+        <p className={styles.subtitle}>Top 10 Holders</p>
         <DoughnutChart
           data={data}
           labels={labels}
           backgroundColor={this.backgroundColor}
           borderColor={this.backgroundColor}
           height={300}
+        />
+        <RayonButton
+          className={styles.detailBtn}
+          title="detail"
+          isBorrower={true}
+          onClickButton={this.onClickDetailButton.bind(this)}
         />
       </DashboardContainer>
     );
