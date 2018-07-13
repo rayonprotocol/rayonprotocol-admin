@@ -1,0 +1,12 @@
+@import '~assets/partial';
+
+.totalTokenView {
+  width: 40%;
+  .textInput {
+    margin-bottom: 10px;
+  }
+  .sendBtn {
+    margin: 20px 0px 0px auto;
+    cursor: pointer;
+  }
+}

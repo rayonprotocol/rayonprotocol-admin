@@ -6,27 +6,27 @@ import ContractDC from 'common/dc/ContractDC';
 // view
 import Router from './Router';
 
-interface AppState {
-  isInstanceReady: boolean;
-}
+// interface AppState {
+//   isInstanceReady: boolean;
+// }
 
-class App extends Component<{}, AppState> {
-  state = {
-    isInstanceReady: false,
-  };
+class App extends Component<{}, {}> {
+  // state = {
+  //   isInstanceReady: false,
+  // };
 
-  componentWillMount() {
-    // add contract instance listner for instance loading
-    ContractDC.setInstanceReadyListner(this.instanceGetReady.bind(this));
-    ContractDC.contractInit();
-  }
+  // componentWillMount() {
+  //   // add contract instance listner for instance loading
+  //   ContractDC.setInstanceReadyListner(this.instanceGetReady.bind(this));
+  //   ContractDC.contractInit();
+  // }
 
-  instanceGetReady() {
-    this.setState({ ...this.state, isInstanceReady: true });
-  }
+  // instanceGetReady() {
+  //   this.setState({ ...this.state, isInstanceReady: true });
+  // }
 
   render() {
-    const { isInstanceReady } = this.state;
+    // const { isInstanceReady } = this.state;
     return (
       <div>
         {/* {isInstanceReady && ( */}

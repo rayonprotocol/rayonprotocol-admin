@@ -1,0 +1,18 @@
+@import '~assets/partial';
+
+.dashboardContainer {
+  display: inline-block;
+  vertical-align: top;
+  .title {
+    margin-bottom: 10px;
+    @include set-font(24px, $rayon-black, $fontweight-bold);
+  }
+  .dashboardInner {
+    display: inline-block;
+    width: 100%;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid $rayon-darklake;
+  }
+}

@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 
+// nav
+import Navigation from 'common/view/nav/Navigation';
+
 // view
 import DashboardVC from 'dashboard/vc/DashboardVC';
 
@@ -18,6 +21,7 @@ class Router extends Component<{}, {}> {
       <Fragment>
         <BrowserRouter>
           <Fragment>
+            <Navigation />
             {this.route.map((item, index) => {
               return (
                 <Route
@@ -30,7 +34,6 @@ class Router extends Component<{}, {}> {
             })}
           </Fragment>
         </BrowserRouter>
-        )}
       </Fragment>
     );
   }

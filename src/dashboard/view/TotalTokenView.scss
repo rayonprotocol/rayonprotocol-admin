@@ -1,0 +1,14 @@
+@import '~assets/partial';
+
+.totalTokenView {
+  width: 50%;
+  margin-right: 5%;
+  @include clearfix();
+  .subTitle {
+    color: $rayon-berry;
+  }
+  .totalToken {
+    float: right;
+    font-size: 24px;
+  }
+}
