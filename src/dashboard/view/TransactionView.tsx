@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import TransactionDC from 'transaction/dc/TransactionDC';
 
 // model
-import ChartData from 'common/model/ChartData';
 import Transaction from 'transaction/model/Transaction';
 
 // view
@@ -44,7 +43,13 @@ class TransactionView extends Component<{}, TransactionViewState> {
     const borderColor = new Array(this.state.data.length).fill('rgb(0, 151, 198)');
     return (
       <DashboardContainer className={styles.transactionView} title={'Transactions'}>
-        <BarChart data={data} labels={labels} backgroundColor={backgroundColor} borderColor={borderColor} height={300} />
+        <BarChart
+          data={data}
+          labels={labels}
+          backgroundColor={backgroundColor}
+          borderColor={borderColor}
+          height={300}
+        />
         <div>
           <p className={styles.subTitle}>Transactions</p>
           <table className={styles.transactionTable}>

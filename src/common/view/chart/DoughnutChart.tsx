@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
+import chartjs from 'chart.js';
 
 // model
 import ChartData from 'common/model/chart/ChartData';
 
-interface BarChartProps {
+interface DoughnutChartProps {
   labels: string[];
   data: number[];
   backgroundColor?: string[];
@@ -13,29 +14,31 @@ interface BarChartProps {
   height?: number;
 }
 
-interface BarChartState {
+interface DoughnutChartState {
   chartData: ChartData;
 }
 
-class BarChart extends Component<BarChartProps, BarChartState> {
+class DoughnutChart extends Component<DoughnutChartProps, DoughnutChartState> {
   constructor(props) {
     super(props);
     this.state = {
-      ...this.state,
       chartData: new ChartData(props.data, props.labels, props.backgroundColor, props.borderColor, props.borderWidth),
     };
   }
-
   render() {
     const { height } = this.props;
-    const { chartData } = this.state;
+    let { chartData } = this.state;
+
     return (
       <div style={{ height: (height || 100) + 'px' }}>
-        <Bar
+        <Doughnut
           data={chartData}
           options={{
             maintainAspectRatio: false,
             barThickness: 2,
+            legend: {
+              display: false,
+            },
           }}
         />
       </div>
@@ -43,4 +46,4 @@ class BarChart extends Component<BarChartProps, BarChartState> {
   }
 }
 
-export default BarChart;
+export default DoughnutChart;
