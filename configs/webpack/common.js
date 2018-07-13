@@ -15,6 +15,7 @@ module.exports = {
       common: path.join(__dirname, '../../src/common'),
       home: path.join(__dirname, '../../src/home'),
       dashboard: path.join(__dirname, '../../src/dashboard'),
+      transaction: path.join(__dirname, '../../src/transaction'),
     },
   },
   context: resolve(__dirname, '../../src'),

@@ -1,6 +1,44 @@
 @import '~assets/partial';
 
-.transcationView {
+.transactionView {
   width: 100%;
   margin-top: 30px;
+  .subTitle {
+    margin-top: 20px;
+    @include rayon-admin-subtitle();
+  }
+  .transactionTable {
+    margin-top: 20px;
+    width: 100%;
+    .tableRow {
+      th {
+        border-top: 1px solid $rayon-gray;
+        border-bottom: 1px solid $rayon-gray;
+        background-color: $rayon-lightgray;
+      }
+      td {
+        border-bottom: 1px solid $rayon-lightgray;
+      }
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        font-size: 14px;
+      }
+      .txHash,
+      .from,
+      .to {
+        span {
+          display: inline-block;
+          width: 132px;
+          vertical-align: bottom;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+  .detailBtn {
+    margin: 20px 0px 0px auto;
+  }
 }

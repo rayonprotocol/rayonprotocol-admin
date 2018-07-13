@@ -5,6 +5,7 @@ import Container from 'common/view/container/Container';
 import TotalTokenView from 'dashboard/view/TotalTokenView';
 import TransferTokenView from 'dashboard/view/TransferTokenView';
 import TransactionView from 'dashboard/view/TransactionView';
+import TokenHolderView from 'dashboard/view/TokenHolderView';
 
 // styles
 import styles from './DashboardVC.scss';
@@ -17,6 +18,7 @@ class DashboardVC extends Component<{}, {}> {
           <TotalTokenView />
           <TransferTokenView />
           <TransactionView />
+          <TokenHolderView />
         </Container>
       </div>
     );

@@ -1,5 +1,4 @@
 class DataSets {
-  label: string;
   data: number[];
   backgroundColor: string[];
   borderColor: string[];

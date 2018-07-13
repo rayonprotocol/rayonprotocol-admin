@@ -4,7 +4,7 @@
   width: 50%;
   margin-right: 5%;
   .subTitle {
-    color: $rayon-berry;
+    @include rayon-admin-subtitle();
   }
   .totalTokenSection {
     .totalToken {

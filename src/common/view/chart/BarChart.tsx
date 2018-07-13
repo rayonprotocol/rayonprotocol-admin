@@ -13,7 +13,6 @@ interface BarChartProps {
   backgroundColor?: string[];
   borderColor?: string[];
   borderWidth?: number;
-  width?: number;
   height?: number;
 }
 
@@ -24,7 +23,6 @@ interface BarChartState {
 class BarChart extends Component<BarChartProps, BarChartState> {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       ...this.state,
       chartData: new ChartData(props.data, props.labels, props.backgroundColor, props.borderColor, props.borderWidth),
@@ -32,17 +30,18 @@ class BarChart extends Component<BarChartProps, BarChartState> {
   }
 
   render() {
-    const { width, height } = this.props;
+    const { height } = this.props;
     const { chartData } = this.state;
     return (
-      <Bar
-        data={chartData}
-        width={width && 100}
-        height={height && 50}
-        options={{
-          maintainAspectRatio: false,
-        }}
-      />
+      <div style={{ height: (height || 100) + 'px' }}>
+        <Bar
+          data={chartData}
+          options={{
+            maintainAspectRatio: false,
+            barThickness: 2,
+          }}
+        />
+      </div>
     );
   }
 }

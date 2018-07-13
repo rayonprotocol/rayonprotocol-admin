@@ -115,3 +115,9 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+// custom styles mixin
+
+@mixin rayon-admin-subtitle() {
+  @include set-font(14px, $rayon-berry);
+}
