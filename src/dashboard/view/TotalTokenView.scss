@@ -3,12 +3,26 @@
 .totalTokenView {
   width: 50%;
   margin-right: 5%;
-  @include clearfix();
   .subTitle {
     color: $rayon-berry;
   }
-  .totalToken {
-    float: right;
-    font-size: 24px;
+  .totalTokenSection {
+    .totalToken {
+      text-align: right;
+      font-size: 24px;
+    }
+  }
+  .extraMintedTokenSection {
+    border-top: 1px solid $rayon-gray;
+    margin-top: 10px;
+    padding-top: 10px;
+    .extraMintedToken {
+      text-align: right;
+      font-size: 18px;
+    }
+  }
+  .detailBtn {
+    margin: 15px 0px 0px auto;
+    cursor: pointer;
   }
 }
