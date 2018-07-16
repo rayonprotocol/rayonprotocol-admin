@@ -13,18 +13,18 @@ import styles from './TokenMintView.scss';
 
 interface TokenMintViewState {
   toAddress: string;
-  balance: number;
+  amount: number;
 }
 
 class TokenMintView extends Component<{}, TokenMintViewState> {
   validMintInputData() {
-    const { toAddress, balance } = this.state;
-    return toAddress !== undefined && toAddress !== null && balance !== undefined && balance !== null && balance !== 0;
+    const { toAddress, amount } = this.state;
+    return toAddress !== undefined && toAddress !== null && amount !== undefined && amount !== null && amount !== 0;
   }
   onClickMintButton() {
-    const { toAddress, balance } = this.state;
+    const { toAddress, amount } = this.state;
     if (!this.validMintInputData) alert('mint input error!');
-    TokenDC.mint(toAddress, balance);
+    TokenDC.mint(toAddress, amount);
   }
 
   onChangeToAddress(event) {
@@ -32,16 +32,24 @@ class TokenMintView extends Component<{}, TokenMintViewState> {
     this.setState({ ...this.state, toAddress });
   }
 
-  onChangeBalance(event) {
-    const balance = event.target.value;
-    this.setState({ ...this.state, balance });
+  onChangeAmount(event) {
+    const amount = event.target.value;
+    this.setState({ ...this.state, amount });
   }
 
   render() {
     return (
       <DashboardContainer className={styles.tokenMintView} title={'Mint'}>
-        <BorderTextInput className={styles.textInput} title={'To'} onChangeTextInput={this.onChangeToAddress} />
-        <BorderTextInput className={styles.textInput} title={'Balance'} onChangeTextInput={this.onChangeBalance} />
+        <BorderTextInput
+          className={styles.textInput}
+          title={'To'}
+          onChangeTextInput={this.onChangeToAddress.bind(this)}
+        />
+        <BorderTextInput
+          className={styles.textInput}
+          title={'Amount'}
+          onChangeTextInput={this.onChangeAmount.bind(this)}
+        />
         <RayonButton
           className={styles.mintButton}
           title={'Mint'}

@@ -57,13 +57,11 @@ class ContractDC {
       fromBlock: 'latest',
       toBlock: 'latest',
     });
-    allEvents.watch((err, event) => {
-      this.eventListener(event);
-    });
+    allEvents.watch(this.eventListener);
   }
 
   // 이벤트 발생 시 호출되는 콜백
-  private eventListener(event) {
+  private eventListener(error, event) {
     console.log('event', event);
   }
 

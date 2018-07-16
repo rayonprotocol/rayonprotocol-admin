@@ -16,12 +16,13 @@ class App extends Component<{}, {}> {
     isInstanceReady: false,
   };
 
-
   componentWillMount() {
     // add contract instance listner for instance loading
     ContractDC.setInstanceReadyListner(this.instanceGetReady.bind(this));
     ContractDC.contractInit();
   }
+
+  
 
   instanceGetReady() {
     this.setState({ ...this.state, isInstanceReady: true });

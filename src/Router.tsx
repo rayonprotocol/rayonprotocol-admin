@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 
+// dc
+import TokenDC from 'token/dc/TokenDC';
+
 // nav
 import Navigation from 'common/view/nav/Navigation';
 

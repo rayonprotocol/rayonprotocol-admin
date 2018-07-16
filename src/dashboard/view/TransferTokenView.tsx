@@ -10,7 +10,7 @@ import RayonButton from 'common/view/button/RayonButton';
 
 interface TokenMintViewState {
   toAddress: string;
-  balance: number;
+  amount: number;
 }
 
 class TransferTokenView extends Component<{}, TokenMintViewState> {
@@ -23,16 +23,24 @@ class TransferTokenView extends Component<{}, TokenMintViewState> {
     this.setState({ ...this.state, toAddress });
   }
 
-  onChangeBalance(event) {
-    const balance = event.target.value;
-    this.setState({ ...this.state, balance });
+  onChangeAmount(event) {
+    const amount = event.target.value;
+    this.setState({ ...this.state, amount });
   }
 
   render() {
     return (
       <DashboardContainer className={styles.totalTokenView} title={'Transfer Token'}>
-        <BorderTextInput className={styles.textInput} title={'To'} onChangeTextInput={this.onChangeToAddress} />
-        <BorderTextInput className={styles.textInput} title={'Balance'} onChangeTextInput={this.onChangeBalance} />
+        <BorderTextInput
+          className={styles.textInput}
+          title={'To'}
+          onChangeTextInput={this.onChangeToAddress.bind(this)}
+        />
+        <BorderTextInput
+          className={styles.textInput}
+          title={'Amount'}
+          onChangeTextInput={this.onChangeAmount.bind(this)}
+        />
         <RayonButton
           className={styles.sendBtn}
           title={'Send'}
