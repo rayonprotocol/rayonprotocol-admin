@@ -1,8 +1,7 @@
 @import '~assets/partial';
 
 .totalTokenView {
-  width: 49%;
-  margin-right: 2%;
+  width: 100%;
   .subTitle {
     @include rayon-admin-subtitle();
   }

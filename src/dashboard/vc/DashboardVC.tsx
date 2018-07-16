@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react';
 // view
 import Container from 'common/view/container/Container';
 import TotalTokenView from 'dashboard/view/TotalTokenView';
+import TokenMintView from 'dashboard/view/TokenMintView';
 import TransferTokenView from 'dashboard/view/TransferTokenView';
 import TransactionView from 'dashboard/view/TransactionView';
 import TokenHolderView from 'dashboard/view/TokenHolderView';
@@ -18,6 +19,7 @@ class DashboardVC extends Component<{}, {}> {
       <div className={styles.dashboard}>
         <Container>
           <TotalTokenView />
+          <TokenMintView />
           <TransferTokenView />
           <TransactionView />
           <TokenHolderView />

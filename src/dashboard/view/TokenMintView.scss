@@ -1,12 +1,13 @@
 @import '~assets/partial';
 
-.totalTokenView {
+.tokenMintView {
   width: 49%;
   margin-top: 30px;
+  margin-right: 2%;
   .textInput {
     margin-bottom: 10px;
   }
-  .sendBtn {
+  .mintButton {
     margin: 20px 0px 0px auto;
     cursor: pointer;
   }

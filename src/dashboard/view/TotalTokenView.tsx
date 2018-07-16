@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 
+// dc
+import ContractDC from 'common/dc/ContractDC';
+import TokenDC from 'token/dc/TokenDC';
+
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import RayonButton from 'common/view/button/RayonButton';
@@ -11,10 +15,21 @@ interface TotalTokenViewProps {
   className?: string;
 }
 
-class TotalTokenView extends Component<TotalTokenViewProps, {}> {
-  onClickDetailButton() {
-    console.log('click');
+interface TotalTokenViewState {
+  totalBalance: number;
+}
+
+class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState> {
+  async componentWillMount() {
+    const totalBalance = await TokenDC.getTotalBalance();
+    console.log('totalBalance', totalBalance);
+    this.setState({ ...this.state, totalBalance });
   }
+
+  onClickDetailButton() {
+    TokenDC.mint(ContractDC.ADMIN_ADDRESS, 100000);
+  }
+  
   render() {
     return (
       <DashboardContainer className={styles.totalTokenView} title={'Total Token'}>

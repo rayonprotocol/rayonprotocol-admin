@@ -7,6 +7,7 @@ import styles from './BorderTextInput.scss';
 interface BorderTextInputProps {
   title?: string;
   className?: string;
+  onChangeTextInput: (event) => void;
 }
 
 class BorderTextInput extends Component<BorderTextInputProps, {}> {
@@ -14,7 +15,7 @@ class BorderTextInput extends Component<BorderTextInputProps, {}> {
     return (
       <div className={classNames(styles.borderTextInput, this.props.className)}>
         <div className={styles.title}>{this.props.title}</div>
-        <input type="text" />
+        <input onChange={this.props.onChangeTextInput} type="text" />
       </div>
     );
   }

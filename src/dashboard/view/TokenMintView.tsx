@@ -1,21 +1,30 @@
 import React, { Component } from 'react';
 
-// styles
-import styles from './TransferTokenView.scss';
+// dc
+import TokenDC from 'token/dc/TokenDC';
 
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import BorderTextInput from 'common/view/input/BorderTextInput';
 import RayonButton from 'common/view/button/RayonButton';
 
+// styles
+import styles from './TokenMintView.scss';
+
 interface TokenMintViewState {
   toAddress: string;
   balance: number;
 }
 
-class TransferTokenView extends Component<{}, TokenMintViewState> {
-  onClickSendButton() {
-    console.log('Click');
+class TokenMintView extends Component<{}, TokenMintViewState> {
+  validMintInputData() {
+    const { toAddress, balance } = this.state;
+    return toAddress !== undefined && toAddress !== null && balance !== undefined && balance !== null && balance !== 0;
+  }
+  onClickMintButton() {
+    const { toAddress, balance } = this.state;
+    if (!this.validMintInputData) alert('mint input error!');
+    TokenDC.mint(toAddress, balance);
   }
 
   onChangeToAddress(event) {
@@ -30,13 +39,13 @@ class TransferTokenView extends Component<{}, TokenMintViewState> {
 
   render() {
     return (
-      <DashboardContainer className={styles.totalTokenView} title={'Transfer Token'}>
+      <DashboardContainer className={styles.tokenMintView} title={'Mint'}>
         <BorderTextInput className={styles.textInput} title={'To'} onChangeTextInput={this.onChangeToAddress} />
         <BorderTextInput className={styles.textInput} title={'Balance'} onChangeTextInput={this.onChangeBalance} />
         <RayonButton
-          className={styles.sendBtn}
-          title={'Send'}
-          onClickButton={this.onClickSendButton.bind(this)}
+          className={styles.mintButton}
+          title={'Mint'}
+          onClickButton={this.onClickMintButton.bind(this)}
           isBorrower={true}
         />
       </DashboardContainer>
@@ -44,4 +53,4 @@ class TransferTokenView extends Component<{}, TokenMintViewState> {
   }
 }
 
-export default TransferTokenView;
+export default TokenMintView;

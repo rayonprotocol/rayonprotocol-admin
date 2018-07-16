@@ -6,23 +6,23 @@ import TruffleContract from 'truffle-contract';
 import getWeb3 from '../util/getWeb3';
 
 // contract
-// const UserContract = TruffleContract(require('../../../build/contracts/User.json'));
+const RayonTokenContract = TruffleContract(require('../../../build/contracts/RayonToken.json'));
 
 // instance index
 export enum ContractInstance {
-  UserInstance = 0,
-  AuctionInstance,
-  MessageInstance,
+  RayonTokenInstance = 0,
+  // RayonToken,
 }
 
 class ContractDC {
   public web3: Web3;
   public account: string;
   private instances = [];
-  // private contracts = [UserContract];
-  private contracts = [];
+  private contracts = [RayonTokenContract];
 
   private instanceReadyListner: () => void;
+
+  ADMIN_ADDRESS = '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290';
 
   // contract deploy, migrate, initializing
   // App 시작 시 계약 배포, 초기화 진행
@@ -74,6 +74,12 @@ class ContractDC {
 
   public getAccount() {
     return this.account;
+  }
+
+  public async isAdmin() {
+    const instance = this.getInstance(ContractInstance.RayonTokenInstance);
+    const owner = await instance.owner();
+    return this.account === owner;
   }
 
   // common setter function
