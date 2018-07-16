@@ -7922,6 +7922,10 @@ raw-loader@~0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/raw-loader/-/raw-loader-0.5.1.tgz#0c3d0beaed8a01c966d9787bf778281252a979aa"
 
+"rayonprotocol-ico@https://github.com/rayonprotocol/rayonprotocol-ico.git#0f60ff4f0d04c0cc149ffe67b04a96dafc93005f":
+  version "1.0.0"
+  resolved "https://github.com/rayonprotocol/rayonprotocol-ico.git#0f60ff4f0d04c0cc149ffe67b04a96dafc93005f"
+
 rc@^1.0.1, rc@^1.1.2, rc@^1.1.6, rc@^1.1.7:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/rc/-/rc-1.2.8.tgz#cd924bf5200a075b83c188cd6b9e211b7fc0d3ed"

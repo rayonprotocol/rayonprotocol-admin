@@ -45,6 +45,7 @@
     "node-sass": "^4.7.2",
     "postcss-flexbugs-fixes": "^3.3.0",
     "postcss-loader": "^2.1.0",
+    "rayonprotocol-ico": "https://github.com/rayonprotocol/rayonprotocol-ico.git#0f60ff4f0d04c0cc149ffe67b04a96dafc93005f",
     "react": "^16.2.0",
     "react-addons-test-utils": "^15.6.2",
     "react-dom": "^16.2.0",
