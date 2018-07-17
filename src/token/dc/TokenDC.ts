@@ -1,11 +1,12 @@
 import ContractDC, { ContractInstance } from 'common/dc/ContractDC';
 
-// model
-import { Mint } from 'token/model/Token';
-
 class TokenDC {
   mintEventListener: (error, event) => void;
   mintEvent;
+
+  transferEventListener: (error, event) => void;
+  transferEvent;
+
   async getTotalBalance() {
     const instance = ContractDC.getInstance(ContractInstance.RayonTokenInstance);
     const totalSupply = (await instance.totalSupply()).toNumber();
@@ -16,6 +17,23 @@ class TokenDC {
   async transfer(toAddress: string, value: number) {
     const instance = ContractDC.getInstance(ContractInstance.RayonTokenInstance);
     await instance.transfer(toAddress, value, { from: ContractDC.getAccount() });
+  }
+
+  watchTransferEvent() {
+    const instance = ContractDC.getInstance(ContractInstance.RayonTokenInstance);
+    if (this.transferEvent === undefined)
+      this.transferEvent = instance.Transfer({}, { fromBlock: 0, toBlock: 'latest' });
+    if (this.transferEventListener === undefined) return console.error('mint event listner is undefined');
+    this.transferEvent.watch(this.transferEventListener);
+  }
+
+  stopWatchTransferEvent() {
+    if (this.transferEvent === undefined) return console.error('mint event listner is undefined');
+    this.transferEvent.stopWaching();
+  }
+
+  setWatchTransferEventListener(listener: (error, event) => void) {
+    this.transferEventListener = listener;
   }
 
   async mint(toAddress: string, value: number) {

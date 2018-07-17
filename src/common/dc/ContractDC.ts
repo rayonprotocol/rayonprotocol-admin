@@ -74,6 +74,10 @@ class ContractDC {
     return this.account;
   }
 
+  public getWeb3() {
+    return this.web3;
+  }
+
   public async isAdmin() {
     const instance = this.getInstance(ContractInstance.RayonTokenInstance);
     const owner = await instance.owner();

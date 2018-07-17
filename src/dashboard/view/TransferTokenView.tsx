@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 
-// styles
-import styles from './TransferTokenView.scss';
+// dc
+import TokenDC from 'token/dc/TokenDC';
 
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import BorderTextInput from 'common/view/input/BorderTextInput';
 import RayonButton from 'common/view/button/RayonButton';
+
+// styles
+import styles from './TransferTokenView.scss';
 
 interface TokenMintViewState {
   toAddress: string;
@@ -14,8 +17,14 @@ interface TokenMintViewState {
 }
 
 class TransferTokenView extends Component<{}, TokenMintViewState> {
+  validMintInputData() {
+    const { toAddress, amount } = this.state;
+    return toAddress !== undefined && toAddress !== null && amount !== undefined && amount !== null && amount !== 0;
+  }
   onClickSendButton() {
-    console.log('Click');
+    const { toAddress, amount } = this.state;
+    if (!this.validMintInputData) alert('mint input error!');
+    TokenDC.transfer(toAddress, amount);
   }
 
   onChangeToAddress(event) {

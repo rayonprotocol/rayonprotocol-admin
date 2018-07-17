@@ -21,6 +21,7 @@ class TokenMintView extends Component<{}, TokenMintViewState> {
     const { toAddress, amount } = this.state;
     return toAddress !== undefined && toAddress !== null && amount !== undefined && amount !== null && amount !== 0;
   }
+
   onClickMintButton() {
     const { toAddress, amount } = this.state;
     if (!this.validMintInputData) alert('mint input error!');

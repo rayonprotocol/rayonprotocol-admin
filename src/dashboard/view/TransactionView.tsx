@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-import { Bar } from 'react-chartjs-2';
 import classNames from 'classnames';
+import Web3 from 'web3';
 
 // dc
+import ContractDC from 'common/dc/ContractDC';
 import TransactionDC from 'transaction/dc/TransactionDC';
+import TokenDC from 'token/dc/TokenDC';
 
 // model
 import Transaction from 'transaction/model/Transaction';
+import { TransferEvent } from 'token/model/Token';
 
 // view
 import BarChart from 'common/view/chart/BarChart';
@@ -20,6 +23,7 @@ interface TransactionViewState {
   labels: string[];
   data: number[];
   transactions: Transaction[];
+  transferEvents: TransferEvent[];
 }
 
 class TransactionView extends Component<{}, TransactionViewState> {
@@ -30,7 +34,35 @@ class TransactionView extends Component<{}, TransactionViewState> {
       labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange', 'Green', 'Purple', 'Orange'],
       data: [12, 14, 3, 5, 7, 3, 4, 5, 6, 7],
       transactions: TransactionDC.getTransactions(),
+      transferEvents: [],
     };
+  }
+
+  componentWillMount() {
+    TokenDC.setWatchTransferEventListener(this.getTransferEvent.bind(this));
+    TokenDC.watchTransferEvent();
+  }
+
+  componentWillUnmount() {
+    TokenDC.stopWatchTransferEvent();
+  }
+
+  getTransferEvent(error, event) {
+    const { transferEvents } = this.state;
+    const web3: Web3 = ContractDC.getWeb3();
+
+    web3.eth.getBlock(event['blockNumber'], (erorr, result) => {
+      const newEvent = {
+        txHash: event['transactionHash'],
+        blockNumber: event['blockNumber'],
+        timestamp: result.timestamp,
+        from: event['args']['from'],
+        to: event['args']['to'],
+        amount: event['args']['value'],
+      };
+      transferEvents.push(newEvent);
+    });
+    this.setState({ ...this.state, transferEvents });
   }
 
   onClickDetailButton() {
@@ -38,7 +70,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
   }
 
   render() {
-    const { labels, data, transactions } = this.state;
+    const { labels, data, transactions, transferEvents } = this.state;
     const backgroundColor = new Array(this.state.data.length).fill('rgb(0, 151, 198)');
     const borderColor = new Array(this.state.data.length).fill('rgb(0, 151, 198)');
     return (
@@ -75,7 +107,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
                 </th>
               </tr>
             </thead>
-            {transactions.map((item, index) => {
+            {transferEvents.map((item, index) => {
               return (
                 <tbody key={index} className={classNames(styles.tableRow, styles.transactionRow)}>
                   <tr>
@@ -83,7 +115,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
                       <span>{item.txHash}</span>
                     </td>
                     <td className={styles.block}>
-                      <span>{item.block}</span>
+                      <span>{item.blockNumber}</span>
                     </td>
                     <td className={styles.timestamp}>
                       <span>{item.timestamp}</span>
@@ -95,7 +127,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
                       <span>{item.to}</span>
                     </td>
                     <td className={styles.value}>
-                      <span>{item.value}</span>
+                      <span>{item.amount}</span>
                     </td>
                   </tr>
                 </tbody>
