@@ -5,11 +5,9 @@ import moment from 'moment';
 
 // dc
 import ContractDC from 'common/dc/ContractDC';
-import TransactionDC from 'transaction/dc/TransactionDC';
 import TokenDC from 'token/dc/TokenDC';
 
 // model
-import Transaction from 'transaction/model/Transaction';
 import { TransferEvent } from 'token/model/Token';
 
 // view
@@ -17,16 +15,13 @@ import BarChart from 'common/view/chart/BarChart';
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import RayonButton from 'common/view/button/RayonButton';
 
-// util
-import Convert from 'common/util/Convert';
-
 // styles
 import styles from './TransactionView.scss';
 
 interface TransactionViewState {
   labels: string[];
   data: number[];
-  transactions: Transaction[];
+  transferDate: Object;
   transferEvents: TransferEvent[];
 }
 
@@ -35,10 +30,10 @@ class TransactionView extends Component<{}, TransactionViewState> {
     super(props);
     this.state = {
       ...this.state,
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange', 'Green', 'Purple', 'Orange'],
-      data: [12, 14, 3, 5, 7, 3, 4, 5, 6, 7],
-      transactions: TransactionDC.getTransactions(),
+      labels: ['2018&6/16', '2018&6/17'],
+      data: [4, 1],
       transferEvents: [],
+      transferDate: {},
     };
   }
 
@@ -52,7 +47,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
   }
 
   async getTransferEvent(error, event) {
-    const { transferEvents } = this.state;
+    const { transferEvents, transferDate } = this.state;
     const web3: Web3 = ContractDC.getWeb3();
 
     const result = await new Promise<any>((resolve, reject) => {
@@ -70,9 +65,17 @@ class TransactionView extends Component<{}, TransactionViewState> {
       to: event['args']['to'],
       amount: event['args']['value'].toNumber(),
     };
+
+    // save new transfer transaction event
     transferEvents.push(newEvent);
     transferEvents.sort((a, b) => a.timestamp - b.timestamp);
-    this.setState({ ...this.state, transferEvents });
+
+    // save number of transfer transaction
+    const blockDate = new Date(newEvent.timestamp * 1000);
+    const dateKey = blockDate.getFullYear() + '&' + blockDate.getMonth() + '/' + blockDate.getDate();
+    transferDate[dateKey] = transferDate[dateKey] === undefined ? 1 : transferDate[dateKey] + 1;
+
+    this.setState({ ...this.state, transferEvents, transferDate });
   }
 
   onClickDetailButton() {
@@ -80,10 +83,20 @@ class TransactionView extends Component<{}, TransactionViewState> {
   }
 
   render() {
-    const { labels, data, transferEvents } = this.state;
+    const { transferEvents, transferDate } = this.state;
+    const sortedLabelList = Object.keys(this.state.transferDate).sort();
     const topTransferEvents = transferEvents.length >= 5 ? transferEvents.reverse().slice(-5) : transferEvents;
-    const backgroundColor = new Array(this.state.data.length).fill('rgb(0, 151, 198)');
-    const borderColor = new Array(this.state.data.length).fill('rgb(0, 151, 198)');
+    const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
+    const data = labels.map(item => transferDate[item]);
+
+    // const labels = ['2018&6/16', '2018&6/17'];
+    // const data = [4, 2];
+
+    console.log('labels, data', labels.toString(), data.toString());
+    // chart stype
+    const backgroundColor = new Array(labels.length).fill('rgb(0, 151, 198)');
+    const borderColor = new Array(labels.length).fill('rgb(0, 151, 198)');
+
     return (
       <DashboardContainer className={styles.transactionView} title={'Transactions'}>
         <BarChart
