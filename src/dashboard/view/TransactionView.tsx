@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import Web3 from 'web3';
+import moment from 'moment';
 
 // dc
 import ContractDC from 'common/dc/ContractDC';
@@ -15,6 +16,9 @@ import { TransferEvent } from 'token/model/Token';
 import BarChart from 'common/view/chart/BarChart';
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import RayonButton from 'common/view/button/RayonButton';
+
+// util
+import Convert from 'common/util/Convert';
 
 // styles
 import styles from './TransactionView.scss';
@@ -47,21 +51,27 @@ class TransactionView extends Component<{}, TransactionViewState> {
     TokenDC.stopWatchTransferEvent();
   }
 
-  getTransferEvent(error, event) {
+  async getTransferEvent(error, event) {
     const { transferEvents } = this.state;
     const web3: Web3 = ContractDC.getWeb3();
 
-    web3.eth.getBlock(event['blockNumber'], (erorr, result) => {
-      const newEvent = {
-        txHash: event['transactionHash'],
-        blockNumber: event['blockNumber'],
-        timestamp: result.timestamp,
-        from: event['args']['from'],
-        to: event['args']['to'],
-        amount: event['args']['value'],
-      };
-      transferEvents.push(newEvent);
+    const result = await new Promise<any>((resolve, reject) => {
+      web3.eth.getBlock(event['blockNumber'], (err, _result) => {
+        if (err) reject(err);
+        resolve(_result);
+      });
     });
+
+    const newEvent = {
+      txHash: event['transactionHash'],
+      blockNumber: event['blockNumber'],
+      timestamp: result.timestamp,
+      from: event['args']['from'],
+      to: event['args']['to'],
+      amount: event['args']['value'].toNumber(),
+    };
+    transferEvents.push(newEvent);
+    transferEvents.sort((a, b) => a.timestamp - b.timestamp);
     this.setState({ ...this.state, transferEvents });
   }
 
@@ -70,7 +80,8 @@ class TransactionView extends Component<{}, TransactionViewState> {
   }
 
   render() {
-    const { labels, data, transactions, transferEvents } = this.state;
+    const { labels, data, transferEvents } = this.state;
+    const topTransferEvents = transferEvents.length >= 5 ? transferEvents.reverse().slice(-5) : transferEvents;
     const backgroundColor = new Array(this.state.data.length).fill('rgb(0, 151, 198)');
     const borderColor = new Array(this.state.data.length).fill('rgb(0, 151, 198)');
     return (
@@ -107,7 +118,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
                 </th>
               </tr>
             </thead>
-            {transferEvents.map((item, index) => {
+            {topTransferEvents.map((item, index) => {
               return (
                 <tbody key={index} className={classNames(styles.tableRow, styles.transactionRow)}>
                   <tr>
@@ -118,7 +129,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
                       <span>{item.blockNumber}</span>
                     </td>
                     <td className={styles.timestamp}>
-                      <span>{item.timestamp}</span>
+                      <span>{moment(item.timestamp * 1000).fromNow()}</span>
                     </td>
                     <td className={styles.from}>
                       <span>{item.from}</span>

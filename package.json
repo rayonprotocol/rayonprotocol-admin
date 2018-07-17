@@ -85,6 +85,7 @@
     "lodash.groupby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
     "lodash.zip": "^4.2.0",
+    "moment": "^2.22.2",
     "prop-types": "^15.6.1",
     "qs": "^6.5.1",
     "react-async-script": "^0.9.1",
