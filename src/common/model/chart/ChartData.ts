@@ -3,6 +3,7 @@ export class DataSets {
   backgroundColor: string[];
   borderColor: string[];
   borderWidth: number;
+  fill:boolean;
 }
 
 class ChartData {

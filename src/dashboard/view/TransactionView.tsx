@@ -11,7 +11,7 @@ import TokenDC from 'token/dc/TokenDC';
 import { TransferEvent } from 'token/model/Token';
 
 // view
-import BarChart from 'common/view/chart/BarChart';
+import LinearChart from 'common/view/chart/LinearChart';
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import RayonButton from 'common/view/button/RayonButton';
 
@@ -89,23 +89,9 @@ class TransactionView extends Component<{}, TransactionViewState> {
     const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
     const data = labels.map(item => transferDate[item]);
 
-    // const labels = ['2018&6/16', '2018&6/17'];
-    // const data = [4, 2];
-
-    console.log('labels, data', labels.toString(), data.toString());
-    // chart stype
-    const backgroundColor = new Array(labels.length).fill('rgb(0, 151, 198)');
-    const borderColor = new Array(labels.length).fill('rgb(0, 151, 198)');
-
     return (
       <DashboardContainer className={styles.transactionView} title={'Transactions'}>
-        <BarChart
-          data={data}
-          labels={labels}
-          backgroundColor={backgroundColor}
-          borderColor={borderColor}
-          height={300}
-        />
+        <LinearChart data={data} labels={labels} height={300} />
         <div>
           <p className={styles.subTitle}>Transactions</p>
           <table className={styles.transactionTable}>
