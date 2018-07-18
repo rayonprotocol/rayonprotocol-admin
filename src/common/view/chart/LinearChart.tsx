@@ -38,8 +38,6 @@ class LinearChart extends Component<LinearChartProps, LinearChartState> {
     datasets[0].borderColor = this.props.borderColor || new Array(dataLen).fill('rgba(255,99,132,1)');
     datasets[0].borderWidth = this.props.borderWidth || 3;
 
-    console.log('datasets[0].borderColor', datasets[0].borderColor);
-
     chartData.labels = labels;
     chartData.datasets = datasets;
     return (

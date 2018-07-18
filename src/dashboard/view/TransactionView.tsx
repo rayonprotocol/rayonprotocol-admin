@@ -85,7 +85,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
   render() {
     const { transferEvents, transferDate } = this.state;
     const sortedLabelList = Object.keys(this.state.transferDate).sort();
-    const topTransferEvents = transferEvents.length >= 5 ? transferEvents.reverse().slice(-5) : transferEvents;
+    const topTransferEvents = transferEvents.length >= 5 ? transferEvents.slice(-5).reverse() : transferEvents;
     const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
     const data = labels.map(item => transferDate[item]);
 

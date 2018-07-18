@@ -59,7 +59,6 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
 
   render() {
     const { totalBalance, mintEventList } = this.state;
-    console.log('mintEventList', mintEventList);
     let latestMintEventList: Mint[] = mintEventList.length >= 2 ? mintEventList.slice(-2) : mintEventList;
     return (
       <DashboardContainer className={styles.totalTokenView} title={'Total Token'}>
