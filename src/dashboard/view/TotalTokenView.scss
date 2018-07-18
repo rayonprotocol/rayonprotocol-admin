@@ -1,14 +1,15 @@
 @import '~assets/partial';
 
 .totalTokenView {
-  width: 100%;
+  width: 48%;
+  margin-right: 2%;
   .subTitle {
     @include rayon-admin-subtitle();
   }
   .totalTokenSection {
     .totalToken {
       text-align: right;
-      font-size: 24px;
+      font-size: 48px;
     }
   }
   .extraMintedTokenSection {
@@ -17,11 +18,11 @@
     padding-top: 10px;
     .extraMintedToken {
       text-align: right;
-      font-size: 18px;
+      font-size: 24px;
     }
   }
   .detailBtn {
-    margin: 15px 0px 0px auto;
+    margin: 28px 0px 0px auto;
     cursor: pointer;
   }
 }

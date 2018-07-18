@@ -83,7 +83,6 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
           className={styles.detailBtn}
           title={'Detail'}
           onClickButton={this.onClickDetailButton.bind(this)}
-          isBorrower={true}
         />
       </DashboardContainer>
     );

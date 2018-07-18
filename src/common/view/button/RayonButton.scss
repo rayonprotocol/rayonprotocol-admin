@@ -5,11 +5,9 @@
   padding: 8px 0px;
   border-radius: 4px;
   text-align: center;
-  @include set-font(16px, white);
-}
-
-.borrower {
   background-color: $rayon-lake;
+  transition: background-color ease 0.2s;
+  @include set-font(16px, white);
 }
 
 .lender {

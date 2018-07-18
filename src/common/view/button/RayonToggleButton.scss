@@ -1,0 +1,33 @@
+@import '~assets/partial';
+
+.rayonToggleButton {
+  display: flex;
+  width: 180px;
+  text-align: center;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  .toggleLeft,
+  .toggleRight {
+    flex: 1;
+    padding: 10px;
+    width: 50%;
+    color: white;
+    transition: background-color ease 0.2s;
+  }
+  .toggleLeft {
+    background-color: $rayon-deepgray;
+  }
+
+  .toggleRight {
+    background-color: $rayon-berry;
+  }
+  &.activatedLeft {
+    .toggleLeft {
+      background-color: $rayon-lake;
+    }
+    .toggleRight {
+      background-color: $rayon-deepgray;
+    }
+  }
+}

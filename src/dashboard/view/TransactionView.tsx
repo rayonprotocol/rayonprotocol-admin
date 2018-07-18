@@ -149,7 +149,6 @@ class TransactionView extends Component<{}, TransactionViewState> {
           className={styles.detailBtn}
           title={'Detail'}
           onClickButton={this.onClickDetailButton.bind(this)}
-          isBorrower={true}
         />
       </DashboardContainer>
     );

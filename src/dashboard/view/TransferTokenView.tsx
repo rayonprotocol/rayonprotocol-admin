@@ -54,7 +54,6 @@ class TransferTokenView extends Component<{}, TokenMintViewState> {
           className={styles.sendBtn}
           title={'Send'}
           onClickButton={this.onClickSendButton.bind(this)}
-          isBorrower={true}
         />
       </DashboardContainer>
     );

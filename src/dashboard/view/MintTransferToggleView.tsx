@@ -7,25 +7,33 @@ import TokenDC from 'token/dc/TokenDC';
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import BorderTextInput from 'common/view/input/BorderTextInput';
 import RayonButton from 'common/view/button/RayonButton';
+import RayonToggleButton from 'common/view/button/RayonToggleButton';
 
 // styles
-import styles from './TokenMintView.scss';
+import styles from './MintTransferToggleView.scss';
 
-interface TokenMintViewState {
+interface MintTransferToggleViewState {
   toAddress: string;
   amount: number;
+  isMintMode: boolean;
 }
 
-class TokenMintView extends Component<{}, TokenMintViewState> {
+class MintTransferToggleView extends Component<{}, MintTransferToggleViewState> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.state,
+      isMintMode: true,
+    };
+  }
   validMintInputData() {
     const { toAddress, amount } = this.state;
     return toAddress !== undefined && toAddress !== null && amount !== undefined && amount !== null && amount !== 0;
   }
-
-  onClickMintButton() {
+  onClickSendButton() {
     const { toAddress, amount } = this.state;
     if (!this.validMintInputData) alert('mint input error!');
-    TokenDC.mint(toAddress, amount);
+    TokenDC.transfer(toAddress, amount);
   }
 
   onChangeToAddress(event) {
@@ -38,27 +46,41 @@ class TokenMintView extends Component<{}, TokenMintViewState> {
     this.setState({ ...this.state, amount });
   }
 
+  onClickToggleButton(event) {
+    this.setState({ ...this.state, isMintMode: !this.state.isMintMode });
+  }
+
   render() {
+    const { isMintMode } = this.state;
     return (
-      <DashboardContainer className={styles.tokenMintView} title={'Mint'}>
+      <DashboardContainer className={styles.mintTransferToggleView} title={'Mint & Transfer'}>
+        <RayonToggleButton
+          className={styles.toggleBtn}
+          toggleItem={['Mint', 'Transfer']}
+          isLeftActivated={isMintMode}
+          onClick={this.onClickToggleButton.bind(this)}
+        />
         <BorderTextInput
           className={styles.textInput}
           title={'To'}
           onChangeTextInput={this.onChangeToAddress.bind(this)}
+          isLender={!isMintMode}
         />
         <BorderTextInput
           className={styles.textInput}
           title={'Amount'}
           onChangeTextInput={this.onChangeAmount.bind(this)}
+          isLender={!isMintMode}
         />
         <RayonButton
-          className={styles.mintButton}
-          title={'Mint'}
-          onClickButton={this.onClickMintButton.bind(this)}
+          className={styles.sendBtn}
+          title={'Send'}
+          onClickButton={this.onClickSendButton.bind(this)}
+          isLender={!isMintMode}
         />
       </DashboardContainer>
     );
   }
 }
 
-export default TokenMintView;
+export default MintTransferToggleView;

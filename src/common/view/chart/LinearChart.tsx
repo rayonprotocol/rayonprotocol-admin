@@ -34,7 +34,6 @@ class LinearChart extends Component<LinearChartProps, LinearChartState> {
     const dataLen = this.props.data.length;
     const datasets = [new DataSets()];
     datasets[0].data = this.props.data;
-    // datasets[0].backgroundColor = this.props.backgroundColor || new Array(dataLen).fill('rgba(255, 99, 132, 0.2)');
     datasets[0].fill = false;
     datasets[0].borderColor = this.props.borderColor || new Array(dataLen).fill('rgba(255,99,132,1)');
     datasets[0].borderWidth = this.props.borderWidth || 3;

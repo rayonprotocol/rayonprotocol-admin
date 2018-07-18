@@ -63,7 +63,6 @@ class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
         <RayonButton
           className={styles.detailBtn}
           title="detail"
-          isBorrower={true}
           onClickButton={this.onClickDetailButton.bind(this)}
         />
       </DashboardContainer>

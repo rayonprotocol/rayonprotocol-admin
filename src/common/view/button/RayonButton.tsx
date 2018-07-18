@@ -7,7 +7,7 @@ import styles from './RayonButton.scss';
 interface RayonButtonProps {
   title: string;
   className?: string;
-  isBorrower: boolean;
+  isLender?: boolean;
   onClickButton: () => void;
 }
 
@@ -17,8 +17,7 @@ class RayonButton extends Component<RayonButtonProps, {}> {
       <div
         onClick={this.props.onClickButton}
         className={classNames(styles.commonRayonButton, this.props.className, {
-          [styles.borrower]: this.props.isBorrower,
-          [styles.lender]: !this.props.isBorrower,
+          [styles.lender]: this.props.isLender,
         })}
       >
         {this.props.title}
