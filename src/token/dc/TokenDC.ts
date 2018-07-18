@@ -14,9 +14,9 @@ class TokenDC {
     return totalSupply;
   }
 
-  async transfer(toAddress: string, value: number) {
+  transfer(toAddress: string, value: number) {
     const instance = ContractDC.getInstance(ContractInstance.RayonTokenInstance);
-    await instance.transfer(toAddress, value, { from: ContractDC.getAccount() });
+    instance.transfer(toAddress, value, { from: ContractDC.getAccount() });
   }
 
   watchTransferEvent() {
@@ -36,7 +36,7 @@ class TokenDC {
     this.transferEventListener = listener;
   }
 
-  async mint(toAddress: string, value: number) {
+  mint(toAddress: string, value: number) {
     const instance = ContractDC.getInstance(ContractInstance.RayonTokenInstance);
     instance.mint(toAddress, value, { from: ContractDC.getAccount() });
   }

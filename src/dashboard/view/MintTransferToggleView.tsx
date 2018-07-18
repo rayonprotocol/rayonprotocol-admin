@@ -31,9 +31,9 @@ class MintTransferToggleView extends Component<{}, MintTransferToggleViewState> 
     return toAddress !== undefined && toAddress !== null && amount !== undefined && amount !== null && amount !== 0;
   }
   onClickSendButton() {
-    const { toAddress, amount } = this.state;
-    if (!this.validMintInputData) alert('mint input error!');
-    TokenDC.transfer(toAddress, amount);
+    const { toAddress, amount, isMintMode } = this.state;
+    if (!this.validMintInputData) alert(' input error!');
+    isMintMode ? TokenDC.mint(toAddress, amount) : TokenDC.transfer(toAddress, amount);
   }
 
   onChangeToAddress(event) {
