@@ -49,7 +49,6 @@ class TransactionView extends Component<{}, TransactionViewState> {
   async getTransferEvent(error, event) {
     const { transferEvents, transferDate } = this.state;
     const web3: Web3 = ContractDC.getWeb3();
-
     const result = await new Promise<any>((resolve, reject) => {
       web3.eth.getBlock(event['blockNumber'], (err, _result) => {
         if (err) reject(err);

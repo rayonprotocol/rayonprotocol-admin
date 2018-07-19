@@ -6,15 +6,12 @@ interface RayonModalViewProps {
   onRequestClose: () => void;
 }
 
-// styles
-import styles from './RayonModalView.scss';
-
 class RayonModalView extends Component<RayonModalViewProps, {}> {
   render() {
     return (
       <Modal
         ariaHideApp={false}
-        className={styles.modal}
+        // className={styles.modal}
         isOpen={this.props.isModalOpen}
         onRequestClose={this.props.onRequestClose}
         shouldCloseOnOverlayClick={true}

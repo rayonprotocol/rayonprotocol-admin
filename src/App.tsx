@@ -1,4 +1,3 @@
-import Web3 from 'web3';
 import React, { Component, Fragment } from 'react';
 
 // dc
@@ -21,8 +20,6 @@ class App extends Component<{}, {}> {
     ContractDC.setInstanceReadyListner(this.instanceGetReady.bind(this));
     ContractDC.contractInit();
   }
-
-  
 
   instanceGetReady() {
     this.setState({ ...this.state, isInstanceReady: true });

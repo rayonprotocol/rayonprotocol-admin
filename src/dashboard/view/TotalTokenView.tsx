@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { Mint } from 'token/model/Token';
 
 // dc
-import ContractDC from 'common/dc/ContractDC';
 import TokenDC from 'token/dc/TokenDC';
 
 // view
@@ -54,7 +53,7 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
   }
 
   onClickDetailButton() {
-    TokenDC.mint(ContractDC.ADMIN_ADDRESS, 100000);
+    console.log('click');
   }
 
   render() {

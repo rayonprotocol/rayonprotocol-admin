@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 
 // view
-import DashboardContainer from 'common/view/container/DashboardContainer'
+import DashboardContainer from 'common/view/container/DashboardContainer';
 
 // styles
 import styles from './EventLogView.scss';
 
 class EventLogView extends Component<{}, {}> {
-    render(){
-        return(
-            <DashboardContainer className={styles.eventLogView} title={'Event Log'}>
-
-            </DashboardContainer>
-        )
-    }
+  render() {
+    return (
+      <DashboardContainer className={styles.eventLogView} title={'Event Log'}>
+        <p>event</p>
+      </DashboardContainer>
+    );
+  }
 }
 
-export default EventLogView
+export default EventLogView;
