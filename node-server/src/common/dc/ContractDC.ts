@@ -1,5 +1,8 @@
 import Web3 from 'web3';
+import * as fs from 'fs';
+import * as path from 'path';
 
+// dc
 import TokenDC from '../../token/dc/TokenDC';
 
 class ContractDC {
@@ -14,8 +17,6 @@ class ContractDC {
   }
 
   async getTokenContract() {
-    const fs = require('fs');
-    const path = require('path');
     const TruffleContract = require('truffle-contract');
 
     const artifaction = fs.readFileSync(

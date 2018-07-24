@@ -20,13 +20,14 @@
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "APLv2",
   "dependencies": {
-    "tslib": "~1.9.2"
+    "tslib": "~1.9.2",
+    "@types/express": "^4.16.0",
+    "express": "^4.16.3"
   },
   "devDependencies": {
     "@types/jest": "~22.2.3",
     "@types/node": "~8.10.18",
     "bignumber.js": "^7.2.1",
-    "express": "^4.16.3",
     "jest": "~23.1.0",
     "nodemon": "^1.18.3",
     "rimraf": "~2.6.2",

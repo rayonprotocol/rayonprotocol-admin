@@ -1,5 +1,9 @@
 import { BigNumber } from 'bignumber.js';
 
+import { relativeUrl as parentUrl } from '../../interface/Ajax';
+export const URLForGetMintEvents = `${parentUrl}/MintEvents`;
+export const URLForGetTransferEvents = `${parentUrl}/TransferEvents`;
+
 interface RayonEvent<T> {
   logIndex: number;
   transactionIndex: number;
@@ -10,6 +14,13 @@ interface RayonEvent<T> {
   type: string;
   event: string;
   args: T;
+}
+
+export interface BlockTime {
+  timestamp: number;
+  year: number;
+  month: number;
+  date: number;
 }
 
 export interface MintArgs {
@@ -35,13 +46,6 @@ export interface TransferEvent {
   from: string;
   to: string;
   amount: number;
-}
-
-export interface BlockTime {
-  timestamp: number;
-  year: number;
-  month: number;
-  date: number;
 }
 
 export default RayonEvent;

@@ -1,12 +1,27 @@
+import { Express, Request, Response } from 'express';
+
 // dc
 import ContractDC from '../../common/dc/ContractDC';
 
 // model
-import RayonEvent, { TransferArgs, TransferEvent, BlockTime, MintArgs, MintEvent } from '../../event/model/RayonEvent';
+import RayonEvent, {
+  TransferArgs,
+  TransferEvent,
+  BlockTime,
+  MintArgs,
+  MintEvent,
+} from '../../../../shared/event/model/RayonEvent';
+import SendResult from '../../../../shared/common/model/SendResult';
+import { URLForGetMintEvents, URLForGetTransferEvents } from '../../../../shared/event/model/RayonEvent';
 
 class TokenDC {
-  mintEvents = [];
-  transferEvents = [];
+  mintEvents: MintEvent[] = [];
+  transferEvents: TransferEvent[] = [];
+
+  public configuration(app: Express) {
+    app.get(URLForGetMintEvents, this.getMintEvent.bind(this));
+    app.get(URLForGetTransferEvents, this.getTransferEvent.bind(this));
+  }
 
   attachTokenMintEvent(instance) {
     const mintEvent = instance.Mint({}, { fromBlock: 0, toBlock: 'latest' });
@@ -21,6 +36,25 @@ class TokenDC {
     };
 
     this.mintEvents.push(newEvent);
+    console.log('mintEvents', newEvent);
+  }
+
+  getMintEvent(req: Request, res: Response) {
+    if (this.mintEvents.length !== 0) {
+      const result: SendResult<MintEvent[]> = {
+        result_code: 0,
+        result_message: 'Success Response Mint Events',
+        data: this.mintEvents,
+      };
+      res.send(result);
+    } else {
+      const result: SendResult<MintEvent[]> = {
+        result_code: 1,
+        result_message: 'Fail Response Mint Events',
+        data: null,
+      };
+      res.send(result);
+    }
   }
 
   attachTokenTransferEvent(instance) {
@@ -49,7 +83,25 @@ class TokenDC {
     };
 
     this.transferEvents.push(newEvent);
-    console.log('transferEvents', this.transferEvents);
+    console.log('transferEvents', newEvent);
+  }
+
+  getTransferEvent(req, res: Response) {
+    if (this.transferEvents.length !== 0) {
+      const result: SendResult<TransferEvent[]> = {
+        result_code: 0,
+        result_message: 'Success Response Transfer Events',
+        data: this.transferEvents,
+      };
+      res.send(result);
+    } else {
+      const result: SendResult<TransferEvent[]> = {
+        result_code: 1,
+        result_message: 'Fail Response Transfer Events',
+        data: null,
+      };
+      res.send(result);
+    }
   }
 
   async getBalance() {
