@@ -4,6 +4,9 @@ import { relativeUrl as parentUrl } from '../../interface/Ajax';
 export const URLForGetMintEvents = `${parentUrl}/MintEvents`;
 export const URLForGetTransferEvents = `${parentUrl}/TransferEvents`;
 
+export const EventTransfer = 'Transfer';
+export const EventMint = 'Mint';
+
 interface RayonEvent<T> {
   logIndex: number;
   transactionIndex: number;

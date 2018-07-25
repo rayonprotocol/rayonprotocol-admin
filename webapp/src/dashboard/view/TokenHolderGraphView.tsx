@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import TransactionDC from 'transaction/dc/TransactionDC';
 
 // model
-import { Holder } from 'transaction/model/Transaction';
+import { Holder } from 'token/model/Token';
 
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';

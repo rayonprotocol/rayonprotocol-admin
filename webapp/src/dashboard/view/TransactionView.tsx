@@ -8,7 +8,7 @@ import ContractDC from 'common/dc/ContractDC';
 import TokenDC from 'token/dc/TokenDC';
 
 // model
-import { TransferEvent } from 'token/model/Token';
+import { TransferEvent } from '../../../../shared/event/model/RayonEvent';
 
 // view
 import LinearChart from 'common/view/chart/LinearChart';
@@ -38,43 +38,21 @@ class TransactionView extends Component<{}, TransactionViewState> {
   }
 
   componentWillMount() {
-    TokenDC.setWatchTransferEventListener(this.getTransferEvent.bind(this));
-    TokenDC.watchTransferEvent();
+    TokenDC.subscribeTransferEvent(TransactionView.name, this.getTransferEvent.bind(this));
   }
 
   componentWillUnmount() {
-    TokenDC.stopWatchTransferEvent();
+    TokenDC.unsubscribeTransferEvent(TransactionView.name);
   }
 
-  async getTransferEvent(error, event) {
-    const { transferEvents, transferDate } = this.state;
-    const web3: Web3 = ContractDC.getWeb3();
-    const result = await new Promise<any>((resolve, reject) => {
-      web3.eth.getBlock(event['blockNumber'], (err, _result) => {
-        if (err) reject(err);
-        resolve(_result);
-      });
-    });
-
-    const newEvent = {
-      txHash: event['transactionHash'],
-      blockNumber: event['blockNumber'],
-      timestamp: result.timestamp,
-      from: event['args']['from'],
-      to: event['args']['to'],
-      amount: event['args']['value'].toNumber(),
-    };
-
-    // save new transfer transaction event
-    transferEvents.push(newEvent);
-    transferEvents.sort((a, b) => a.timestamp - b.timestamp);
+  async getTransferEvent(event: TransferEvent[]) {
+    this.setState({ ...this.state, transferEvents: event });
+    // transferEvents.sort((a, b) => a.timestamp - b.timestamp);
 
     // save number of transfer transaction
-    const blockDate = new Date(newEvent.timestamp * 1000);
-    const dateKey = blockDate.getFullYear() + '&' + blockDate.getMonth() + '/' + blockDate.getDate();
-    transferDate[dateKey] = transferDate[dateKey] === undefined ? 1 : transferDate[dateKey] + 1;
-
-    this.setState({ ...this.state, transferEvents, transferDate });
+    // const blockDate = new Date(newEvent.timestamp * 1000);
+    // const dateKey = blockDate.getFullYear() + '&' + blockDate.getMonth() + '/' + blockDate.getDate();
+    // transferDate[dateKey] = transferDate[dateKey] === undefined ? 1 : transferDate[dateKey] + 1;
   }
 
   onClickDetailButton() {
@@ -83,14 +61,15 @@ class TransactionView extends Component<{}, TransactionViewState> {
 
   render() {
     const { transferEvents, transferDate } = this.state;
+    console.log('transferEvents!!', transferEvents);
     const sortedLabelList = Object.keys(this.state.transferDate).sort();
     const topTransferEvents = transferEvents.length >= 5 ? transferEvents.slice(-5).reverse() : transferEvents;
-    const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
-    const data = labels.map(item => transferDate[item]);
+    // const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
+    // const data = labels.map(item => transferDate[item]);
 
     return (
       <DashboardContainer className={styles.transactionView} title={'Transactions'}>
-        <LinearChart data={data} labels={labels} height={300} />
+        {/* <LinearChart data={data} labels={labels} height={300} /> */}
         <div>
           <p className={styles.subTitle}>Transactions</p>
           <table className={styles.transactionTable}>
@@ -127,7 +106,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
                       <span>{item.blockNumber}</span>
                     </td>
                     <td className={styles.timestamp}>
-                      <span>{moment(item.timestamp * 1000).fromNow()}</span>
+                      <span>{moment(item.blockTime.timestamp).fromNow()}</span>
                     </td>
                     <td className={styles.from}>
                       <span>{item.from}</span>

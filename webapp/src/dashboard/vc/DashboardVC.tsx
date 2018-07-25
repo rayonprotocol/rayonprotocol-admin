@@ -5,9 +5,9 @@ import Container from 'common/view/container/Container';
 import TotalTokenView from 'dashboard/view/TotalTokenView';
 import MintTransferToggleView from 'dashboard/view/MintTransferToggleView';
 import TransactionView from 'dashboard/view/TransactionView';
-import TokenHolderView from 'dashboard/view/TokenHolderView';
-import TokenHolderGraphView from 'dashboard/view/TokenHolderGraphView';
-import EventLogView from 'dashboard/view/EventLogView';
+// import TokenHolderView from 'dashboard/view/TokenHolderView';
+// import TokenHolderGraphView from 'dashboard/view/TokenHolderGraphView';
+// import EventLogView from 'dashboard/view/EventLogView';
 
 // styles
 import styles from './DashboardVC.scss';
@@ -20,9 +20,9 @@ class DashboardVC extends Component<{}, {}> {
           <TotalTokenView />
           <MintTransferToggleView />
           <TransactionView />
-          <TokenHolderView />
+          {/* <TokenHolderView />
           <TokenHolderGraphView />
-          <EventLogView />
+          <EventLogView /> */}
         </Container>
       </div>
     );

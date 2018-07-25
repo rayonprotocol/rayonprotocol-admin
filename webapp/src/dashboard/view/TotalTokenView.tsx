@@ -15,6 +15,7 @@ import MakeFormatedNumber from 'common/util/MakeFormatedNumber';
 
 // styles
 import styles from './TotalTokenView.scss';
+import { MintEvent } from '../../../../shared/event/model/RayonEvent';
 
 interface TotalTokenViewProps {
   className?: string;
@@ -37,19 +38,16 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
 
   async componentWillMount() {
     const totalBalance = await TokenDC.getTotalBalance();
-    TokenDC.setWatchMintEventListener(this.getMintEvent.bind(this));
-    TokenDC.watchMintEvent();
+    TokenDC.subscribeMintEvent(TotalTokenView.name, this.getMintEvent.bind(this));
     this.setState({ ...this.state, totalBalance });
   }
 
   componentWillUnmount() {
-    TokenDC.stopWatchMintEvent();
+    TokenDC.unsubscribeMintEvent(TotalTokenView.name);
   }
 
-  getMintEvent(erorr, event) {
-    const { mintEventList } = this.state;
-    mintEventList.push(event['args']);
-    this.setState({ ...this.state, mintEventList });
+  getMintEvent(event: MintEvent[]) {
+    this.setState({ ...this.state, mintEventList: event });
   }
 
   onClickDetailButton() {

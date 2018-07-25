@@ -13,10 +13,10 @@ class ContractDC {
     const Web3 = require('web3');
     const provider = new Web3.providers.HttpProvider('http://localhost:8545');
     this.web3 = new Web3(provider);
-    this.getTokenContract();
+    this.getDeployedContract();
   }
 
-  async getTokenContract() {
+  async getDeployedContract() {
     const TruffleContract = require('truffle-contract');
 
     const artifaction = fs.readFileSync(

@@ -1,28 +1,18 @@
 import Web3 from 'web3';
-
 import TruffleContract from 'truffle-contract';
+
+// dc
+import TokenDC from 'token/dc/TokenDC';
 
 // util
 import getWeb3 from '../util/getWeb3';
 
-// contract
-const RayonTokenContract = TruffleContract(require('../../../build/contracts/RayonToken.json'));
-
-// instance index
-export enum ContractInstance {
-  RayonTokenInstance = 0,
-  // RayonToken,
-}
-
 class ContractDC {
   public web3: Web3;
   public account: string;
-  private instances = [];
-  private contracts = [RayonTokenContract];
+  private tokenContractInstance;
 
   private instanceReadyListner: () => void;
-
-  ADMIN_ADDRESS = '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290';
 
   // contract deploy, migrate, initializing
   // App 시작 시 계약 배포, 초기화 진행
@@ -31,43 +21,34 @@ class ContractDC {
     this.web3.eth.getAccounts((err, accounts) => {
       this.account = accounts[0];
     });
-    this.deployContract();
+    this.getDeployedContract();
   }
 
-  // 등록된 모든 계약 배포
-  private deployContract() {
-    this.contracts.forEach(async contract => {
-      contract.setProvider(this.web3.currentProvider);
-      const instance = await contract.deployed();
-      this.instances.push(instance);
-      this.attackEvent(instance);
-      this.checkContractDeployDone();
-    });
+  // 등록된 토큰 인스턴스 가져옴
+  private async getDeployedContract() {
+    const contract = TruffleContract(require('../../../build/contracts/RayonToken.json'));
+    contract.setProvider(this.web3.currentProvider);
+    const instance = await contract.deployed();
+    this.tokenContractInstance = instance;
+    this.attachEvent();
+    this.checkContractInstanceReady();
   }
 
-  // 모든 계약이 제대로 배포 되었는지 확인
-  private checkContractDeployDone() {
+  // 계약 인스턴스가 준비되었는지 확인
+  private checkContractInstanceReady() {
     if (this.instanceReadyListner === undefined) return console.error('contract ready 리스너가 등록되지 않았습니다.');
-    if (this.instances.length === this.contracts.length) this.instanceReadyListner();
+    this.instanceReadyListner();
   }
 
   // 계약 인스턴스에 이벤트 attach
-  private attackEvent(instance) {
-    const allEvents = instance.allEvents({
-      fromBlock: 'latest',
-      toBlock: 'latest',
-    });
-    allEvents.watch(this.eventListener);
-  }
-
-  // 이벤트 발생 시 호출되는 콜백
-  private eventListener(error, event) {
-    console.log('event', event);
+  attachEvent() {
+    TokenDC.attachTokenMintEvent(this.tokenContractInstance);
+    TokenDC.attachTokenTransferEvent(this.tokenContractInstance);
   }
 
   // common getter function
-  public getInstance(index: number) {
-    return this.instances[index];
+  public getTokenContractInstance() {
+    return this.tokenContractInstance;
   }
 
   public getAccount() {
@@ -76,12 +57,6 @@ class ContractDC {
 
   public getWeb3() {
     return this.web3;
-  }
-
-  public async isAdmin() {
-    const instance = this.getInstance(ContractInstance.RayonTokenInstance);
-    const owner = await instance.owner();
-    return this.account === owner;
   }
 
   // common setter function

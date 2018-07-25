@@ -11,3 +11,9 @@ export interface TransferEvent {
   to: string;
   amount: number;
 }
+
+export interface Holder {
+  address: string;
+  quantity: number;
+  percentage: number;
+}
