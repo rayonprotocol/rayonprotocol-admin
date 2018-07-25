@@ -5,7 +5,13 @@ import { TransferEvent, TransferArgs, BlockTime } from '../../../../shared/event
 import BasicEventDC from './BasicEventDC';
 import ContractDC from 'common/dc/ContractDC';
 
+type TransferChart = {
+  [date: string]: number;
+};
+
 class TransferEventDC extends BasicEventDC<TransferEvent, TransferArgs> {
+  _chartDate: TransferChart = {};
+
   async eventHandler(error, event) {
     if (error) console.error(error);
     const block = await new Promise<any>((resolve, reject) => {
@@ -32,8 +38,22 @@ class TransferEventDC extends BasicEventDC<TransferEvent, TransferArgs> {
     };
 
     this._events.push(newEvent);
+    this._events.sort((a, b) => a.blockTime.timestamp - b.blockTime.timestamp);
+    this.setChartData(newEvent);
     this.notifyEvent(this._events);
+  }
+
+  setChartData(event: TransferEvent) {
+    const dateKey = event.blockTime.year + '&' + event.blockTime.month + '/' + event.blockTime.date;
+    this._chartDate[dateKey] = this._chartDate[dateKey] === undefined ? 1 : this._chartDate[dateKey]++;
+  }
+
+  getChartData() {
+    const sortedLabelList = Object.keys(this._chartDate).sort();
+    const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
+    const data = labels.map(item => this._chartDate[item]);
+    return { labels, data };
   }
 }
 
-export default TransferEventDC;
+export default new TransferEventDC();

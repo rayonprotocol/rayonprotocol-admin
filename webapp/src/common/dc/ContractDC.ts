@@ -2,7 +2,8 @@ import Web3 from 'web3';
 import TruffleContract from 'truffle-contract';
 
 // dc
-import TokenDC from 'token/dc/TokenDC';
+import MintEventDC from 'event/dc/MintEventDC';
+import TransferEventDC from 'event/dc/TransferEventDC';
 
 // util
 import getWeb3 from '../util/getWeb3';
@@ -30,8 +31,8 @@ class ContractDC {
     contract.setProvider(this.web3.currentProvider);
     const instance = await contract.deployed();
     this.tokenContractInstance = instance;
-    this.attachEvent();
     this.checkContractInstanceReady();
+    this.attachEvent();
   }
 
   // 계약 인스턴스가 준비되었는지 확인
@@ -42,8 +43,8 @@ class ContractDC {
 
   // 계약 인스턴스에 이벤트 attach
   attachEvent() {
-    TokenDC.attachTokenMintEvent(this.tokenContractInstance);
-    TokenDC.attachTokenTransferEvent(this.tokenContractInstance);
+    MintEventDC.attachTokenEvent(this.tokenContractInstance.Mint);
+    TransferEventDC.attachTokenEvent(this.tokenContractInstance.Transfer);
   }
 
   // common getter function

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import Web3 from 'web3';
 import moment from 'moment';
 
 // dc
-import ContractDC from 'common/dc/ContractDC';
-import TokenDC from 'token/dc/TokenDC';
+import TransferEventDC from 'event/dc/TransferEventDC';
 
 // model
 import { TransferEvent } from '../../../../shared/event/model/RayonEvent';
@@ -21,7 +19,6 @@ import styles from './TransactionView.scss';
 interface TransactionViewState {
   labels: string[];
   data: number[];
-  transferDate: Object;
   transferEvents: TransferEvent[];
 }
 
@@ -30,29 +27,23 @@ class TransactionView extends Component<{}, TransactionViewState> {
     super(props);
     this.state = {
       ...this.state,
-      labels: ['2018&6/16', '2018&6/17'],
-      data: [4, 1],
+      labels: [],
+      data: [],
       transferEvents: [],
-      transferDate: {},
     };
   }
 
   componentWillMount() {
-    TokenDC.subscribeTransferEvent(TransactionView.name, this.getTransferEvent.bind(this));
+    TransferEventDC.subscribeEvent(TransactionView.name, this.getTransferEvent.bind(this));
   }
 
   componentWillUnmount() {
-    TokenDC.unsubscribeTransferEvent(TransactionView.name);
+    TransferEventDC.unsubscribeEvent(TransactionView.name);
   }
 
   async getTransferEvent(event: TransferEvent[]) {
-    this.setState({ ...this.state, transferEvents: event });
-    // transferEvents.sort((a, b) => a.timestamp - b.timestamp);
-
-    // save number of transfer transaction
-    // const blockDate = new Date(newEvent.timestamp * 1000);
-    // const dateKey = blockDate.getFullYear() + '&' + blockDate.getMonth() + '/' + blockDate.getDate();
-    // transferDate[dateKey] = transferDate[dateKey] === undefined ? 1 : transferDate[dateKey] + 1;
+    const transferEvents = event.length >= 5 ? event.slice(-5).reverse() : event;
+    this.setState({ ...this.state, transferEvents });
   }
 
   onClickDetailButton() {
@@ -60,16 +51,12 @@ class TransactionView extends Component<{}, TransactionViewState> {
   }
 
   render() {
-    const { transferEvents, transferDate } = this.state;
+    const { transferEvents } = this.state;
     console.log('transferEvents!!', transferEvents);
-    const sortedLabelList = Object.keys(this.state.transferDate).sort();
-    const topTransferEvents = transferEvents.length >= 5 ? transferEvents.slice(-5).reverse() : transferEvents;
-    // const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
-    // const data = labels.map(item => transferDate[item]);
-
+    const { labels, data } = TransferEventDC.getChartData();
     return (
       <DashboardContainer className={styles.transactionView} title={'Transactions'}>
-        {/* <LinearChart data={data} labels={labels} height={300} /> */}
+        <LinearChart data={data} labels={labels} height={300} />
         <div>
           <p className={styles.subTitle}>Transactions</p>
           <table className={styles.transactionTable}>
@@ -95,7 +82,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
                 </th>
               </tr>
             </thead>
-            {topTransferEvents.map((item, index) => {
+            {transferEvents.map((item, index) => {
               return (
                 <tbody key={index} className={classNames(styles.tableRow, styles.transactionRow)}>
                   <tr>

@@ -3,6 +3,7 @@ import { MintEvent, MintArgs } from '../../../../shared/event/model/RayonEvent';
 
 // dc
 import BasicEventDC from './BasicEventDC';
+import TokenDC from 'token/dc/TokenDC';
 
 class MintEventDC extends BasicEventDC<MintEvent, MintArgs> {
   eventHandler(error, event) {
@@ -11,11 +12,11 @@ class MintEventDC extends BasicEventDC<MintEvent, MintArgs> {
       to: event.args.to,
       amount: event.args.amount.toNumber(),
     };
-
-    this._events.push(newEvent);
     console.log('mintEvents', newEvent);
+    TokenDC.addTotalBalance(newEvent.amount);
+    this._events.push(newEvent);
     this.notifyEvent(this._events);
   }
 }
 
-export default MintEventDC;
+export default new MintEventDC();

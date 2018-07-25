@@ -17,6 +17,7 @@ module.exports = {
       dashboard: path.join(__dirname, '../../src/dashboard'),
       transaction: path.join(__dirname, '../../src/transaction'),
       token: path.join(__dirname, '../../src/token'),
+      event: path.join(__dirname, '../../src/event'),
     },
   },
   context: resolve(__dirname, '../../src'),
