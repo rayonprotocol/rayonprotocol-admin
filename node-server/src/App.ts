@@ -1,4 +1,3 @@
-
 import * as cors from 'cors';
 import ContractDC from './common/dc/ContractDC';
 import TokenDC from './token/dc/TokenDC';

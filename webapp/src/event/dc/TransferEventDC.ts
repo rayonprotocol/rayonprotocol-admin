@@ -1,3 +1,6 @@
+// agent
+import EventServerAgent from 'event/agent/EventServerAgent';
+
 // model
 import { TransferEvent, TransferArgs, BlockTime } from '../../../../shared/event/model/RayonEvent';
 
@@ -53,6 +56,10 @@ class TransferEventDC extends BasicEventDC<TransferEvent, TransferArgs> {
     const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
     const data = labels.map(item => this._chartDate[item]);
     return { labels, data };
+  }
+
+  async fetchTransferEvents() {
+    await EventServerAgent.fetchTransferEvents();
   }
 }
 

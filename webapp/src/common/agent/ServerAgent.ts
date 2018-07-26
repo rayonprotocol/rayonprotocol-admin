@@ -1,15 +1,11 @@
 import axios from 'axios';
 
-export interface ServerAgentResponse {
-  result_code: number;
-  result_message: string;
-  data?: Object;
-}
+import SendResult from '../../../../shared/common/model/SendResult';
 
 class ServerAgent {
   static RESULTCODE_SUCCESS: number = 0;
 
-  static async getItem(url: string, params?: Object): Promise<Object> {
+  static async getRequest<T>(url: string, params?: Object): Promise<T> {
     // To server
     const { data } = await axios.get(`${URL_APIBASE}${url}`, { params: params });
     // Return undfined in case of failure
@@ -17,11 +13,11 @@ class ServerAgent {
     else return data['data'];
   }
 
-  static async postItem(url: string, params?: Object): Promise<ServerAgentResponse> {
+  static async postRequest<T>(url: string, params?: Object): Promise<SendResult<T>> {
     // To server
     const { data } = await axios.post(`${URL_APIBASE}${url}`, params);
     // Return undfined in case of failure
-    return <ServerAgentResponse>data;
+    return <SendResult<T>>data;
   }
 }
 

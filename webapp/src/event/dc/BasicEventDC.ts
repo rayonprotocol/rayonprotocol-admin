@@ -13,7 +13,7 @@ abstract class BasicEventDC<EventResultType, EventArgType> {
   _events: EventResultType[] = [];
 
   attachTokenEvent(instanceEvent: Function) {
-    const event = instanceEvent({}, { fromBlock: this._fromBlock, toBlock: 'latest' });
+    const event = instanceEvent({}, { fromBlock: 'latest', toBlock: 'latest' });
     event.watch(this.eventHandler.bind(this));
   }
 

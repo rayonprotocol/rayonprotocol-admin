@@ -9,20 +9,24 @@ import BasicEventDC from './BasicEventDC';
 import TokenDC from 'token/dc/TokenDC';
 
 class MintEventDC extends BasicEventDC<MintEvent, MintArgs> {
-  eventHandler(error, event) {
+  async eventHandler(error, event) {
     if (error) console.error(error);
-    const newEvent: MintEvent = {
-      to: event.args.to,
-      amount: event.args.amount.toNumber(),
-    };
-    console.log('mintEvents', newEvent);
-    TokenDC.addTotalBalance(newEvent.amount);
-    this._events.push(newEvent);
+    console.log('mintEvents', event.args);
+
+    /*
+    TODO: must move to node-server
+    */
+    TokenDC.addTotalBalance(event.args.amount.toNumber());
+
+    await this.fetchMintEvents();
     this.notifyEvent(this._events);
   }
 
-  async getMintEvents() {
-    await EventServerAgent.getMintEvents();
+  /*
+  fetch mint event from node-server
+  */
+  async fetchMintEvents() {
+    this._events = await EventServerAgent.fetchMintEvents();
   }
 }
 
