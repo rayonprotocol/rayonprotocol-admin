@@ -18,7 +18,7 @@ abstract class BasicEventDC<EventResultType, EventArgType> {
   }
 
   // Must Override this function
-  abstract eventHandler(error, event: RayonEvent<EventArgType>);
+  abstract async eventHandler(error, event: RayonEvent<EventArgType>);
 
   notifyEvent(events: EventResultType[]) {
     const keys = Object.keys(this._eventListeners);

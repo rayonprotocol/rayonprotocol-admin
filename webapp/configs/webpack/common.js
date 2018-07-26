@@ -6,6 +6,7 @@ const { CheckerPlugin } = require('awesome-typescript-loader');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const isDev = process.env.NODE_ENV !== 'production';
+
 console.log(process.env.BUILD_ENV, 'isDev', isDev, JSON.stringify(isDev ? 'development' : 'production'));
 module.exports = {
   resolve: {
@@ -105,6 +106,7 @@ module.exports = {
       'process.env.BROWSER': true,
       BUILD_ENV: JSON.stringify(isDev ? 'development' : 'production'),
       EMAIL_SUB_API_ROOT: JSON.stringify(isDev ? `http://localhost:3000` : `https://api.march.eco`),
+      URL_APIBASE: JSON.stringify(isDev ? `http://${localIp}:3000` : 'https://api.rayonprotocol.io'),
     }),
     new CheckerPlugin(),
     new HtmlWebpackPlugin({
