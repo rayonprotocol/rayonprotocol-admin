@@ -40,7 +40,7 @@ class TokenDC {
   }
 
   getMintEvent(req: Request, res: Response) {
-    if (this.mintEvents.length !== 0) {
+    if (res.status(200)) {
       const result: SendResult<MintEvent[]> = {
         result_code: 0,
         result_message: 'Success Response Mint Events',
@@ -87,7 +87,7 @@ class TokenDC {
   }
 
   getTransferEvent(req, res: Response) {
-    if (this.transferEvents.length !== 0) {
+    if (res.status(200)) {
       const result: SendResult<TransferEvent[]> = {
         result_code: 0,
         result_message: 'Success Response Transfer Events',

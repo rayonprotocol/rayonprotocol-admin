@@ -1,3 +1,6 @@
+// agent
+import EventServerAgent from 'event/agent/EventServerAgent';
+
 // model
 import { MintEvent, MintArgs } from '../../../../shared/event/model/RayonEvent';
 
@@ -16,6 +19,10 @@ class MintEventDC extends BasicEventDC<MintEvent, MintArgs> {
     TokenDC.addTotalBalance(newEvent.amount);
     this._events.push(newEvent);
     this.notifyEvent(this._events);
+  }
+
+  async getMintEvents() {
+    await EventServerAgent.getMintEvents();
   }
 }
 

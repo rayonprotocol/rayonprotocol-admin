@@ -49,6 +49,7 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
 
   onClickDetailButton() {
     console.log('click');
+    MintEventDC.getMintEvents();
   }
 
   render() {

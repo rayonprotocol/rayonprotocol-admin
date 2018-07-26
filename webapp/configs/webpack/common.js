@@ -1,11 +1,14 @@
 // shared config (dev and prod)
-const { resolve } = require('path');
+const ip = require('ip');
 const path = require('path');
 const webpack = require('webpack');
-const { CheckerPlugin } = require('awesome-typescript-loader');
-const StyleLintPlugin = require('stylelint-webpack-plugin');
+const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const StyleLintPlugin = require('stylelint-webpack-plugin');
+const { CheckerPlugin } = require('awesome-typescript-loader');
+
 const isDev = process.env.NODE_ENV !== 'production';
+const localIp = process.env.INBOUND ? ip.address() : 'localhost';
 
 console.log(process.env.BUILD_ENV, 'isDev', isDev, JSON.stringify(isDev ? 'development' : 'production'));
 module.exports = {

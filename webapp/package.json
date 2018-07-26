@@ -83,6 +83,7 @@
     "classnames": "^2.2.5",
     "history": "^4.7.2",
     "intl": "^1.2.5",
+    "ip": "^1.1.5",
     "lodash.groupby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
     "lodash.zip": "^4.2.0",

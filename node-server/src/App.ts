@@ -1,8 +1,12 @@
+
+import * as cors from 'cors';
+import ContractDC from './common/dc/ContractDC';
+import TokenDC from './token/dc/TokenDC';
+
 const express = require('express');
 const app = express();
 
-import ContractDC from './common/dc/ContractDC';
-import TokenDC from './token/dc/TokenDC';
+app.use(cors({ origin: true, credentials: true }));
 
 ContractDC.init();
 TokenDC.configuration(app);
