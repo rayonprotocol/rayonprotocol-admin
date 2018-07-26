@@ -7,7 +7,7 @@ interface EventListener {
   [componentName: string]: Listner;
 }
 
-abstract class BasicEventDC<EventResultType, EventArgType> {
+abstract class RayonEventDC<EventResultType, EventArgType> {
   _fromBlock = 0;
   _eventListeners: EventListener = {};
   _events: EventResultType[] = [];
@@ -38,4 +38,4 @@ abstract class BasicEventDC<EventResultType, EventArgType> {
   }
 }
 
-export default BasicEventDC;
+export default RayonEventDC;

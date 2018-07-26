@@ -18,7 +18,7 @@ import styles from './TransactionView.scss';
 
 interface TransactionViewState {
   labels: string[];
-  data: number[];
+  chartData: number[];
   transferEvents: TransferEvent[];
 }
 
@@ -28,12 +28,12 @@ class TransactionView extends Component<{}, TransactionViewState> {
     this.state = {
       ...this.state,
       labels: [],
-      data: [],
+      chartData: [],
       transferEvents: [],
     };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     TransferEventDC.subscribeEvent(TransactionView.name, this.getTransferEvent.bind(this));
   }
 
@@ -43,7 +43,8 @@ class TransactionView extends Component<{}, TransactionViewState> {
 
   async getTransferEvent(event: TransferEvent[]) {
     const transferEvents = event.length >= 5 ? event.slice(-5).reverse() : event;
-    this.setState({ ...this.state, transferEvents });
+    const { labels, chartData } = await TransferEventDC.fetchChartData();
+    this.setState({ ...this.state, transferEvents, labels, chartData });
   }
 
   onClickDetailButton() {
@@ -51,12 +52,11 @@ class TransactionView extends Component<{}, TransactionViewState> {
   }
 
   render() {
-    const { transferEvents } = this.state;
+    const { transferEvents, labels, chartData } = this.state;
     console.log('transferEvents!!', transferEvents);
-    const { labels, data } = TransferEventDC.getChartData();
     return (
       <DashboardContainer className={styles.transactionView} title={'Transactions'}>
-        <LinearChart data={data} labels={labels} height={300} />
+        <LinearChart data={chartData} labels={labels} height={300} />
         <div>
           <p className={styles.subTitle}>Transactions</p>
           <table className={styles.transactionTable}>

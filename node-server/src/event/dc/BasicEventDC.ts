@@ -17,7 +17,7 @@ abstract class BasicEventDC<EventResultType, EventArgType> {
   // Must Override this function
   abstract async eventHandler(error, event: RayonEvent<EventArgType>);
 
-  public abstract getEvent(req: Request, res: Response);
+  public abstract respondEvent(req: Request, res: Response);
 }
 
 export default BasicEventDC;

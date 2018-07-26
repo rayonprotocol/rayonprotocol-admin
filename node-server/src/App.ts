@@ -9,10 +9,14 @@ import TransferEventDC from './event/dc/TransferEventDC';
 const express = require('express');
 const app = express();
 
+// defined use middle ware
 app.use(cors({ origin: true, credentials: true }));
 
+// contract initialize for getting deployed contract instance
 ContractDC.init();
 
+// datacontroller configure(router)
+TokenDC.configure(app);
 MintEventDC.configure(app);
 TransferEventDC.configure(app);
 

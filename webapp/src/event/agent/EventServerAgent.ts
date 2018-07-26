@@ -1,12 +1,14 @@
-// agebt
+// agent
 import ServerAgent from 'common/agent/ServerAgent';
 
 // model
 import {
   URLForGetMintEvents,
   URLForGetTransferEvents,
+  URLForGetTransactionChartData,
   MintEvent,
   TransferEvent,
+  ChartData,
 } from '../../../../shared/event/model/RayonEvent';
 
 class EventServerAgent extends ServerAgent {
@@ -15,7 +17,11 @@ class EventServerAgent extends ServerAgent {
   }
 
   async fetchTransferEvents() {
-    return await ServerAgent.getRequest<TransferEvent>(URLForGetTransferEvents);
+    return await ServerAgent.getRequest<TransferEvent[]>(URLForGetTransferEvents);
+  }
+
+  async fetchChartData() {
+    return await ServerAgent.getRequest<ChartData>(URLForGetTransactionChartData);
   }
 }
 

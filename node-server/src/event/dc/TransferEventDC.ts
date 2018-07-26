@@ -2,16 +2,29 @@ import { Express, Request, Response } from 'express';
 
 // model
 import SendResult from '../../../../shared/common/model/SendResult';
-import { URLForGetTransferEvents } from '../../../../shared/event/model/RayonEvent';
-import RayonEvent, { TransferArgs, TransferEvent, BlockTime } from '../../../../shared/event/model/RayonEvent';
+import { URLForGetTransferEvents, URLForGetTransactionChartData } from '../../../../shared/event/model/RayonEvent';
+import RayonEvent, {
+  TransferArgs,
+  TransferEvent,
+  BlockTime,
+  ChartData,
+} from '../../../../shared/event/model/RayonEvent';
 
 // dc
 import BasicEventDC from './BasicEventDC';
+import TokenDC from '../../token/dc/TokenDC';
 import ContractDC from '../../common/dc/ContractDC';
 
+type TransferChart = {
+  [date: string]: number;
+};
+
 class MintEventDC extends BasicEventDC<TransferEvent, TransferArgs> {
+  _chartDate: TransferChart = {};
+
   public configure(app: Express) {
-    app.get(URLForGetTransferEvents, this.getEvent.bind(this));
+    app.get(URLForGetTransferEvents, this.respondEvent.bind(this));
+    app.get(URLForGetTransactionChartData, this.respondChartData.bind(this));
   }
 
   async eventHandler(error, event: RayonEvent<TransferArgs>) {
@@ -35,10 +48,13 @@ class MintEventDC extends BasicEventDC<TransferEvent, TransferArgs> {
     };
 
     this._events.push(newEvent);
-    console.log('transferEvents', newEvent);
+    this.setChartData(newEvent);
+    TokenDC.setHolders(newEvent.from, newEvent.to, newEvent.amount);
+    console.log('==========================');
+    console.log('transferEvents\n', newEvent);
   }
 
-  public getEvent(req: Request, res: Response) {
+  public respondEvent(req: Request, res: Response) {
     if (res.status(200)) {
       const result: SendResult<TransferEvent[]> = {
         result_code: 0,
@@ -50,6 +66,39 @@ class MintEventDC extends BasicEventDC<TransferEvent, TransferArgs> {
       const result: SendResult<TransferEvent[]> = {
         result_code: 1,
         result_message: 'Fail Response Transfer Events',
+        data: null,
+      };
+      res.send(result);
+    }
+  }
+
+  /*
+  about chart data (transaction per day)
+  */
+  setChartData(event: TransferEvent) {
+    const dateKey = event.blockTime.year + '&' + event.blockTime.month + '/' + event.blockTime.date;
+    this._chartDate[dateKey] = this._chartDate[dateKey] === undefined ? 1 : this._chartDate[dateKey]++;
+  }
+
+  public respondChartData(req: Request, res: Response) {
+    const sortedLabelList = Object.keys(this._chartDate).sort();
+    const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
+    const chartData = labels.map(item => this._chartDate[item]);
+
+    if (res.status(200)) {
+      const result: SendResult<ChartData> = {
+        result_code: 0,
+        result_message: 'Success Response Chart Data',
+        data: {
+          labels,
+          chartData,
+        },
+      };
+      res.send(result);
+    } else {
+      const result: SendResult<ChartData> = {
+        result_code: 1,
+        result_message: 'Fail Response Chart Data',
         data: null,
       };
       res.send(result);

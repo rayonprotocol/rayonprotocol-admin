@@ -10,7 +10,7 @@ import BasicEventDC from './BasicEventDC';
 
 class MintEventDC extends BasicEventDC<MintEvent, MintArgs> {
   public configure(app: Express) {
-    app.get(URLForGetMintEvents, this.getEvent.bind(this));
+    app.get(URLForGetMintEvents, this.respondEvent.bind(this));
   }
 
   async eventHandler(error, event: RayonEvent<MintArgs>) {
@@ -21,10 +21,11 @@ class MintEventDC extends BasicEventDC<MintEvent, MintArgs> {
     };
 
     this._events.push(newEvent);
-    console.log('mintEvents', newEvent);
+    console.log('==========================');
+    console.log('mintEvents\n', newEvent);
   }
 
-  public getEvent(req: Request, res: Response) {
+  public respondEvent(req: Request, res: Response) {
     if (res.status(200)) {
       const result: SendResult<MintEvent[]> = {
         result_code: 0,

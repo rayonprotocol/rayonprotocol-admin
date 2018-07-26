@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { relativeUrl as parentUrl } from '../../interface/Ajax';
 export const URLForGetMintEvents = `${parentUrl}/MintEvents`;
 export const URLForGetTransferEvents = `${parentUrl}/TransferEvents`;
+export const URLForGetTransactionChartData = `${parentUrl}/GetTransactionChartData`;
 
 export const EventTransfer = 'Transfer';
 export const EventMint = 'Mint';
@@ -49,6 +50,11 @@ export interface TransferEvent {
   from: string;
   to: string;
   amount: number;
+}
+
+export interface ChartData {
+  labels: string[];
+  chartData: number[];
 }
 
 export default RayonEvent;

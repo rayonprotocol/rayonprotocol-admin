@@ -5,28 +5,21 @@ import EventServerAgent from 'event/agent/EventServerAgent';
 import { MintEvent, MintArgs } from '../../../../shared/event/model/RayonEvent';
 
 // dc
-import BasicEventDC from './BasicEventDC';
-import TokenDC from 'token/dc/TokenDC';
+import RayonEventDC from 'common/dc/RayonEventDC';
 
-class MintEventDC extends BasicEventDC<MintEvent, MintArgs> {
+class MintEventDC extends RayonEventDC<MintEvent, MintArgs> {
   async eventHandler(error, event) {
     if (error) console.error(error);
-    console.log('mintEvents', event.args);
-
-    /*
-    TODO: must move to node-server
-    */
-    TokenDC.addTotalBalance(event.args.amount.toNumber());
-
-    await this.fetchMintEvents();
+    this._events = await this.fetchMintEvents();
     this.notifyEvent(this._events);
+    console.log('mintEvents', event.args);
   }
 
   /*
   fetch mint event from node-server
   */
   async fetchMintEvents() {
-    this._events = await EventServerAgent.fetchMintEvents();
+    return await EventServerAgent.fetchMintEvents();
   }
 }
 

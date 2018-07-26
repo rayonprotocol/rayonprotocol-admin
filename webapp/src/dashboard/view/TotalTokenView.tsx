@@ -24,6 +24,7 @@ interface TotalTokenViewProps {
 
 interface TotalTokenViewState {
   mintEventList: Mint[];
+  totalBalance: number;
 }
 
 class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState> {
@@ -32,6 +33,7 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
     this.state = {
       ...this.state,
       mintEventList: [],
+      totalBalance: 0,
     };
   }
 
@@ -43,8 +45,9 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
     MintEventDC.unsubscribeEvent(TotalTokenView.name);
   }
 
-  getMintEvent(event: MintEvent[]) {
-    this.setState({ ...this.state, mintEventList: event });
+  async getMintEvent(event: MintEvent[]) {
+    const totalBalance = await TokenDC.fetchTokenTotalBalance();
+    this.setState({ ...this.state, mintEventList: event, totalBalance });
   }
 
   onClickDetailButton() {
@@ -53,13 +56,13 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
   }
 
   render() {
-    const { mintEventList } = this.state;
+    const { mintEventList, totalBalance } = this.state;
     let latestMintEventList: Mint[] = mintEventList.length >= 2 ? mintEventList.slice(-2) : mintEventList;
     return (
       <DashboardContainer className={styles.totalTokenView} title={'Total Token'}>
         <div className={styles.totalTokenSection}>
           <p className={styles.subTitle}>Balance</p>
-          <p className={styles.totalToken}>{MakeFormatedNumber(TokenDC.getTotalBalance())} RYN</p>
+          <p className={styles.totalToken}>{MakeFormatedNumber(totalBalance)} RYN</p>
         </div>
 
         <div className={styles.extraMintedTokenSection}>

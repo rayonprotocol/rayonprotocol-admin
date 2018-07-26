@@ -4,6 +4,8 @@ import * as path from 'path';
 
 // dc
 import TokenDC from '../../token/dc/TokenDC';
+import MintEventDC from '../../event/dc/MintEventDC';
+import TransferEventDC from '../../event/dc/TransferEventDC';
 
 class ContractDC {
   private web3: Web3;
@@ -35,8 +37,8 @@ class ContractDC {
   }
 
   attachEvent() {
-    TokenDC.attachTokenMintEvent(this.tokenContractInstance);
-    TokenDC.attachTokenTransferEvent(this.tokenContractInstance);
+    MintEventDC.attachTokenEvent(this.tokenContractInstance.Mint);
+    TransferEventDC.attachTokenEvent(this.tokenContractInstance.Transfer);
   }
 
   public getWeb3() {
