@@ -16,6 +16,13 @@ class TokenDC {
   public async fetchTokenTotalBalance() {
     return await TokenServerAgent.fetchTokenTotalBalance();
   }
+
+  public async fetchTokenHolders() {
+    return await TokenServerAgent.fetchTokenHolders();
+  }
+  public async fetchTop10TokenHolders() {
+    return await TokenServerAgent.fetchTop10TokenHolders();
+  }
 }
 
 export default new TokenDC();

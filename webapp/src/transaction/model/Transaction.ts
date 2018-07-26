@@ -7,10 +7,4 @@ interface Transaction {
   value: number;
 }
 
-export interface Holder {
-  address: string;
-  quantity: number;
-  percentage: number;
-}
-
 export default Transaction;

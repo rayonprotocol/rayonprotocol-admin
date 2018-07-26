@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 
-// dc
-import TransactionDC from 'transaction/dc/TransactionDC';
-
 // model
-import { Holder } from 'transaction/model/Transaction';
+import { TransferEvent } from '../../../../shared/event/model/RayonEvent';
+
+// dc
+import TokenDC from 'token/dc/TokenDC';
+import TransferEventDC from 'event/dc/TransferEventDC';
 
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
@@ -13,7 +14,7 @@ import DashboardContainer from 'common/view/container/DashboardContainer';
 import styles from './TokenHolderView.scss';
 
 interface TokenHolderState {
-  holders: Holder[];
+  holders: object;
 }
 
 class TokenHolderView extends Component<{}, TokenHolderState> {
@@ -21,11 +22,26 @@ class TokenHolderView extends Component<{}, TokenHolderState> {
     super(props);
     this.state = {
       ...this.state,
-      holders: TransactionDC.getHolders(),
+      holders: {},
     };
   }
+
+  componentWillMount() {
+    TransferEventDC.subscribeEvent(TokenHolderView.name, this.getTransferEvent.bind(this));
+  }
+
+  componentWillUnmount() {
+    TransferEventDC.unsubscribeEvent(TokenHolderView.name);
+  }
+
+  async getTransferEvent(event: TransferEvent[]) {
+    const holders = await TokenDC.fetchTop10TokenHolders();
+    this.setState({ ...this.state, holders });
+  }
+
   render() {
     const { holders } = this.state;
+    const holdersList = Object.keys(holders);
     return (
       <DashboardContainer className={styles.tokenHolderView} title={'Token Holders'}>
         <table>
@@ -34,17 +50,17 @@ class TokenHolderView extends Component<{}, TokenHolderState> {
               <th>Rank</th>
               <th>Address</th>
               <th>Quantity</th>
-              <th>Percentage</th>
+              {/* <th>Percentage</th> */}
             </tr>
           </thead>
           <tbody>
-            {holders.map((item, index) => {
+            {holdersList.map((address, index) => {
               return (
                 <tr key={index}>
                   <td>{index}</td>
-                  <td>{item.address}</td>
-                  <td>{item.quantity} RYN</td>
-                  <td>{item.percentage}%</td>
+                  <td>{address}</td>
+                  <td>{holders[address]} RYN</td>
+                  {/* <td>{item.percentage}%</td> */}
                 </tr>
               );
             })}

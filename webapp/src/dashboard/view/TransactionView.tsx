@@ -10,8 +10,8 @@ import { TransferEvent } from '../../../../shared/event/model/RayonEvent';
 
 // view
 import LinearChart from 'common/view/chart/LinearChart';
-import DashboardContainer from 'common/view/container/DashboardContainer';
 import RayonButton from 'common/view/button/RayonButton';
+import DashboardContainer from 'common/view/container/DashboardContainer';
 
 // styles
 import styles from './TransactionView.scss';
@@ -33,7 +33,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
     };
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     TransferEventDC.subscribeEvent(TransactionView.name, this.getTransferEvent.bind(this));
   }
 

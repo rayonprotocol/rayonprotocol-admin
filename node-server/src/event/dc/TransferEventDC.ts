@@ -55,11 +55,12 @@ class MintEventDC extends BasicEventDC<TransferEvent, TransferArgs> {
   }
 
   public respondEvent(req: Request, res: Response) {
+    const sortedTransferEvent = this._events.sort((a, b) => b.blockTime.timestamp - a.blockTime.timestamp);
     if (res.status(200)) {
       const result: SendResult<TransferEvent[]> = {
         result_code: 0,
         result_message: 'Success Response Transfer Events',
-        data: this._events,
+        data: sortedTransferEvent,
       };
       res.send(result);
     } else {
@@ -77,7 +78,7 @@ class MintEventDC extends BasicEventDC<TransferEvent, TransferArgs> {
   */
   setChartData(event: TransferEvent) {
     const dateKey = event.blockTime.year + '&' + event.blockTime.month + '/' + event.blockTime.date;
-    this._chartDate[dateKey] = this._chartDate[dateKey] === undefined ? 1 : this._chartDate[dateKey]++;
+    this._chartDate[dateKey] = this._chartDate[dateKey] === undefined ? 1 : (this._chartDate[dateKey] += 1);
   }
 
   public respondChartData(req: Request, res: Response) {

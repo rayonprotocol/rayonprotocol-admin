@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 
-// dc
-import TransactionDC from 'transaction/dc/TransactionDC';
-
 // model
-import { Holder } from 'token/model/Token';
+import { TransferEvent } from '../../../../shared/event/model/RayonEvent';
+
+// dc
+import TokenDC from 'token/dc/TokenDC';
+import TransferEventDC from 'event/dc/TransferEventDC';
 
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
@@ -17,7 +18,7 @@ import styles from './TokenHolderGraphView.scss';
 interface TokenHolderGraphViewState {
   labels: string[];
   data: number[];
-  holders: Holder[];
+  holders: object;
 }
 
 class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
@@ -37,8 +38,21 @@ class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
     super(props);
     this.state = {
       ...this.state,
-      holders: TransactionDC.getHolders(),
+      holders: {},
     };
+  }
+
+  componentWillMount() {
+    TransferEventDC.subscribeEvent(TokenHolderGraphView.name, this.getTransferEvent.bind(this));
+  }
+
+  componentWillUnmount() {
+    TransferEventDC.unsubscribeEvent(TokenHolderGraphView.name);
+  }
+
+  async getTransferEvent(event: TransferEvent[]) {
+    const holders = await TokenDC.fetchTop10TokenHolders();
+    this.setState({ ...this.state, holders });
   }
 
   onClickDetailButton() {
@@ -47,15 +61,15 @@ class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
 
   render() {
     const { holders } = this.state;
-    const data = holders.map(item => item.percentage);
-    const labels = holders.map(item => item.address);
+    const holdersList = Object.keys(holders);
+    const data = holdersList.map(address => holders[address]);
 
     return (
       <DashboardContainer className={styles.tokenHolderGraphView} title={'Top 10 Holders'}>
         <p className={styles.subtitle}>Top 10 Holders</p>
         <DoughnutChart
           data={data}
-          labels={labels}
+          labels={holdersList}
           backgroundColor={this.backgroundColor}
           borderColor={this.backgroundColor}
           height={300}
