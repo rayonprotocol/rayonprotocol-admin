@@ -56,21 +56,19 @@ class MintEventDC extends BasicEventDC<TransferEvent, TransferArgs> {
 
   public respondEvent(req: Request, res: Response) {
     const sortedTransferEvent = this._events.sort((a, b) => b.blockTime.timestamp - a.blockTime.timestamp);
+    const result: SendResult<TransferEvent[]> = {
+      result_code: 1,
+      result_message: 'Fail Response Transfer Events',
+      data: null,
+    };
+
     if (res.status(200)) {
-      const result: SendResult<TransferEvent[]> = {
-        result_code: 0,
-        result_message: 'Success Response Transfer Events',
-        data: sortedTransferEvent,
-      };
-      res.send(result);
-    } else {
-      const result: SendResult<TransferEvent[]> = {
-        result_code: 1,
-        result_message: 'Fail Response Transfer Events',
-        data: null,
-      };
-      res.send(result);
+      result.result_code = 0;
+      result.result_message = 'Success Response Transfer Events';
+      result.data = sortedTransferEvent;
     }
+
+    res.send(result);
   }
 
   /*
@@ -86,24 +84,22 @@ class MintEventDC extends BasicEventDC<TransferEvent, TransferArgs> {
     const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
     const chartData = labels.map(item => this._chartDate[item]);
 
+    const result: SendResult<ChartData> = {
+      result_code: 1,
+      result_message: 'Fail Response Chart Data',
+      data: null,
+    };
+
     if (res.status(200)) {
-      const result: SendResult<ChartData> = {
-        result_code: 0,
-        result_message: 'Success Response Chart Data',
-        data: {
-          labels,
-          chartData,
-        },
+      result.result_code = 0;
+      result.result_message = 'Success Response Chart Data';
+      result.data = {
+        labels,
+        chartData,
       };
-      res.send(result);
-    } else {
-      const result: SendResult<ChartData> = {
-        result_code: 1,
-        result_message: 'Fail Response Chart Data',
-        data: null,
-      };
-      res.send(result);
     }
+
+    res.send(result);
   }
 }
 

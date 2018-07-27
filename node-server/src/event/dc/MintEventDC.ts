@@ -26,21 +26,19 @@ class MintEventDC extends BasicEventDC<MintEvent, MintArgs> {
   }
 
   public respondEvent(req: Request, res: Response) {
+    const result: SendResult<MintEvent[]> = {
+      result_code: 1,
+      result_message: 'Fail Response Mint Events',
+      data: null,
+    };
+
     if (res.status(200)) {
-      const result: SendResult<MintEvent[]> = {
-        result_code: 0,
-        result_message: 'Success Response Mint Events',
-        data: this._events,
-      };
-      res.send(result);
-    } else {
-      const result: SendResult<MintEvent[]> = {
-        result_code: 1,
-        result_message: 'Fail Response Mint Events',
-        data: null,
-      };
-      res.send(result);
+      result.result_code = 0;
+      result.result_message = 'Success Response Mint Events';
+      result.data = this._events;
     }
+
+    res.send(result);
   }
 }
 

@@ -30,21 +30,20 @@ class TokenDC {
 
   public async respondTokenTotalBalance(req: Request, res: Response) {
     const _tokenBalence = (await ContractDC.getTokenContractInstance().totalSupply()).toNumber();
+
+    const result: SendResult<number> = {
+      result_code: 1,
+      result_message: 'Fail Respond Token Total Balance',
+      data: null,
+    };
+
     if (res.status(200)) {
-      const result: SendResult<number> = {
-        result_code: 0,
-        result_message: 'Success Respond Token Total Balance',
-        data: _tokenBalence,
-      };
-      res.send(result);
-    } else {
-      const result: SendResult<number> = {
-        result_code: 1,
-        result_message: 'Fail Respond Token Total Balance',
-        data: null,
-      };
-      res.send(result);
+      result.result_code = 0;
+      result.result_message = 'Success Respond Token Total Balance';
+      result.data = _tokenBalence;
     }
+
+    res.send(result);
   }
 
   /*
@@ -60,21 +59,19 @@ class TokenDC {
   }
 
   public async respondTokenHolders(req: Request, res: Response) {
+    const result: SendResult<object> = {
+      result_code: 1,
+      result_message: 'Fail Respond Token Total Balance',
+      data: null,
+    };
+
     if (res.status(200)) {
-      const result: SendResult<object> = {
-        result_code: 0,
-        result_message: 'Success Respond Token Total Balance',
-        data: this._tokenHolders,
-      };
-      res.send(result);
-    } else {
-      const result: SendResult<object> = {
-        result_code: 1,
-        result_message: 'Fail Respond Token Total Balance',
-        data: null,
-      };
-      res.send(result);
+      result.result_code = 0;
+      result.result_message = 'Success Respond Token Total Balance';
+      result.data = this._tokenHolders;
     }
+
+    res.send(result);
   }
 
   public async respondTop10TokenHolders(req: Request, res: Response) {
@@ -93,21 +90,19 @@ class TokenDC {
 
     top10TokenHolders['etc'] = sortedTokenHolders.length > 10 ? (await this.getTokenBalance()) - top10Sum : 0;
 
+    const result: SendResult<object> = {
+      result_code: 1,
+      result_message: 'Fail Respond Token Total Balance',
+      data: null,
+    };
+
     if (res.status(200)) {
-      const result: SendResult<object> = {
-        result_code: 0,
-        result_message: 'Success Respond Token Total Balance',
-        data: top10TokenHolders,
-      };
-      res.send(result);
-    } else {
-      const result: SendResult<object> = {
-        result_code: 1,
-        result_message: 'Fail Respond Token Total Balance',
-        data: null,
-      };
-      res.send(result);
+      result.result_code = 0;
+      result.result_message = 'Success Respond Token Total Balance';
+      result.data = top10TokenHolders;
     }
+
+    res.send(result);
   }
 }
 
