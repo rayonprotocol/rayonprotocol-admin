@@ -9,8 +9,8 @@ import TransferEventDC from 'event/dc/TransferEventDC';
 import getWeb3 from '../util/getWeb3';
 
 class ContractDC {
-  public web3: Web3;
-  public account: string;
+  private web3: Web3;
+  private account: string;
   private tokenContractInstance;
 
   private instanceReadyListner: () => void;
