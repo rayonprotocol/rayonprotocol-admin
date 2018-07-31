@@ -9,7 +9,8 @@ import { RayonEvent, RayonEventResponce, TransferArgs, MintArgs } from '../../..
 
 class TokenDC extends RayonDC {
   constructor() {
-    super(TokenServerAgent);
+    super();
+    this.setContractServerAgent();
   }
 
   public setContractServerAgent() {

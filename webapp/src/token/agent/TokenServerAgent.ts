@@ -29,15 +29,15 @@ class TokenServerAgent extends ContractAgent {
     // Rayon Token의 인스턴스 가져옴
     const instance = await contract.deployed();
     this._contractInstance = instance;
-    this.onDataReady();
+    this.startEventWatch();
   }
 
-  public eventWatch() {
+  public startEventWatch() {
     const mintEvent = this._contractInstance.Mint({}, { fromBlock: 'latest', toBlock: 'latest' });
     const transferEvent = this._contractInstance.Transfer({}, { fromBlock: 'latest', toBlock: 'latest' });
 
-    mintEvent.watch(this.eventHandler.bind(this, RayonEvent.Mint)); // mint 이벤트 watch 등록
-    transferEvent.watch(this.eventHandler.bind(this, RayonEvent.Transfer)); // mint 이벤트 watch 등록
+    mintEvent.watch(this.onEventOccur.bind(this, RayonEvent.Mint)); // mint 이벤트 watch 등록
+    transferEvent.watch(this.onEventOccur.bind(this, RayonEvent.Transfer)); // mint 이벤트 watch 등록
   }
 
   /*
@@ -48,7 +48,7 @@ class TokenServerAgent extends ContractAgent {
     this._eventListeners[eventType] = listner;
   }
 
-  private eventHandler(eventType: number, error, event) {
+  private onEventOccur(eventType: number, error, event) {
     if (error) console.error(error);
     if (this._eventListeners[eventType] !== undefined) this._eventListeners[eventType](event);
   }
