@@ -1,5 +1,5 @@
 // agent
-import ServerAgent from 'common/agent/ServerAgent';
+import RayonContractAgent from 'common/agent/RayonContractAgent';
 
 // model
 import {
@@ -16,9 +16,7 @@ import {
 } from '../../../../shared/token/model/Token';
 import ContractDeployServerAgent from 'common/agent/ContractDeployServerAgent';
 
-class TokenServerAgent extends ServerAgent {
-  _eventListeners = {};
-
+class TokenServerAgent extends RayonContractAgent {
   /*
   Watch blockchain event and set, notify to DataCcontroller.
   and Event handler
@@ -28,29 +26,19 @@ class TokenServerAgent extends ServerAgent {
     const mintEvent = ryaonTokenInstance.Mint({}, { fromBlock: 'latest', toBlock: 'latest' });
     const transferEvent = ryaonTokenInstance.Transfer({}, { fromBlock: 'latest', toBlock: 'latest' });
 
-    mintEvent.watch(this.mintEventHandler.bind(this)); // mint 이벤트 watch 등록
-    transferEvent.watch(this.transferEventHandler.bind(this)); // mint 이벤트 watch 등록
+    mintEvent.watch(this.eventHandler.bind(this, RayonEvent.Mint)); // mint 이벤트 watch 등록
+    transferEvent.watch(this.eventHandler.bind(this, RayonEvent.Transfer)); // mint 이벤트 watch 등록
   }
 
-  public addEventListner(eventType: number, listner: (event) => void) {
-    this._eventListeners[eventType] =
-      this._eventListeners[eventType] === undefined ? listner : console.error(eventType + ' event is already exist');
+  public setEventListner(eventType, listner: (event) => void) {
+    this._eventListeners[eventType] = listner;
   }
 
-  public removeServerAgentEventListener(eventType: number) {
-    delete this._eventListeners[eventType];
-  }
-
-  private mintEventHandler(error, event) {
+  private eventHandler(eventType: number, error, event) {
+    console.log(eventType, error, event);
     console.log('event', event);
     if (error) console.error(error);
-    if (this._eventListeners[RayonEvent.Mint] !== undefined) this._eventListeners[RayonEvent.Mint](event);
-  }
-
-  private transferEventHandler(error, event) {
-    console.log('event', event);
-    if (error) console.error(error);
-    if (this._eventListeners[RayonEvent.Transfer] !== undefined) this._eventListeners[RayonEvent.Transfer](event);
+    this._eventListeners[eventType] && this._eventListeners[eventType](event);
   }
 
   /*
@@ -73,31 +61,31 @@ class TokenServerAgent extends ServerAgent {
   Fetch Kind of rayon token event
   */
   async fetchMintEvents() {
-    return await ServerAgent.getRequest<MintEvent[]>(URLForGetMintEvents);
+    return await this.getRequest<MintEvent[]>(URLForGetMintEvents);
   }
 
   async fetchTransferEvents() {
-    return await ServerAgent.getRequest<TransferEvent[]>(URLForGetTransferEvents);
+    return await this.getRequest<TransferEvent[]>(URLForGetTransferEvents);
   }
 
   // 토큰의 총 발행량
   async fetchTokenTotalBalance() {
-    return await ServerAgent.getRequest<number>(URLForGetTokenTotalBalance);
+    return await this.getRequest<number>(URLForGetTokenTotalBalance);
   }
 
   // 토큰 보유자들의 리스트
   async fetchTokenHolders() {
-    return await ServerAgent.getRequest<object>(URLForGetTokenHolders);
+    return await this.getRequest<object>(URLForGetTokenHolders);
   }
 
   // 상위 10명의 토큰 보유자
   async fetchTop10TokenHolders() {
-    return await ServerAgent.getRequest<object>(URLForGetTop10TokenHolders);
+    return await this.getRequest<object>(URLForGetTop10TokenHolders);
   }
 
   // Admin page transaction chart에 사용될 데이터(Date 라벨, 트랜잭션 수)
   async fetchChartData() {
-    return await ServerAgent.getRequest<ChartData>(URLForGetTransactionChartData);
+    return await this.getRequest<ChartData>(URLForGetTransactionChartData);
   }
 }
 

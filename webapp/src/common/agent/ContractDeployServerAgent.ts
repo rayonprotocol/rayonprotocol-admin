@@ -10,11 +10,14 @@ import TokenDC from 'token/dc/TokenDC';
 // util
 import getWeb3 from '../util/getWeb3';
 
+
+
 // 배포된 컨트랙트 인스턴스를 관리함
 class ContractDeployServerAgent {
-  public web3: Web3;
-  public account: string;
-  public tokenContractInstance;
+  private web3: Web3;
+  // TODO: user account
+  private account: string;
+  private tokenContractInstance;
 
   /*
   배포된 계약의 인스턴스가 세팅되었는지 확인 하기 위한 리스너 등록, 실행
@@ -38,6 +41,7 @@ class ContractDeployServerAgent {
   App 시작 시 계약 배포, 초기화 코드
   배포된 계약의 인스턴스와 web3, account를 받아 저장함
   */
+ // TODO: start
   public contractInit() {
     this.web3 = getWeb3();
     this.web3.eth.getAccounts((err, accounts) => {
@@ -46,6 +50,7 @@ class ContractDeployServerAgent {
     this.getDeployedContract(); // 등록된 토큰 인스턴스 가져옴
   }
 
+  // TODO: 체인 위에 contract가 없을떄 예외 처리
   private async getDeployedContract() {
     const contract = TruffleContract(require('../../../build/contracts/RayonToken.json')); // ABI가져온 후 TruffleContract 객체 생성
     contract.setProvider(this.web3.currentProvider);

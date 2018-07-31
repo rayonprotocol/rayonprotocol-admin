@@ -2,7 +2,7 @@
 import TokenServerAgent from 'token/agent/TokenServerAgent';
 
 // model
-import { RayonEvent } from '../../../../shared/event/model/RayonEvent';
+import { RayonEvent, RayonEventResponce, TransferEvent, MintEvent } from '../../../../shared/event/model/RayonEvent';
 
 // dc
 import ContractDeployServerAgent from 'common/agent/ContractDeployServerAgent';
@@ -26,17 +26,17 @@ class TokenDC {
   }
 
   public registTokenListenerToAgent() {
-    TokenServerAgent.addEventListner(RayonEvent.Mint, this.mintEventHandler.bind(this));
-    TokenServerAgent.addEventListner(RayonEvent.Transfer, this.transferEventHandler.bind(this));
+    TokenServerAgent.setEventListner(RayonEvent.Mint, this.mintEventHandler.bind(this));
+    TokenServerAgent.setEventListner(RayonEvent.Transfer, this.transferEventHandler.bind(this));
   }
 
-  private async mintEventHandler(event) {
+  private async mintEventHandler(event: RayonEventResponce<MintEvent>) {
     if (this._eventListeners[RayonEvent.Mint] === undefined) return;
     this._event[RayonEvent.Mint] = await TokenServerAgent.fetchMintEvents();
     this._eventListeners[RayonEvent.Mint].forEach(listner => listner(this._event[RayonEvent.Mint]));
   }
 
-  private async transferEventHandler(event) {
+  private async transferEventHandler(event: RayonEventResponce<TransferEvent>) {
     const userAccount = ContractDeployServerAgent.getUserAccount();
 
     if (this._eventListeners[RayonEvent.Transfer] === undefined) return;

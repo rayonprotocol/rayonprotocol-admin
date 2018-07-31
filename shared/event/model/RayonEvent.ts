@@ -8,7 +8,7 @@ export const URLForGetTransactionChartData = `${parentUrl}/GetTransactionChartDa
 export const EventTransfer = 'Transfer';
 export const EventMint = 'Mint';
 
-interface RayonEventResponce<T> {
+export interface RayonEventResponce<T> {
   logIndex: number;
   transactionIndex: number;
   transactionHash: string;
