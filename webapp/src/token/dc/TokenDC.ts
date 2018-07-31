@@ -1,9 +1,11 @@
+// agent
+import TokenServerAgent from 'token/agent/TokenServerAgent';
+
 // model
 import { RayonEvent } from '../../../../shared/event/model/RayonEvent';
 
 // dc
 import ContractDC from 'common/dc/ContractDC';
-import TokenServerAgent from 'token/agent/TokenServerAgent';
 
 type Listner = (event) => void;
 
@@ -16,7 +18,7 @@ class TokenDC {
   _eventListeners: EventListener = {};
 
   /*
-  for event add, remove, etc.
+  Event listner and server event handler for watch blockchain event
   */
   public addEventListener(eventType: number, listner: (event) => void) {
     this._eventListeners[eventType] === undefined ? [listner] : this._eventListeners[eventType].push(listner);
@@ -27,37 +29,33 @@ class TokenDC {
     this._eventListeners[eventType].splice(targetIndex, 1);
   }
 
-  public async fetchEvents(eventType: number, eventListeners: Listner[]) {
-    if (this._event[eventType] === undefined) {
-      this._event[eventType] = await this._getRequestByEventType(eventType);
-    }
-    if (this._event[eventType] !== undefined) {
-      this._eventListeners[eventType].map(callback => callback(this._event[eventType]));
-    }
+  public registTokenListenerToAgent() {
+    TokenServerAgent.addEventListner(RayonEvent.Mint, this.mintEventHandler.bind(this));
+    TokenServerAgent.addEventListner(RayonEvent.Transfer, this.transferEventHandler.bind(this));
   }
 
-  private async _getRequestByEventType(eventType: number) {
-    switch (eventType) {
-      case RayonEvent.Mint:
-        return await TokenServerAgent.fetchMintEvents();
-      case RayonEvent.Transfer:
-        return await TokenServerAgent.fetchTransferEvents();
-      default:
-        break;
-    }
+  private async mintEventHandler(event) {
+    if (this._eventListeners[RayonEvent.Mint] === undefined) return;
+    this._event[RayonEvent.Mint] = await TokenServerAgent.fetchMintEvents();
+    this._eventListeners[RayonEvent.Mint].forEach(listner => listner(this._event[RayonEvent.Mint]));
+  }
+
+  private async transferEventHandler(event) {
+    if (this._eventListeners[RayonEvent.Transfer] === undefined) return;
+    if (event.args.from !== ContractDC.getAccount() && event.args.to !== ContractDC.getAccount()) return; // 자신의 트랜잭션일떄만 새로고침
+    this._event[RayonEvent.Transfer] = await TokenServerAgent.fetchMintEvents();
+    this._eventListeners[RayonEvent.Transfer].forEach(listner => listner(this._event[RayonEvent.Transfer]));
   }
 
   /*
   Token basic function
   */
   public mint(toAddress: string, value: number) {
-    const instance = ContractDC.getTokenContractInstance();
-    instance.mint(toAddress, value, { from: ContractDC.getAccount() });
+    TokenServerAgent.mint(toAddress, value);
   }
 
   public transfer(toAddress: string, value: number) {
-    const instance = ContractDC.getTokenContractInstance();
-    instance.transfer(toAddress, value, { from: ContractDC.getAccount() });
+    TokenServerAgent.transfer(toAddress, value);
   }
 
   public async fetchTokenTotalBalance() {

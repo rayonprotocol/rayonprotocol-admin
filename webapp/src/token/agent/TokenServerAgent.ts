@@ -42,7 +42,7 @@ class TokenServerAgent extends ServerAgent {
     this._eventListeners[eventType] === undefined ? listner : console.error(eventType + ' event is already exist');
   }
 
-  public removeEventListener(eventType: number) {
+  public removeServerAgentEventListener(eventType: number) {
     delete this._eventListeners[eventType];
   }
 
@@ -54,6 +54,21 @@ class TokenServerAgent extends ServerAgent {
   private transferEventHandler(error, event) {
     if (error) console.error(error);
     if (this._eventListeners[RayonEvent.Transfer] !== undefined) this._eventListeners[RayonEvent.Transfer](event);
+  }
+
+  /*
+  Communicate to blockchain
+  Excute token basic function
+  */
+
+  public mint(toAddress: string, value: number) {
+    const instance = ContractDeployServerAgent.getContractInstance();
+    instance.mint(toAddress, value, { from: ContractDeployServerAgent.getUserAccount() });
+  }
+
+  public transfer(toAddress: string, value: number) {
+    const instance = ContractDeployServerAgent.getContractInstance();
+    instance.transfer(toAddress, value, { from: ContractDeployServerAgent.getUserAccount() });
   }
 
   /*

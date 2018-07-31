@@ -1,8 +1,14 @@
 import Web3 from 'web3';
 import TruffleContract from 'truffle-contract';
 
+// agent
+import TokenServerAgent from 'token/agent/TokenServerAgent';
+
+// dc
+
 // util
 import getWeb3 from '../util/getWeb3';
+import TokenDC from 'token/dc/TokenDC';
 
 // 배포된 컨트랙트 인스턴스를 관리함
 class ContractDeployServerAgent {
@@ -47,12 +53,17 @@ class ContractDeployServerAgent {
     const instance = await contract.deployed(); // Rayon Token의 인스턴스 가져옴
     this.tokenContractInstance = instance;
 
+    this.watchEvent(); // agent에서 블록체인 이벤트를 watch
+    this.registTokenListenerToAgent(); // data controller에서 agent에 이벤트 리스너 등록
     this.checkContractInstanceReady(); // 계약 인스턴스가 준비되었는지 확인
-    this.attachEvent(); // 이벤트 watch 등록
   }
 
-  private attachEvent() {
-    this.tokenContractInstance.allEvents();
+  private watchEvent() {
+    TokenServerAgent.watchEvent();
+  }
+
+  private registTokenListenerToAgent() {
+    TokenDC.registTokenListenerToAgent();
   }
 
   /*
