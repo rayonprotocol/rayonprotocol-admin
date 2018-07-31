@@ -3,19 +3,21 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDom from 'react-dom';
 import { Router } from 'react-router-dom';
+
 import { AppContainer } from 'react-hot-loader';
 
 import history from 'common/util/Histroy';
 
-import App from './App';
+// view
+import RayonRoutes from 'main/controller/RayonRoutes';
 
 // style
-import './common/assets/style.scss';
+import 'common/assets/style.scss';
 
 ReactDom.render(
   <AppContainer>
     <Router history={history}>
-      <App />
+      <RayonRoutes />
     </Router>
   </AppContainer>,
   document.getElementById('root')

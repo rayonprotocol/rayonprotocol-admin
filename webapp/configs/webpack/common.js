@@ -15,13 +15,10 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
-      assets: path.join(__dirname, '../../src/assets'),
       common: path.join(__dirname, '../../src/common'),
-      home: path.join(__dirname, '../../src/home'),
       dashboard: path.join(__dirname, '../../src/dashboard'),
-      transaction: path.join(__dirname, '../../src/transaction'),
       token: path.join(__dirname, '../../src/token'),
-      event: path.join(__dirname, '../../src/event'),
+      main: path.join(__dirname, '../../src/main'),
     },
   },
   context: resolve(__dirname, '../../src'),
@@ -113,7 +110,7 @@ module.exports = {
     }),
     new CheckerPlugin(),
     new HtmlWebpackPlugin({
-      template: 'index.html',
+      template: './main/vc/index.html',
     }),
   ],
   performance: {
