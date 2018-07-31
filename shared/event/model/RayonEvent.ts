@@ -20,11 +20,9 @@ export interface RayonEventResponce<T> {
   args: T;
 }
 
-export interface BlockTime {
-  timestamp: number;
-  year: number;
-  month: number;
-  date: number;
+export enum RayonEvent {
+  Mint = 1,
+  Transfer,
 }
 
 export interface MintArgs {
@@ -52,14 +50,16 @@ export interface TransferEvent {
   amount: number;
 }
 
+export interface BlockTime {
+  timestamp: number;
+  year: number;
+  month: number;
+  date: number;
+}
+
 export interface ChartData {
   labels: string[];
   chartData: number[];
-}
-
-export enum RayonEvent {
-  Mint = 1,
-  Transfer,
 }
 
 export default RayonEventResponce;

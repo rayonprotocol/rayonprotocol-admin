@@ -1,5 +1,7 @@
+import TruffleContract from 'truffle-contract';
+
 // agent
-import RayonContractAgent from 'common/agent/RayonContractAgent';
+import ContractAgent from 'common/agent/ContractAgent';
 
 // model
 import {
@@ -15,12 +17,11 @@ import {
   RayonEvent,
 } from '../../../../shared/token/model/Token';
 
-class TokenServerAgent extends RayonContractAgent {
+class TokenServerAgent extends ContractAgent {
   /*
-  Watch blockchain event and set, notify to DataCcontroller.
-  and Event handler
+  Must Implement abstract funcion
   */
-  start(ryaonTokenInstance) {
+  protected eventWatch(ryaonTokenInstance) {
     const mintEvent = ryaonTokenInstance.Mint({}, { fromBlock: 'latest', toBlock: 'latest' });
     const transferEvent = ryaonTokenInstance.Transfer({}, { fromBlock: 'latest', toBlock: 'latest' });
 
@@ -28,6 +29,20 @@ class TokenServerAgent extends RayonContractAgent {
     transferEvent.watch(this.eventHandler.bind(this, RayonEvent.Transfer)); // mint 이벤트 watch 등록
   }
 
+  protected async setContractInstance() {
+    // ABI가져온 후 TruffleContract 객체 생성
+    const contract = TruffleContract(require('../../../build/contracts/RayonToken.json'));
+    contract.setProvider(this.getWeb3().currentProvider);
+
+    // Rayon Token의 인스턴스 가져옴
+    const instance = await contract.deployed();
+    this._contractInstance = instance;
+  }
+
+  /*
+  Watch blockchain event and set, notify to DataCcontroller.
+  and Event handler
+  */
   public setEventListner(eventType, listner: (event) => void) {
     this._eventListeners[eventType] = listner;
   }
@@ -42,12 +57,12 @@ class TokenServerAgent extends RayonContractAgent {
   Excute token basic function
   */
 
-  public mint(tokenInstance, toAddress: string, value: number, userAccount: string) {
-    tokenInstance.mint(toAddress, value, { from: userAccount });
+  public mint(toAddress: string, value: number) {
+    this._contractInstance.mint(toAddress, value, { from: this.getUserAccount() });
   }
 
-  public transfer(tokenInstance, toAddress: string, value: number, userAccount: string) {
-    tokenInstance.transfer(toAddress, value, { from: userAccount });
+  public transfer(toAddress: string, value: number) {
+    this._contractInstance.transfer(toAddress, value, { from: this.getUserAccount() });
   }
 
   /*
