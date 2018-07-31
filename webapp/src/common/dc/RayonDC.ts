@@ -1,26 +1,40 @@
+import ContractAgent from 'common/agent/ContractAgent';
+
 interface EventListner {
   [eventType: number]: ((event) => void)[];
 }
 
 abstract class RayonDC {
-  public _event = {};
-  public _eventListeners: EventListner = {};
+  protected _event = {};
+  protected _eventListeners: EventListner = {};
+  protected _contractAgent: ContractAgent;
 
-  constructor() {
-    this.start();
+  protected _dataReadyListner: () => void;
+
+  constructor(serverAgent: ContractAgent) {
+    this._contractAgent = serverAgent;
   }
-
-  public async start() {
-    this.setContractServerAgent(); // set listener and start contract server agent
-  }
-
-  public abstract setContractServerAgent();
 
   /*
   배포된 계약의 인스턴스가 세팅되었는지 확인 하기 위한 리스너 등록, 실행
   초기에 1회 실행됨
   */
-  public abstract setDataReadyListner(listener: () => void);
+  public setDataReadyListner(listener: () => void) {
+    this._dataReadyListner = listener;
+    this._contractAgent.setDataReadyListner(this.onInstanceReady.bind(this));
+  }
+
+  public fetchContractInstance() {
+    this._contractAgent.fetchContractInstance();
+  }
+
+  public onInstanceReady() {
+    this.setContractServerAgent();
+    this._contractAgent.eventWatch();
+    this._dataReadyListner();
+  }
+
+  public abstract setContractServerAgent();
 
   /*
   Event listner and server event handler for watch blockchain event

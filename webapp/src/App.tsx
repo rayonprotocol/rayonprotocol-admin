@@ -16,10 +16,11 @@ class App extends Component<{}, {}> {
   };
 
   componentWillMount() {
-    TokenDC.setDataReadyListner(this.instanceGetReady.bind(this));
+    TokenDC.setDataReadyListner(this.onDataReady.bind(this));
+    TokenDC.fetchContractInstance();
   }
 
-  instanceGetReady() {
+  onDataReady() {
     this.setState({ ...this.state, isInstanceReady: true });
   }
 

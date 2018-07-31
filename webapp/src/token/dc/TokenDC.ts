@@ -8,9 +8,8 @@ import RayonDC from 'common/dc/RayonDC';
 import { RayonEvent, RayonEventResponce, TransferArgs, MintArgs } from '../../../../shared/event/model/RayonEvent';
 
 class TokenDC extends RayonDC {
-  public async start() {
-    await TokenServerAgent.start();
-    super.start();
+  constructor() {
+    super(TokenServerAgent);
   }
 
   public setContractServerAgent() {
@@ -18,20 +17,18 @@ class TokenDC extends RayonDC {
     TokenServerAgent.setEventListner(RayonEvent.Transfer, this.transferEventHandler.bind(this));
   }
 
-  public setDataReadyListner(listener: () => void) {
-    TokenServerAgent.setDataReadyListner(listener);
-  }
-
   /*
   server event handler for watch blockchain event
   */
   private async mintEventHandler(event: RayonEventResponce<MintArgs>) {
+    console.log('mint event', event);
     if (this._eventListeners[RayonEvent.Mint] === undefined) return;
     this._event[RayonEvent.Mint] = await TokenServerAgent.fetchMintEvents();
     this._eventListeners[RayonEvent.Mint].forEach(listner => listner(this._event[RayonEvent.Mint]));
   }
 
   private async transferEventHandler(event: RayonEventResponce<TransferArgs>) {
+    console.log('transfer event', event);
     const userAccount = TokenServerAgent.getUserAccount();
 
     if (this._eventListeners[RayonEvent.Transfer] === undefined) return;

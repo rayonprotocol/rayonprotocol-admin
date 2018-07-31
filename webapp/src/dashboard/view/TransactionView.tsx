@@ -53,7 +53,6 @@ class TransactionView extends Component<{}, TransactionViewState> {
 
   render() {
     const { transferEvents, labels, chartData } = this.state;
-    console.log('transferEvents!!', transferEvents);
     return (
       <DashboardContainer className={styles.transactionView} title={'Transactions'}>
         <LinearChart data={chartData} labels={labels} height={300} />

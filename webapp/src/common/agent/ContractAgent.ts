@@ -12,8 +12,11 @@ let userAccount: string;
 
 abstract class RayonContractAgent {
   public static RESULTCODE_SUCCESS: number = 0;
+
   protected _eventListeners = {};
   protected _contractInstance;
+
+  private dataReadyListner: () => void;
 
   constructor() {
     web3 = getWeb3();
@@ -22,27 +25,19 @@ abstract class RayonContractAgent {
     });
   }
 
-  public async start() {
-    await this.setContractInstance(); // get contract instance with async
-    this.eventWatch(this._contractInstance);
-    this.checkDataReady(); // notiry data controller(instance) ready
-  }
+  public abstract eventWatch();
 
-  protected abstract eventWatch(ryaonTokenInstance);
-
-  protected abstract async setContractInstance();
+  public abstract async fetchContractInstance();
 
   /*
   배포된 계약의 인스턴스가 세팅되었는지 확인 하기 위한 리스너 등록, 실행
   초기에 1회 실행됨
   */
-  private dataReadyListner: () => void;
-
   public setDataReadyListner(listener: () => void) {
     this.dataReadyListner = listener;
   }
 
-  private checkDataReady() {
+  protected onDataReady() {
     if (this.dataReadyListner === undefined) {
       console.error('contract ready 리스너가 등록되지 않았습니다.');
       return;

@@ -21,15 +21,7 @@ class TokenServerAgent extends ContractAgent {
   /*
   Must Implement abstract funcion
   */
-  protected eventWatch(ryaonTokenInstance) {
-    const mintEvent = ryaonTokenInstance.Mint({}, { fromBlock: 'latest', toBlock: 'latest' });
-    const transferEvent = ryaonTokenInstance.Transfer({}, { fromBlock: 'latest', toBlock: 'latest' });
-
-    mintEvent.watch(this.eventHandler.bind(this, RayonEvent.Mint)); // mint 이벤트 watch 등록
-    transferEvent.watch(this.eventHandler.bind(this, RayonEvent.Transfer)); // mint 이벤트 watch 등록
-  }
-
-  protected async setContractInstance() {
+  public async fetchContractInstance() {
     // ABI가져온 후 TruffleContract 객체 생성
     const contract = TruffleContract(require('../../../build/contracts/RayonToken.json'));
     contract.setProvider(this.getWeb3().currentProvider);
@@ -37,6 +29,15 @@ class TokenServerAgent extends ContractAgent {
     // Rayon Token의 인스턴스 가져옴
     const instance = await contract.deployed();
     this._contractInstance = instance;
+    this.onDataReady();
+  }
+
+  public eventWatch() {
+    const mintEvent = this._contractInstance.Mint({}, { fromBlock: 'latest', toBlock: 'latest' });
+    const transferEvent = this._contractInstance.Transfer({}, { fromBlock: 'latest', toBlock: 'latest' });
+
+    mintEvent.watch(this.eventHandler.bind(this, RayonEvent.Mint)); // mint 이벤트 watch 등록
+    transferEvent.watch(this.eventHandler.bind(this, RayonEvent.Transfer)); // mint 이벤트 watch 등록
   }
 
   /*
@@ -49,7 +50,7 @@ class TokenServerAgent extends ContractAgent {
 
   private eventHandler(eventType: number, error, event) {
     if (error) console.error(error);
-    this._eventListeners[eventType] && this._eventListeners[eventType](event);
+    if (this._eventListeners[eventType] !== undefined) this._eventListeners[eventType](event);
   }
 
   /*
