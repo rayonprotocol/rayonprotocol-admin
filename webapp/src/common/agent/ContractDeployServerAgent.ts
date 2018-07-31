@@ -5,10 +5,10 @@ import TruffleContract from 'truffle-contract';
 import TokenServerAgent from 'token/agent/TokenServerAgent';
 
 // dc
+import TokenDC from 'token/dc/TokenDC';
 
 // util
 import getWeb3 from '../util/getWeb3';
-import TokenDC from 'token/dc/TokenDC';
 
 // 배포된 컨트랙트 인스턴스를 관리함
 class ContractDeployServerAgent {

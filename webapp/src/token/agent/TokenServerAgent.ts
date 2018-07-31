@@ -16,14 +16,8 @@ import {
 } from '../../../../shared/token/model/Token';
 import ContractDeployServerAgent from 'common/agent/ContractDeployServerAgent';
 
-type Listner = (event) => void;
-
-interface EventListener {
-  [eventName: number]: Listner;
-}
-
 class TokenServerAgent extends ServerAgent {
-  _eventListeners: EventListener = {};
+  _eventListeners = {};
 
   /*
   Watch blockchain event and set, notify to DataCcontroller.
@@ -32,14 +26,15 @@ class TokenServerAgent extends ServerAgent {
   watchEvent() {
     const ryaonTokenInstance = ContractDeployServerAgent.getContractInstance();
     const mintEvent = ryaonTokenInstance.Mint({}, { fromBlock: 'latest', toBlock: 'latest' });
-    const transferEvent = ryaonTokenInstance.TransferEvent({}, { fromBlock: 'latest', toBlock: 'latest' });
+    const transferEvent = ryaonTokenInstance.Transfer({}, { fromBlock: 'latest', toBlock: 'latest' });
 
     mintEvent.watch(this.mintEventHandler.bind(this)); // mint 이벤트 watch 등록
     transferEvent.watch(this.transferEventHandler.bind(this)); // mint 이벤트 watch 등록
   }
 
   public addEventListner(eventType: number, listner: (event) => void) {
-    this._eventListeners[eventType] === undefined ? listner : console.error(eventType + ' event is already exist');
+    this._eventListeners[eventType] =
+      this._eventListeners[eventType] === undefined ? listner : console.error(eventType + ' event is already exist');
   }
 
   public removeServerAgentEventListener(eventType: number) {
@@ -47,11 +42,13 @@ class TokenServerAgent extends ServerAgent {
   }
 
   private mintEventHandler(error, event) {
+    console.log('event', event);
     if (error) console.error(error);
     if (this._eventListeners[RayonEvent.Mint] !== undefined) this._eventListeners[RayonEvent.Mint](event);
   }
 
   private transferEventHandler(error, event) {
+    console.log('event', event);
     if (error) console.error(error);
     if (this._eventListeners[RayonEvent.Transfer] !== undefined) this._eventListeners[RayonEvent.Transfer](event);
   }

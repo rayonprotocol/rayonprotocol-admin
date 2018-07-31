@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 
 // model
 import { Mint } from 'token/model/Token';
+import { RayonEvent } from '../../../../shared/event/model/RayonEvent';
 
 // dc
 import TokenDC from 'token/dc/TokenDC';
-import MintEventDC from 'event/dc/MintEventDC';
 
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
@@ -35,15 +35,15 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
       mintEventList: [],
       totalBalance: 0,
     };
-    this.onMintEvent = this.onMintEvent.bind(this)
+    this.onMintEvent = this.onMintEvent.bind(this);
   }
 
   async componentWillMount() {
-    MintEventDC.addMintEventListener(this.onMintEvent);
+    TokenDC.addEventListener(RayonEvent.Mint, this.onMintEvent.bind(this));
   }
 
   componentWillUnmount() {
-    MintEventDC.removeMintEventListener(this.onMintEvent);
+    TokenDC.removeEventListener(RayonEvent.Mint, this.onMintEvent);
   }
 
   async onMintEvent(event: MintEvent[]) {
@@ -53,8 +53,7 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
 
   onClickDetailButton() {
     console.log('click');
-    MintEventDC.fetchMintEvents();
-  } 
+  }
 
   render() {
     const { mintEventList, totalBalance } = this.state;

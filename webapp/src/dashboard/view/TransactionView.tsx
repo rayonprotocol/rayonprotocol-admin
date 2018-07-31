@@ -3,10 +3,10 @@ import classNames from 'classnames';
 import moment from 'moment';
 
 // dc
-import TransferEventDC from 'event/dc/TransferEventDC';
+import TokenDC from 'token/dc/TokenDC';
 
 // model
-import { TransferEvent } from '../../../../shared/event/model/RayonEvent';
+import { TransferEvent, RayonEvent } from '../../../../shared/event/model/RayonEvent';
 
 // view
 import LinearChart from 'common/view/chart/LinearChart';
@@ -34,16 +34,16 @@ class TransactionView extends Component<{}, TransactionViewState> {
   }
 
   componentWillMount() {
-    TransferEventDC.subscribeEvent(TransactionView.name, this.getTransferEvent.bind(this));
+    TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
   }
 
   componentWillUnmount() {
-    TransferEventDC.unsubscribeEvent(TransactionView.name);
+    TokenDC.removeEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
   }
 
   async getTransferEvent(event: TransferEvent[]) {
     const transferEvents = event.length >= 5 ? event.slice(-5).reverse() : event;
-    const { labels, chartData } = await TransferEventDC.fetchChartData();
+    const { labels, chartData } = await TokenDC.fetchChartData();
     this.setState({ ...this.state, transferEvents, labels, chartData });
   }
 

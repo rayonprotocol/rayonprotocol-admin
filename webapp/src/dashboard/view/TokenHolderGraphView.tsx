@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 
 // model
-import { TransferEvent } from '../../../../shared/event/model/RayonEvent';
+import { TransferEvent, RayonEvent } from '../../../../shared/event/model/RayonEvent';
 
 // dc
 import TokenDC from 'token/dc/TokenDC';
-import TransferEventDC from 'event/dc/TransferEventDC';
 
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
@@ -43,11 +42,11 @@ class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
   }
 
   componentWillMount() {
-    TransferEventDC.subscribeEvent(TokenHolderGraphView.name, this.getTransferEvent.bind(this));
+    TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
   }
 
   componentWillUnmount() {
-    TransferEventDC.unsubscribeEvent(TokenHolderGraphView.name);
+    TokenDC.removeEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
   }
 
   async getTransferEvent(event: TransferEvent[]) {

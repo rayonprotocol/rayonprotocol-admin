@@ -5,23 +5,19 @@ import TokenServerAgent from 'token/agent/TokenServerAgent';
 import { RayonEvent } from '../../../../shared/event/model/RayonEvent';
 
 // dc
-import ContractDC from 'common/dc/ContractDC';
-
-type Listner = (event) => void;
-
-interface EventListener {
-  [eventName: number]: Listner[];
-}
+import ContractDeployServerAgent from 'common/agent/ContractDeployServerAgent';
 
 class TokenDC {
   _event = {};
-  _eventListeners: EventListener = {};
+  _eventListeners = {};
 
   /*
   Event listner and server event handler for watch blockchain event
   */
   public addEventListener(eventType: number, listner: (event) => void) {
-    this._eventListeners[eventType] === undefined ? [listner] : this._eventListeners[eventType].push(listner);
+    this._eventListeners[eventType] === undefined
+      ? (this._eventListeners[eventType] = [listner])
+      : this._eventListeners[eventType].push(listner);
   }
 
   public removeEventListener(eventType: number, listner: (event) => void) {
@@ -41,9 +37,12 @@ class TokenDC {
   }
 
   private async transferEventHandler(event) {
+    const userAccount = ContractDeployServerAgent.getUserAccount();
+
     if (this._eventListeners[RayonEvent.Transfer] === undefined) return;
-    if (event.args.from !== ContractDC.getAccount() && event.args.to !== ContractDC.getAccount()) return; // 자신의 트랜잭션일떄만 새로고침
-    this._event[RayonEvent.Transfer] = await TokenServerAgent.fetchMintEvents();
+    if (event.args.from !== userAccount && event.args.to !== userAccount) return; // 자신의 트랜잭션일떄만 새로고침
+
+    this._event[RayonEvent.Transfer] = await TokenServerAgent.fetchTransferEvents();
     this._eventListeners[RayonEvent.Transfer].forEach(listner => listner(this._event[RayonEvent.Transfer]));
   }
 

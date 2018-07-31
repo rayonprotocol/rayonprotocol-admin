@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
-// dc
-import ContractDC from 'common/dc/ContractDC';
+// agent
+import ContractDeployServerAgent from 'common/agent/ContractDeployServerAgent';
 
 // view
 import Router from './Router';
@@ -17,8 +17,8 @@ class App extends Component<{}, {}> {
 
   componentWillMount() {
     // add contract instance listner for instance loading
-    ContractDC.setInstanceReadyListner(this.instanceGetReady.bind(this));
-    ContractDC.contractInit();
+    ContractDeployServerAgent.setInstanceReadyListner(this.instanceGetReady.bind(this));
+    ContractDeployServerAgent.contractInit();
   }
 
   instanceGetReady() {
