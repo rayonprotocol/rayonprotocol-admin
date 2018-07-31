@@ -17,12 +17,12 @@ import {
 import ContractDeployServerAgent from 'common/agent/ContractDeployServerAgent';
 
 class TokenServerAgent extends RayonContractAgent {
+
   /*
   Watch blockchain event and set, notify to DataCcontroller.
   and Event handler
   */
-  watchEvent() {
-    const ryaonTokenInstance = ContractDeployServerAgent.getContractInstance();
+  start(ryaonTokenInstance) {
     const mintEvent = ryaonTokenInstance.Mint({}, { fromBlock: 'latest', toBlock: 'latest' });
     const transferEvent = ryaonTokenInstance.Transfer({}, { fromBlock: 'latest', toBlock: 'latest' });
 
@@ -35,8 +35,6 @@ class TokenServerAgent extends RayonContractAgent {
   }
 
   private eventHandler(eventType: number, error, event) {
-    console.log(eventType, error, event);
-    console.log('event', event);
     if (error) console.error(error);
     this._eventListeners[eventType] && this._eventListeners[eventType](event);
   }

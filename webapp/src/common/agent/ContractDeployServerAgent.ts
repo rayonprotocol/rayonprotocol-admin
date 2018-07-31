@@ -15,7 +15,6 @@ import getWeb3 from '../util/getWeb3';
 // 배포된 컨트랙트 인스턴스를 관리함
 class ContractDeployServerAgent {
   private web3: Web3;
-  // TODO: user account
   private account: string;
   private tokenContractInstance;
 
@@ -59,16 +58,11 @@ class ContractDeployServerAgent {
     this.tokenContractInstance = instance;
 
     this.watchEvent(); // agent에서 블록체인 이벤트를 watch
-    this.registTokenListenerToAgent(); // data controller에서 agent에 이벤트 리스너 등록
     this.checkContractInstanceReady(); // 계약 인스턴스가 준비되었는지 확인
   }
 
   private watchEvent() {
     TokenServerAgent.watchEvent();
-  }
-
-  private registTokenListenerToAgent() {
-    TokenDC.registTokenListenerToAgent();
   }
 
   /*

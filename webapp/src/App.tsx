@@ -3,6 +3,9 @@ import React, { Component, Fragment } from 'react';
 // agent
 import ContractDeployServerAgent from 'common/agent/ContractDeployServerAgent';
 
+// dc
+import TokenDC from 'token/dc/TokenDC';
+
 // view
 import Router from './Router';
 
@@ -16,9 +19,7 @@ class App extends Component<{}, {}> {
   };
 
   componentWillMount() {
-    // add contract instance listner for instance loading
-    ContractDeployServerAgent.setInstanceReadyListner(this.instanceGetReady.bind(this));
-    ContractDeployServerAgent.contractInit();
+    TokenDC.setDataReadyListner(this.instanceGetReady.bind(this));
   }
 
   instanceGetReady() {
