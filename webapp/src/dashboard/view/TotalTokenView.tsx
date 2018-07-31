@@ -35,17 +35,18 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
       mintEventList: [],
       totalBalance: 0,
     };
+    this.onMintEvent = this.onMintEvent.bind(this)
   }
 
   async componentWillMount() {
-    MintEventDC.subscribeEvent(TotalTokenView.name, this.getMintEvent.bind(this));
+    MintEventDC.addMintEventListener(this.onMintEvent);
   }
 
   componentWillUnmount() {
-    MintEventDC.unsubscribeEvent(TotalTokenView.name);
+    MintEventDC.removeMintEventListener(this.onMintEvent);
   }
 
-  async getMintEvent(event: MintEvent[]) {
+  async onMintEvent(event: MintEvent[]) {
     const totalBalance = await TokenDC.fetchTokenTotalBalance();
     this.setState({ ...this.state, mintEventList: event, totalBalance });
   }
@@ -53,7 +54,7 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
   onClickDetailButton() {
     console.log('click');
     MintEventDC.fetchMintEvents();
-  }
+  } 
 
   render() {
     const { mintEventList, totalBalance } = this.state;

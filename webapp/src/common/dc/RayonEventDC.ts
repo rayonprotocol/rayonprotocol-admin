@@ -8,7 +8,6 @@ interface EventListener {
 }
 
 abstract class RayonEventDC<EventResultType, EventArgType> {
-  _fromBlock = 0;
   _eventListeners: EventListener = {};
   _events: EventResultType[] = [];
 

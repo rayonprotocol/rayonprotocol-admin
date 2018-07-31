@@ -19,8 +19,6 @@ class ServerAgent {
     // Return undfined in case of failure
     return <SendResult<T>>data;
   }
-
-  watchEvent(){}
 }
 
 export default ServerAgent;

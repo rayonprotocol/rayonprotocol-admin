@@ -8,6 +8,7 @@ import TransferEventDC from 'event/dc/TransferEventDC';
 // util
 import getWeb3 from '../util/getWeb3';
 
+// 배포된 컨트랙트 인스턴스를 관리함
 class ContractDC {
   private web3: Web3;
   private account: string;
@@ -37,7 +38,10 @@ class ContractDC {
 
   // 계약 인스턴스가 준비되었는지 확인
   private checkContractInstanceReady() {
-    if (this.instanceReadyListner === undefined) return console.error('contract ready 리스너가 등록되지 않았습니다.');
+    if (this.instanceReadyListner === undefined) {
+      console.error('contract ready 리스너가 등록되지 않았습니다.');
+      return;
+    }
     this.instanceReadyListner();
   }
 
