@@ -14,10 +14,8 @@ import {
   ChartData,
   RayonEvent,
 } from '../../../../shared/token/model/Token';
-import ContractDeployServerAgent from 'common/agent/ContractDeployServerAgent';
 
 class TokenServerAgent extends RayonContractAgent {
-
   /*
   Watch blockchain event and set, notify to DataCcontroller.
   and Event handler
@@ -44,14 +42,12 @@ class TokenServerAgent extends RayonContractAgent {
   Excute token basic function
   */
 
-  public mint(toAddress: string, value: number) {
-    const instance = ContractDeployServerAgent.getContractInstance();
-    instance.mint(toAddress, value, { from: ContractDeployServerAgent.getUserAccount() });
+  public mint(tokenInstance, toAddress: string, value: number, userAccount: string) {
+    tokenInstance.mint(toAddress, value, { from: userAccount });
   }
 
-  public transfer(toAddress: string, value: number) {
-    const instance = ContractDeployServerAgent.getContractInstance();
-    instance.transfer(toAddress, value, { from: ContractDeployServerAgent.getUserAccount() });
+  public transfer(tokenInstance, toAddress: string, value: number, userAccount: string) {
+    tokenInstance.transfer(toAddress, value, { from: userAccount });
   }
 
   /*

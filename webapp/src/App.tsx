@@ -1,8 +1,5 @@
 import React, { Component, Fragment } from 'react';
 
-// agent
-import ContractDeployServerAgent from 'common/agent/ContractDeployServerAgent';
-
 // dc
 import TokenDC from 'token/dc/TokenDC';
 

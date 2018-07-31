@@ -7,9 +7,6 @@ import TokenServerAgent from 'token/agent/TokenServerAgent';
 // model
 import { RayonEvent, RayonEventResponce, TransferEvent, MintEvent } from '../../../../shared/event/model/RayonEvent';
 
-// dc
-import ContractDeployServerAgent from 'common/agent/ContractDeployServerAgent';
-
 // util
 import getWeb3 from 'common/util/getWeb3';
 
@@ -91,11 +88,11 @@ class TokenDC {
   Token basic function
   */
   public mint(toAddress: string, value: number) {
-    TokenServerAgent.mint(toAddress, value);
+    TokenServerAgent.mint(this.tokenContractInstance, toAddress, value, this.userAccount);
   }
 
   public transfer(toAddress: string, value: number) {
-    TokenServerAgent.transfer(toAddress, value);
+    TokenServerAgent.transfer(this.tokenContractInstance, toAddress, value, this.userAccount);
   }
 
   public async fetchTokenTotalBalance() {
