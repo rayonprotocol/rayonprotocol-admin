@@ -5,7 +5,7 @@ import TokenServerAgent from 'token/agent/TokenServerAgent';
 import RayonDC from 'common/dc/RayonDC';
 
 // model
-import { RayonEvent, RayonEventResponce, TransferArgs, MintArgs } from '../../../../shared/event/model/RayonEvent';
+import { RayonEvent, RayonEventResponce, TransferArgs, MintArgs } from '../../../../shared/token/model/Token';
 
 class TokenDC extends RayonDC {
   public setAllEventListeners() {

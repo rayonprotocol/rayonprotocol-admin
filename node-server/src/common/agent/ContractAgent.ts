@@ -34,6 +34,10 @@ abstract class ContractAgent {
   public async getBlock(blockNumber: number) {
     return await web3.eth.getBlock(blockNumber);
   }
+
+  public getEventRange() {
+    return { fromBlock: ContractAgent.FROM_BLOCK, toBlock: 'latest' };
+  }
 }
 
 export default ContractAgent;

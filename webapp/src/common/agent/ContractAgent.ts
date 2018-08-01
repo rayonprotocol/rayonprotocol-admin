@@ -14,8 +14,9 @@ interface EventListner {
   [eventType: number]: ((event) => void)[];
 }
 
-abstract class RayonContractAgent {
+abstract class ContractAgent {
   public static RESULTCODE_SUCCESS: number = 0;
+  public static FROM_BLOCK = 'latest';
 
   protected _eventListeners = {};
   protected _contractInstance;
@@ -39,7 +40,7 @@ abstract class RayonContractAgent {
     // To server
     const { data } = await axios.get(`${URL_APIBASE}${url}`, { params: params });
     // Return undfined in case of failure
-    if (data === undefined || data['result_code'] !== RayonContractAgent.RESULTCODE_SUCCESS) return undefined;
+    if (data === undefined || data['result_code'] !== ContractAgent.RESULTCODE_SUCCESS) return undefined;
     else return data['data'];
   }
 
@@ -64,6 +65,10 @@ abstract class RayonContractAgent {
   public getContractInstance() {
     return this._contractInstance;
   }
+
+  public getEventRange() {
+    return { fromBlock: ContractAgent.FROM_BLOCK, toBlock: 'latest' };
+  }
 }
 
-export default RayonContractAgent;
+export default ContractAgent;

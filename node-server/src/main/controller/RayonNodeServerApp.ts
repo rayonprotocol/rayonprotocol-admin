@@ -1,7 +1,7 @@
 import * as cors from 'cors';
 
 // dc
-import TokenDC from './token/dc/TokenDC';
+import TokenDC from '../../token/dc/TokenDC';
 
 const express = require('express');
 const app = express();

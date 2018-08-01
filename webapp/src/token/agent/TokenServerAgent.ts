@@ -33,8 +33,9 @@ class TokenServerAgent extends ContractAgent {
   }
 
   public startEventWatch() {
-    const mintEvent = this._contractInstance.Mint({}, { fromBlock: 'latest', toBlock: 'latest' });
-    const transferEvent = this._contractInstance.Transfer({}, { fromBlock: 'latest', toBlock: 'latest' });
+    const eventRange = this.getEventRange();
+    const mintEvent = this._contractInstance.Mint({}, eventRange);
+    const transferEvent = this._contractInstance.Transfer({}, eventRange);
 
     mintEvent.watch(this.onEventOccur.bind(this, RayonEvent.Mint)); // mint 이벤트 watch 등록
     transferEvent.watch(this.onEventOccur.bind(this, RayonEvent.Transfer)); // mint 이벤트 watch 등록

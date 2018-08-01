@@ -1,3 +1,5 @@
+import { Response } from 'express';
+
 interface EventListner {
   [eventType: number]: ((event) => void)[];
 }

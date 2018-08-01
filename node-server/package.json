@@ -15,7 +15,7 @@
     "test": "npm run test-only",
     "test-only": "jest --coverage",
     "test:watch": "jest --watch",
-    "dev": "nodemon -x ts-node -w src src/App.ts"
+    "dev": "nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts"
   },
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "APLv2",

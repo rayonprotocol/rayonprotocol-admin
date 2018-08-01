@@ -14,7 +14,7 @@ import {
   RayonEvent,
 } from '../../../../shared/token/model/Token';
 
-class TokenAgent extends ContractAgent {
+class TokenBlockchainAgent extends ContractAgent {
   /*
     about token balance
   */
@@ -40,9 +40,9 @@ class TokenAgent extends ContractAgent {
   }
 
   protected startEventWatch() {
-    const range = { fromBlock: ContractAgent.FROM_BLOCK, toBlock: 'latest' };
-    const mintEvent = this._contractInstance.Mint({}, range);
-    const transferEvent = this._contractInstance.Transfer({}, range);
+    const eventRange = this.getEventRange();
+    const mintEvent = this._contractInstance.Mint({}, eventRange);
+    const transferEvent = this._contractInstance.Transfer({}, eventRange);
 
     mintEvent.watch(this.onEventOccur.bind(this, RayonEvent.Mint)); // mint 이벤트 watch 등록
     transferEvent.watch(this.onEventOccur.bind(this, RayonEvent.Transfer)); // mint 이벤트 watch 등록
@@ -63,4 +63,4 @@ class TokenAgent extends ContractAgent {
   }
 }
 
-export default new TokenAgent();
+export default new TokenBlockchainAgent();

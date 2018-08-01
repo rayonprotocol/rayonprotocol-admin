@@ -1,7 +1,7 @@
 import { Express, Request, Response } from 'express';
 
 // agent
-import TokenAgent from '../agent/TokenAgent';
+import TokenBlockchainAgent from '../agent/TokenBlockchainAgent';
 
 // dc
 import RayonDC from '../../common/dc/RayonDC';
@@ -34,8 +34,8 @@ class TokenDC extends RayonDC {
   private _chartDate: TransferChart = {};
 
   protected setAllEventListeners() {
-    TokenAgent.setEventListner(RayonEvent.Mint, this.mintEventListener.bind(this));
-    TokenAgent.setEventListner(RayonEvent.Transfer, this.transferEventListener.bind(this));
+    TokenBlockchainAgent.setEventListner(RayonEvent.Mint, this.mintEventListener.bind(this));
+    TokenBlockchainAgent.setEventListner(RayonEvent.Transfer, this.transferEventListener.bind(this));
   }
 
   public configure(app: Express) {
@@ -126,7 +126,7 @@ class TokenDC extends RayonDC {
   }
 
   async transferEventListener(event: RayonEventResponce<TransferArgs>) {
-    const block = await TokenAgent.getBlock(event.blockNumber);
+    const block = await TokenBlockchainAgent.getBlock(event.blockNumber);
     const newDate = new Date(block.timestamp * 1000);
     const newBlockTime: BlockTime = {
       timestamp: block.timestamp * 1000,
@@ -162,7 +162,7 @@ class TokenDC extends RayonDC {
     about token balance
   */
   public async respondTokenTotalBalance(req: Request, res: Response) {
-    const _tokenBalence = await TokenAgent.getTokenTotalBalance();
+    const _tokenBalence = await TokenBlockchainAgent.getTokenTotalBalance();
 
     const result: SendResult<number> = {
       result_code: 1,
@@ -222,7 +222,7 @@ class TokenDC extends RayonDC {
     });
 
     top10TokenHolders['Etc'] =
-      sortedTokenHolders.length > 10 ? (await TokenAgent.getTokenTotalBalance()) - top10Sum : 0;
+      sortedTokenHolders.length > 10 ? (await TokenBlockchainAgent.getTokenTotalBalance()) - top10Sum : 0;
 
     const result: SendResult<object> = {
       result_code: 1,
