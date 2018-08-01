@@ -1,5 +1,3 @@
-import TruffleContract from 'truffle-contract';
-
 // agent
 import ContractAgent from 'common/agent/ContractAgent';
 
@@ -18,40 +16,10 @@ import {
 } from '../../../../shared/token/model/Token';
 
 class TokenServerAgent extends ContractAgent {
-  /*
-  Must Implement abstract funcion
-  */
-  public async fetchContractInstance() {
-    // ABI가져온 후 TruffleContract 객체 생성
-    const contract = TruffleContract(require('../../../build/contracts/RayonToken.json'));
-    contract.setProvider(this.getWeb3().currentProvider);
-
-    // Rayon Token의 인스턴스 가져옴
-    const instance = await contract.deployed();
-    this._contractInstance = instance;
-    this.startEventWatch();
-  }
-
-  public startEventWatch() {
-    const eventRange = this.getEventRange();
-    const mintEvent = this._contractInstance.Mint({}, eventRange);
-    const transferEvent = this._contractInstance.Transfer({}, eventRange);
-
-    mintEvent.watch(this.onEventOccur.bind(this, RayonEvent.Mint)); // mint 이벤트 watch 등록
-    transferEvent.watch(this.onEventOccur.bind(this, RayonEvent.Transfer)); // mint 이벤트 watch 등록
-  }
-
-  /*
-  Watch blockchain event and set, notify to DataCcontroller.
-  and Event handler
-  */
-  public setEventListner(eventType, listner: (event) => void) {
-    this._eventListeners[eventType] = listner;
-  }
-
-  private onEventOccur(eventType: number, error, event) {
-    if (error) console.error(error);
-    if (this._eventListeners[eventType] !== undefined) this._eventListeners[eventType](event);
+  constructor() {
+    const contract = require('../../../build/contracts/RayonToken.json');
+    const watchEvents: Set<RayonEvent> = new Set([RayonEvent.Mint, RayonEvent.Transfer]);
+    super(contract, watchEvents);
   }
 
   /*
@@ -71,16 +39,16 @@ class TokenServerAgent extends ContractAgent {
   Communicate to node-server
   Fetch Kind of rayon token event
   */
-  async fetchMintEvents() {
+  async fetchMintEvents(): Promise<MintEvent[]> {
     return await this.getRequest<MintEvent[]>(URLForGetMintEvents);
   }
 
-  async fetchTransferEvents() {
+  async fetchTransferEvents(): Promise<TransferEvent[]> {
     return await this.getRequest<TransferEvent[]>(URLForGetTransferEvents);
   }
 
   // 토큰의 총 발행량
-  async fetchTokenTotalBalance() {
+  async fetchTokenTotalBalance(): Promise<number> {
     return await this.getRequest<number>(URLForGetTokenTotalBalance);
   }
 

@@ -5,33 +5,46 @@ import TokenServerAgent from 'token/agent/TokenServerAgent';
 import RayonDC from 'common/dc/RayonDC';
 
 // model
-import { RayonEvent, RayonEventResponce, TransferArgs, MintArgs } from '../../../../shared/token/model/Token';
+import { RayonEvent, RayonEventResponse, TransferArgs, MintArgs } from '../../../../shared/token/model/Token';
 
 class TokenDC extends RayonDC {
-  public setAllEventListeners() {
-    TokenServerAgent.setEventListner(RayonEvent.Mint, this.onMintEventOccur.bind(this));
-    TokenServerAgent.setEventListner(RayonEvent.Transfer, this.onTransferEventOccur.bind(this));
+  constructor() {
+    super();
+    TokenServerAgent.setEventListner(this.onEvent.bind(this));
+  }
+
+  private onEvent(eventType: RayonEvent, event: any) {
+    switch (eventType) {
+      case RayonEvent.Mint:
+        this.onMintEvent(event);
+        break;
+      case RayonEvent.Transfer:
+        this.onTransferEvent(event);
+        break;
+      default:
+        break;
+    }
   }
 
   /*
   server event handler for watch blockchain event
   */
-  private async onMintEventOccur(event: RayonEventResponce<MintArgs>) {
-    console.log('mint event', event);
+  private async onMintEvent(event: RayonEventResponse<MintArgs>) {
     if (this._eventListeners[RayonEvent.Mint] === undefined) return;
-    this._event[RayonEvent.Mint] = await TokenServerAgent.fetchMintEvents();
-    this._eventListeners[RayonEvent.Mint].forEach(listner => listner(this._event[RayonEvent.Mint]));
+    this._events[RayonEvent.Mint] = await TokenServerAgent.fetchMintEvents();
+    this._eventListeners[RayonEvent.Mint].forEach(listner => listner(this._events[RayonEvent.Mint]));
   }
 
-  private async onTransferEventOccur(event: RayonEventResponce<TransferArgs>) {
-    console.log('transfer event', event);
-    const userAccount = TokenServerAgent.getUserAccount();
+  private async onTransferEvent(event: RayonEventResponse<TransferArgs>) {
+    const userAccount: string = TokenServerAgent.getUserAccount();
 
-    if (this._eventListeners[RayonEvent.Transfer] === undefined) return;
-    if (event.args.from !== userAccount && event.args.to !== userAccount) return; // 자신의 트랜잭션일떄만 새로고침
+    // 자신의 트랜잭션인지 확인
+    if (event.args.from !== userAccount && event.args.to !== userAccount) return;
 
-    this._event[RayonEvent.Transfer] = await TokenServerAgent.fetchTransferEvents();
-    this._eventListeners[RayonEvent.Transfer].forEach(listner => listner(this._event[RayonEvent.Transfer]));
+    const fetchedEvents = await TokenServerAgent.fetchTransferEvents();
+    this._events[RayonEvent.Transfer] = fetchedEvents;
+    this._eventListeners[RayonEvent.Transfer] &&
+      this._eventListeners[RayonEvent.Transfer].forEach(listner => listner(this._events[RayonEvent.Transfer]));
   }
 
   /*

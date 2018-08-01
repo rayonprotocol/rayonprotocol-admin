@@ -19,7 +19,15 @@ export enum RayonEvent {
   Transfer,
 }
 
-export interface RayonEventResponce<T> {
+const rayonEventNames = ['NONE', 'Mint', 'Transfer'];
+
+export namespace RayonEvent {
+  export function getRayonEventName(eventType: number) {
+    return rayonEventNames[eventType];
+  }
+}
+
+export interface RayonEventResponse<T> {
   logIndex: number;
   transactionIndex: number;
   transactionHash: string;

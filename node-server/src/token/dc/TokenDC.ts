@@ -16,7 +16,7 @@ import {
   URLForGetTransferEvents,
   URLForGetTransactionChartData,
   RayonEvent,
-  RayonEventResponce,
+  RayonEventResponse,
   MintArgs,
   MintEvent,
   TransferArgs,
@@ -89,7 +89,7 @@ class TokenDC extends RayonDC {
     res.send(result);
   }
 
-  async mintEventListener(event: RayonEventResponce<MintArgs>) {
+  async mintEventListener(event: RayonEventResponse<MintArgs>) {
     const newEvent: MintEvent = {
       to: event.args.to,
       amount: event.args.amount.toNumber(),
@@ -125,7 +125,7 @@ class TokenDC extends RayonDC {
     res.send(result);
   }
 
-  async transferEventListener(event: RayonEventResponce<TransferArgs>) {
+  async transferEventListener(event: RayonEventResponse<TransferArgs>) {
     const block = await TokenBlockchainAgent.getBlock(event.blockNumber);
     const newDate = new Date(block.timestamp * 1000);
     const newBlockTime: BlockTime = {

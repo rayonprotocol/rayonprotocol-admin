@@ -6,7 +6,7 @@ import moment from 'moment';
 import TokenDC from 'token/dc/TokenDC';
 
 // model
-import { TransferEvent, RayonEvent } from '../../../../shared/event/model/RayonEvent';
+import { TransferEvent, RayonEvent } from '../../../../shared/token/model/Token';
 
 // view
 import LinearChart from 'common/view/chart/LinearChart';

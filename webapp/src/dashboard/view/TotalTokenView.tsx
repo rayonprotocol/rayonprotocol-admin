@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 // model
 import { Mint } from 'token/model/Token';
-import { RayonEvent } from '../../../../shared/event/model/RayonEvent';
+import { RayonEvent } from '../../../../shared/token/model/Token';
 
 // dc
 import TokenDC from 'token/dc/TokenDC';
@@ -16,7 +16,7 @@ import MakeFormatedNumber from 'common/util/MakeFormatedNumber';
 
 // styles
 import styles from './TotalTokenView.scss';
-import { MintEvent } from '../../../../shared/event/model/RayonEvent';
+import { MintEvent } from '../../../../shared/token/model/Token';
 
 interface TotalTokenViewProps {
   className?: string;

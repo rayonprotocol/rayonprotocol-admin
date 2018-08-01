@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // model
-import { TransferEvent, RayonEvent } from '../../../../shared/event/model/RayonEvent';
+import { TransferEvent, RayonEvent } from '../../../../shared/token/model/Token';
 
 // dc
 import TokenDC from 'token/dc/TokenDC';
