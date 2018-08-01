@@ -28,9 +28,9 @@ abstract class RayonContractAgent {
     this.fetchContractInstance();
   }
 
-  public abstract async fetchContractInstance();
+  protected abstract async fetchContractInstance();
 
-  public abstract startEventWatch();
+  protected abstract startEventWatch();
 
   /*
   Get, Post Request function to server

@@ -5,7 +5,7 @@ interface EventListner {
 abstract class RayonDC {
   protected _event = {};
   protected _eventListeners: EventListner = {};
-  
+
   constructor() {
     this.setAllEventListeners();
   }
