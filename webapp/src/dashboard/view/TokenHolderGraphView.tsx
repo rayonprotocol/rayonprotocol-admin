@@ -41,20 +41,20 @@ class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
     };
   }
 
-  componentWillMount() {
+  componentWillMount(): void {
     TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     TokenDC.removeEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
   }
 
-  async getTransferEvent(event: TransferEvent[]) {
+  async getTransferEvent(event: TransferEvent[]): Promise<void> {
     const holders = await TokenDC.fetchTop10TokenHolders();
     this.setState({ ...this.state, holders });
   }
 
-  onClickDetailButton() {
+  onClickDetailButton(): void {
     console.log('click');
   }
 

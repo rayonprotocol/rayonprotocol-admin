@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
 // model
-import { Mint } from 'token/model/Token';
-import { RayonEvent } from '../../../../shared/token/model/Token';
+import { RayonEvent, MintEvent } from '../../../../shared/token/model/Token';
 
 // dc
 import TokenDC from 'token/dc/TokenDC';
@@ -16,14 +15,13 @@ import MakeFormatedNumber from 'common/util/MakeFormatedNumber';
 
 // styles
 import styles from './TotalTokenView.scss';
-import { MintEvent } from '../../../../shared/token/model/Token';
 
 interface TotalTokenViewProps {
   className?: string;
 }
 
 interface TotalTokenViewState {
-  mintEventList: Mint[];
+  mintEventList: MintEvent[];
   totalBalance: number;
 }
 
@@ -38,26 +36,26 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
     this.onMintEvent = this.onMintEvent.bind(this);
   }
 
-  async componentWillMount() {
+  componentWillMount(): void {
     TokenDC.addEventListener(RayonEvent.Mint, this.onMintEvent.bind(this));
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     TokenDC.removeEventListener(RayonEvent.Mint, this.onMintEvent);
   }
 
-  async onMintEvent(event: MintEvent[]) {
+  async onMintEvent(event: MintEvent[]): Promise<void> {
     const totalBalance = await TokenDC.fetchTokenTotalBalance();
     this.setState({ ...this.state, mintEventList: event, totalBalance });
   }
 
-  onClickDetailButton() {
+  onClickDetailButton(): void {
     console.log('click');
   }
 
   render() {
     const { mintEventList, totalBalance } = this.state;
-    let latestMintEventList: Mint[] = mintEventList.length >= 2 ? mintEventList.slice(-2) : mintEventList;
+    let latestMintEventList: MintEvent[] = mintEventList.length >= 2 ? mintEventList.slice(-2) : mintEventList;
     return (
       <DashboardContainer className={styles.totalTokenView} title={'Total Token'}>
         <div className={styles.totalTokenSection}>

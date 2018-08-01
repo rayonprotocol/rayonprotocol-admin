@@ -5,7 +5,13 @@ import TokenServerAgent from 'token/agent/TokenServerAgent';
 import RayonDC from 'common/dc/RayonDC';
 
 // model
-import { RayonEvent, RayonEventResponse, TransferArgs, MintArgs } from '../../../../shared/token/model/Token';
+import {
+  RayonEvent,
+  RayonEventResponse,
+  TransferArgs,
+  MintArgs,
+  ChartData,
+} from '../../../../shared/token/model/Token';
 
 class TokenDC extends RayonDC {
   constructor() {
@@ -13,7 +19,7 @@ class TokenDC extends RayonDC {
     TokenServerAgent.setEventListner(this.onEvent.bind(this));
   }
 
-  private onEvent(eventType: RayonEvent, event: any) {
+  private onEvent(eventType: RayonEvent, event: any): void {
     switch (eventType) {
       case RayonEvent.Mint:
         this.onMintEvent(event);
@@ -29,13 +35,13 @@ class TokenDC extends RayonDC {
   /*
   server event handler for watch blockchain event
   */
-  private async onMintEvent(event: RayonEventResponse<MintArgs>) {
+  private async onMintEvent(event: RayonEventResponse<MintArgs>): Promise<void> {
     if (this._eventListeners[RayonEvent.Mint] === undefined) return;
     this._events[RayonEvent.Mint] = await TokenServerAgent.fetchMintEvents();
     this._eventListeners[RayonEvent.Mint].forEach(listner => listner(this._events[RayonEvent.Mint]));
   }
 
-  private async onTransferEvent(event: RayonEventResponse<TransferArgs>) {
+  private async onTransferEvent(event: RayonEventResponse<TransferArgs>): Promise<void> {
     const userAccount: string = TokenServerAgent.getUserAccount();
 
     // 자신의 트랜잭션인지 확인
@@ -50,24 +56,24 @@ class TokenDC extends RayonDC {
   /*
   Token basic function
   */
-  public mint(toAddress: string, value: number) {
+  public mint(toAddress: string, value: number): void {
     TokenServerAgent.mint(toAddress, value);
   }
 
-  public transfer(toAddress: string, value: number) {
+  public transfer(toAddress: string, value: number): void {
     TokenServerAgent.transfer(toAddress, value);
   }
 
-  public async fetchTokenTotalBalance() {
+  public async fetchTokenTotalBalance(): Promise<number> {
     return await TokenServerAgent.fetchTokenTotalBalance();
   }
-  public async fetchTokenHolders() {
+  public async fetchTokenHolders(): Promise<object> {
     return await TokenServerAgent.fetchTokenHolders();
   }
-  public async fetchTop10TokenHolders() {
+  public async fetchTop10TokenHolders(): Promise<object> {
     return await TokenServerAgent.fetchTop10TokenHolders();
   }
-  public async fetchChartData() {
+  public async fetchChartData(): Promise<ChartData> {
     return await TokenServerAgent.fetchChartData();
   }
 }

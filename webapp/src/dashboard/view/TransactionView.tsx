@@ -33,21 +33,21 @@ class TransactionView extends Component<{}, TransactionViewState> {
     };
   }
 
-  componentWillMount() {
+  componentWillMount(): void {
     TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     TokenDC.removeEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
   }
 
-  async getTransferEvent(event: TransferEvent[]) {
+  async getTransferEvent(event: TransferEvent[]): Promise<void> {
     const transferEvents = event.length >= 5 ? event.slice(-5).reverse() : event;
     const { labels, chartData } = await TokenDC.fetchChartData();
     this.setState({ ...this.state, transferEvents, labels, chartData });
   }
 
-  onClickDetailButton() {
+  onClickDetailButton(): void {
     console.log('click');
   }
 

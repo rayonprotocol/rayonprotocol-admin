@@ -27,11 +27,11 @@ class TokenServerAgent extends ContractAgent {
   Excute token basic function
   */
 
-  public mint(toAddress: string, value: number) {
+  public mint(toAddress: string, value: number): void {
     this._contractInstance.mint(toAddress, value, { from: this.getUserAccount() });
   }
 
-  public transfer(toAddress: string, value: number) {
+  public transfer(toAddress: string, value: number): void {
     this._contractInstance.transfer(toAddress, value, { from: this.getUserAccount() });
   }
 
@@ -53,17 +53,17 @@ class TokenServerAgent extends ContractAgent {
   }
 
   // 토큰 보유자들의 리스트
-  async fetchTokenHolders() {
+  async fetchTokenHolders(): Promise<object> {
     return await this.getRequest<object>(URLForGetTokenHolders);
   }
 
   // 상위 10명의 토큰 보유자
-  async fetchTop10TokenHolders() {
+  async fetchTop10TokenHolders(): Promise<object> {
     return await this.getRequest<object>(URLForGetTop10TokenHolders);
   }
 
   // Admin page transaction chart에 사용될 데이터(Date 라벨, 트랜잭션 수)
-  async fetchChartData() {
+  async fetchChartData(): Promise<ChartData> {
     return await this.getRequest<ChartData>(URLForGetTransactionChartData);
   }
 }

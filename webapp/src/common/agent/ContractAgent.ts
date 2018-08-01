@@ -12,9 +12,7 @@ import { RayonEvent } from '../../../../shared/token/model/Token';
 let web3: Web3;
 let userAccount: string;
 
-interface EventListner {
-  [eventType: number]: ((event) => void)[];
-}
+type EventListner = ((eventType: RayonEvent, event: any) => void);
 
 abstract class ContractAgent {
   public static RESULTCODE_SUCCESS: number = 0;
@@ -22,7 +20,7 @@ abstract class ContractAgent {
 
   private _contract: JSON;
   private _watchEvents: Set<RayonEvent>;
-  protected _eventListener;
+  protected _eventListener: EventListner;
   protected _contractInstance;
 
   constructor(contract: JSON, watchEvents: Set<RayonEvent>) {
@@ -34,7 +32,7 @@ abstract class ContractAgent {
     this._watchEvents = watchEvents;
     this.fetchContractInstance();
   }
-  // require('../../../build/contracts/RayonToken.json')
+
   /*
   Must Implement abstract funcion
   */
@@ -80,7 +78,7 @@ abstract class ContractAgent {
   Watch blockchain event and set, notify to DataCcontroller.
   and Event handler
   */
-  public setEventListner(listner: (event) => void) {
+  public setEventListner(listner: EventListner) {
     this._eventListener = listner;
   }
 

@@ -11,12 +11,12 @@ abstract class RayonDC {
     this._eventListeners = new Map();
   }
 
-  public addEventListener(eventType: number, listner: EventListner) {
+  public addEventListener(eventType: number, listner: EventListner): void {
     if (this._eventListeners[eventType] === undefined) this._eventListeners[eventType] = new Set();
     this._eventListeners[eventType].add(listner);
   }
 
-  public removeEventListener(eventType: number, listner: EventListner) {
+  public removeEventListener(eventType: number, listner: EventListner): void {
     if (this._eventListeners[eventType] === undefined) return;
     this._eventListeners[eventType].remove(listner);
   }
