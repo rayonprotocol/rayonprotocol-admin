@@ -16,9 +16,9 @@ type EventListner = ((eventType: RayonEvent, event: any) => void);
 
 abstract class ContractAgent {
   public static RESULTCODE_SUCCESS: number = 0;
-  public static FROM_BLOCK = 'latest';
+  public static FROM_BLOCK = 'latest'; // event watch start block
 
-  private _contract: JSON;
+  private _contract: JSON; // include ABI, contract address
   private _watchEvents: Set<RayonEvent>;
   protected _eventListener: EventListner;
   protected _contractInstance;
@@ -37,11 +37,11 @@ abstract class ContractAgent {
   Must Implement abstract funcion
   */
   public async fetchContractInstance() {
-    // ABI가져온 후 TruffleContract 객체 생성
+    // Bring a ABI, Make a TruffleContract object
     const contract = TruffleContract(this._contract);
     contract.setProvider(this.getWeb3().currentProvider);
 
-    // Rayon Token의 인스턴스 가져옴
+    // find rayon token instance on blockchain
     const instance = await contract.deployed();
     this._contractInstance = instance;
     this.startEventWatch();
@@ -82,6 +82,7 @@ abstract class ContractAgent {
     this._eventListener = listner;
   }
 
+  // when event trigger on blockchain, this handler will occur
   private onEvent(eventType: RayonEvent, error, event) {
     console.log('event', event);
     if (error) console.error(error);
@@ -89,7 +90,7 @@ abstract class ContractAgent {
   }
 
   /*
-  Common value getter
+  Common value getter function
   */
   public getWeb3() {
     return web3;

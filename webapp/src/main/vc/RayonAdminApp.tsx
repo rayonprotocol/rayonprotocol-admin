@@ -12,7 +12,7 @@ import history from 'common/util/Histroy';
 import RayonRoutes from 'main/controller/RayonRoutes';
 
 // style
-import 'common/assets/style.scss';
+import 'common/asset/style.scss';
 
 ReactDom.render(
   <AppContainer>

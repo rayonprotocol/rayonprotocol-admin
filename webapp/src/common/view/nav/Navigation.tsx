@@ -7,7 +7,7 @@ class Navigation extends Component<{}, {}> {
   render() {
     return (
       <nav className={styles.navigation}>
-        <img src={require('../../../common/assets/img/rayon-white-logo.png')} />
+        <img src={require('../../../common/asset/img/rayon-white-logo.png')} />
       </nav>
     );
   }

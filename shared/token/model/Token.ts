@@ -2,14 +2,14 @@ import { BigNumber } from 'bignumber.js';
 import { relativeUrl as parentUrl } from '../../interface/Ajax';
 
 // Token URL
-export const URLForGetTokenTotalBalance = `${parentUrl}/GetTotalBalance`;
-export const URLForGetTokenHolders = `${parentUrl}/GetTokenHolders`;
-export const URLForGetTop10TokenHolders = `${parentUrl}/GetTop10TokenHolders`;
+export const URLForGetTokenTotalBalance = `${parentUrl}/totalbalance`;
+export const URLForGetTokenHolders = `${parentUrl}/tokenholder/all`;
+export const URLForGetTop10TokenHolders = `${parentUrl}/tokenholder/top10`;
 
 // Event URL
-export const URLForGetMintEvents = `${parentUrl}/MintEvents`;
-export const URLForGetTransferEvents = `${parentUrl}/TransferEvents`;
-export const URLForGetTransactionChartData = `${parentUrl}/GetTransactionChartData`;
+export const URLForGetMintEvents = `${parentUrl}/mintEvent/all`;
+export const URLForGetTransferEvents = `${parentUrl}/mransferEvent/all`;
+export const URLForGetTransactionChartData = `${parentUrl}/transaction/chartdata`;
 
 /*
 event
