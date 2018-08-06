@@ -12,7 +12,7 @@ import { RayonEvent } from '../../../../shared/token/model/Token';
 let web3: Web3;
 let userAccount: string;
 
-type EventListner = ((eventType: RayonEvent, event: any) => void);
+type RayonEventListener = ((eventType: RayonEvent, event: any) => void);
 
 abstract class ContractAgent {
   public static RESULTCODE_SUCCESS: number = 0;
@@ -20,7 +20,7 @@ abstract class ContractAgent {
 
   private _contract: JSON; // include ABI, contract address
   private _watchEvents: Set<RayonEvent>;
-  protected _eventListener: EventListner;
+  protected _eventListener: RayonEventListener;
   protected _contractInstance;
 
   constructor(contract: JSON, watchEvents: Set<RayonEvent>) {
@@ -78,12 +78,12 @@ abstract class ContractAgent {
   Watch blockchain event and set, notify to DataCcontroller.
   and Event handler
   */
-  public setEventListner(listner: EventListner) {
+  public setEventListner(listner: RayonEventListener) {
     this._eventListener = listner;
   }
 
   // when event trigger on blockchain, this handler will occur
-  private onEvent(eventType: RayonEvent, error, event) {
+  private onEvent(eventType: RayonEvent, error, event): void {
     console.log('event', event);
     if (error) console.error(error);
     this._eventListener && this._eventListener(eventType, event);
