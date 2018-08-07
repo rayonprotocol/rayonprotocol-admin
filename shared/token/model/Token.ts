@@ -3,13 +3,13 @@ import { relativeUrl as parentUrl } from '../../interface/Ajax';
 
 // Token URL
 export const URLForGetTokenTotalBalance = `${parentUrl}/totalbalance`;
-export const URLForGetTokenHolders = `${parentUrl}/tokenholder/all`;
-export const URLForGetTop10TokenHolders = `${parentUrl}/tokenholder/top10`;
+export const URLForGetTokenHolders = `${parentUrl}/tokenholders`;
+export const URLForGetTop10TokenHolders = `${parentUrl}/tokenholders/top10`;
 
 // Event URL
-export const URLForGetMintEvents = `${parentUrl}/mintEvent/all`;
-export const URLForGetTransferEvents = `${parentUrl}/mransferEvent/all`;
-export const URLForGetTransactionChartData = `${parentUrl}/transaction/chartdata`;
+export const URLForGetMintEvents = `${parentUrl}/mintEvents`;
+export const URLForGetTransferEvents = `${parentUrl}/mransferEvents`;
+export const URLForGetTransactionChartData = `${parentUrl}/transactions/chartdata`;
 
 /*
 event

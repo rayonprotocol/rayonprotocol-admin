@@ -33,9 +33,9 @@ class TokenDC extends RayonDC {
   private _tokenHolders = {};
   private _chartDate: TransferChart = {};
 
-  protected setAllEventListeners() {
-    TokenBlockchainAgent.setEventListner(RayonEvent.Mint, this.mintEventListener.bind(this));
-    TokenBlockchainAgent.setEventListner(RayonEvent.Transfer, this.transferEventListener.bind(this));
+  constructor() {
+    super();
+    TokenBlockchainAgent.setEventListner(this.onEvent.bind(this));
   }
 
   public configure(app: Express) {
@@ -45,6 +45,19 @@ class TokenDC extends RayonDC {
     app.get(URLForGetTransactionChartData, this.respondChartData.bind(this));
     app.get(URLForGetTokenTotalBalance, this.respondTokenTotalBalance.bind(this));
     app.get(URLForGetTop10TokenHolders, this.respondTop10TokenHolders.bind(this));
+  }
+
+  private onEvent(eventType: RayonEvent, event: any): void {
+    switch (eventType) {
+      case RayonEvent.Mint:
+        this.onMintEvent(event);
+        break;
+      case RayonEvent.Transfer:
+        this.onTransferEvent(event);
+        break;
+      default:
+        break;
+    }
   }
 
   public respondChartData(req: Request, res: Response) {
@@ -79,25 +92,26 @@ class TokenDC extends RayonDC {
       result_message: 'Fail Response Mint Events',
       data: null,
     };
+    // console.log('this._event[RayonEvent.Mint]', this._event[RayonEvent.Mint]);
 
     if (res.status(200)) {
       result.result_code = 0;
       result.result_message = 'Success Response Mint Events';
-      result.data = this._event[RayonEvent.Mint];
+      result.data = this._events[RayonEvent.Mint];
     }
 
     res.send(result);
   }
 
-  async mintEventListener(event: RayonEventResponse<MintArgs>) {
+  async onMintEvent(event: RayonEventResponse<MintArgs>) {
     const newEvent: MintEvent = {
       to: event.args.to,
       amount: event.args.amount.toNumber(),
     };
 
-    this._event[RayonEvent.Mint] === undefined
-      ? (this._event[RayonEvent.Mint] = [newEvent])
-      : this._event[RayonEvent.Mint].push(newEvent);
+    this._events[RayonEvent.Mint] === undefined
+      ? (this._events[RayonEvent.Mint] = [newEvent])
+      : this._events[RayonEvent.Mint].push(newEvent);
     console.log('==========================');
     console.log('mintEvents\n', newEvent);
   }
@@ -107,7 +121,7 @@ class TokenDC extends RayonDC {
   */
 
   public respondTransferEvent(req: Request, res: Response) {
-    const sortedTransferEvent = this._event[RayonEvent.Transfer].sort(
+    const sortedTransferEvent = this._events[RayonEvent.Transfer].sort(
       (a, b) => b.blockTime.timestamp - a.blockTime.timestamp
     );
     const result: SendResult<TransferEvent[]> = {
@@ -125,7 +139,7 @@ class TokenDC extends RayonDC {
     res.send(result);
   }
 
-  async transferEventListener(event: RayonEventResponse<TransferArgs>) {
+  async onTransferEvent(event: RayonEventResponse<TransferArgs>) {
     const block = await TokenBlockchainAgent.getBlock(event.blockNumber);
     const newDate = new Date(block.timestamp * 1000);
     const newBlockTime: BlockTime = {
@@ -144,9 +158,9 @@ class TokenDC extends RayonDC {
       amount: event.args.value.toNumber(),
     };
 
-    this._event[RayonEvent.Transfer] === undefined
-      ? (this._event[RayonEvent.Transfer] = [newEvent])
-      : this._event[RayonEvent.Transfer].push(newEvent);
+    this._events[RayonEvent.Transfer] === undefined
+      ? (this._events[RayonEvent.Transfer] = [newEvent])
+      : this._events[RayonEvent.Transfer].push(newEvent);
     this.setChartData(newEvent);
     this.setHolders(newEvent.from, newEvent.to, newEvent.amount);
     console.log('==========================');
