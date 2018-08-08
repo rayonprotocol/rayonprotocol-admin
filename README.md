@@ -14,14 +14,14 @@ First developing token-related Admin page. Other Admin-related functions will co
      
 ### 폴더 구조
 
-node_server: node로 구현된 서버
-shared: node_server와 webapp에서 공통적으로 사용하는 모델
-webapp: admin web page client
+- node_server: node로 구현된 서버
+- shared: node_server와 webapp에서 공통적으로 사용하는 모델
+- webapp: admin web page client
 
 ### 클라이언트 페이지와 각 기능
 
 - 대시보드
-<img src="https://user-images.githubusercontent.com/20614643/43829054-074d9caa-9b39-11e8-9d0e-8a5bc561cf0d.png" width="300px">
+<img  align="center" src="https://user-images.githubusercontent.com/20614643/43829054-074d9caa-9b39-11e8-9d0e-8a5bc561cf0d.png" width="300px">
 
 - 총 토큰 발행량
 <img src="https://user-images.githubusercontent.com/20614643/43829078-1485f0b6-9b39-11e8-86d1-b54a37092510.png" width="300px">
