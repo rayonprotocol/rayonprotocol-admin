@@ -24,9 +24,10 @@ First developing token-related Admin page. Other Admin-related functions will co
 <p align="center">
     <img src="https://user-images.githubusercontent.com/20614643/43829054-074d9caa-9b39-11e8-9d0e-8a5bc561cf0d.png" width="500px">
 </p>
+
 - 총 토큰 발행량
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/20614643/43829078-1485f0b6-9b39-11e8-86d1-b54a37092510.png" width="300px">
+    <img src="https://user-images.githubusercontent.com/20614643/43829078-1485f0b6-9b39-11e8-86d1-b54a37092510.png" width="700px">
 </p>
 
 - 토큰 소유자 목록 및 보유량 조회
