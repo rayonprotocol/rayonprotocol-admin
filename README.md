@@ -21,19 +21,28 @@ First developing token-related Admin page. Other Admin-related functions will co
 ### 클라이언트 페이지와 각 기능
 
 - 대시보드
-<img  align="center" src="https://user-images.githubusercontent.com/20614643/43829054-074d9caa-9b39-11e8-9d0e-8a5bc561cf0d.png" width="300px">
-
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/20614643/43829054-074d9caa-9b39-11e8-9d0e-8a5bc561cf0d.png" width="500px">
+</p>
 - 총 토큰 발행량
-<img src="https://user-images.githubusercontent.com/20614643/43829078-1485f0b6-9b39-11e8-86d1-b54a37092510.png" width="300px">
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/20614643/43829078-1485f0b6-9b39-11e8-86d1-b54a37092510.png" width="300px">
+</p>
 
 - 토큰 소유자 목록 및 보유량 조회
-<img src="https://user-images.githubusercontent.com/20614643/43829102-1ddba73c-9b39-11e8-8506-826f9ef6e47e.png" width="300px">
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/20614643/43829102-1ddba73c-9b39-11e8-8506-826f9ef6e47e.png" width="300px">
+</p>
 
 - 토큰 전송 이력 조회
-<img src="https://user-images.githubusercontent.com/20614643/43829120-27ada26a-9b39-11e8-87a8-5e9e6e049bb7.png" width="300px">
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/20614643/43829120-27ada26a-9b39-11e8-87a8-5e9e6e049bb7.png" width="300px">
+</p>
 
 - 토큰 발행 및 전송
-<img src="https://user-images.githubusercontent.com/20614643/43829137-327ee3f2-9b39-11e8-8f1c-b3105fee73d3.png" width="300px">
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/20614643/43829137-327ee3f2-9b39-11e8-8f1c-b3105fee73d3.png" width="300px">
+</p>
  
 ## Getting Started
 
