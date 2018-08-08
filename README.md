@@ -3,44 +3,44 @@ First developing token-related Admin page. Other Admin-related functions will co
 
 ## About
 
-### 역할
+### Role
  - Server
-     1. 이벤트 처리(필요한 데이터로 가공)
-     2. 처리된 이벤트 저장(히스토리 생성)
+     1. Process events (process into required data forms)
+     2. Save processed events (create history)
  - Web UI
-     1. 수신된 이벤트를 처리하여 View에 적용
-     2. 초기 로딩 시 server에 데이터 요청
-     3. Admin이 요청한 Transfer/Mint 트랜잭션을 블록체인에 전송(메타마스크 사용)
+     1. Receive & process events then apply to View
+     2. Data request to server during initial loading
+     3. Publish transfer/mint transactions requested by Admin to blockchain (using MetaMask)
      
-### 폴더 구조
+### Folder Structure
 
-- node_server: node로 구현된 서버
-- shared: node_server와 webapp에서 공통적으로 사용하는 모델
+- node_server: server in node form
+- shared: model used by both node_server & webapp
 - webapp: admin web page client
 
-### 클라이언트 페이지와 각 기능
+### Client Pages & Functions
 
-- 대시보드
+- Dashboard
 <p align="center">
     <img src="https://user-images.githubusercontent.com/20614643/43829054-074d9caa-9b39-11e8-9d0e-8a5bc561cf0d.png" width="400px">
 </p>
 
-- 총 토큰 발행량
+- Total Tokens Minted
 <p align="center">
     <img src="https://user-images.githubusercontent.com/20614643/43829102-1ddba73c-9b39-11e8-8506-826f9ef6e47e.png" width="300px">
 </p>
 
-- 토큰 소유자 목록 및 보유량 조회
+- Token Holder List & Balance
 <p align="center">
     <img src="https://user-images.githubusercontent.com/20614643/43829120-27ada26a-9b39-11e8-87a8-5e9e6e049bb7.png" width="600px">
 </p>
 
-- 토큰 전송 이력 조회
+- Lookup Token Transfer History
 <p align="center">
     <img src="https://user-images.githubusercontent.com/20614643/43829078-1485f0b6-9b39-11e8-86d1-b54a37092510.png" width="700px">
 </p>
 
-- 토큰 발행 및 전송
+- Mint Token & Transfer 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/20614643/43829137-327ee3f2-9b39-11e8-8f1c-b3105fee73d3.png" width="400px">
 </p>
@@ -115,4 +115,4 @@ yarn start
 * [Node.js](https://nodejs.org/en/) - Server application framework
 
 ## Acknowledgments
-* 클라이언트 포트 번호는 8080, 서버 포트 번호는 3000번이다.
+* client port number is 8080 and server port number is 3000
