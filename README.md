@@ -22,7 +22,7 @@ First developing token-related Admin page. Other Admin-related functions will co
 
 - 대시보드
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/20614643/43829054-074d9caa-9b39-11e8-9d0e-8a5bc561cf0d.png" width="500px">
+    <img src="https://user-images.githubusercontent.com/20614643/43829054-074d9caa-9b39-11e8-9d0e-8a5bc561cf0d.png" width="400px">
 </p>
 
 - 총 토큰 발행량
@@ -32,7 +32,7 @@ First developing token-related Admin page. Other Admin-related functions will co
 
 - 토큰 소유자 목록 및 보유량 조회
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/20614643/43829120-27ada26a-9b39-11e8-87a8-5e9e6e049bb7.png" width="300px">
+    <img src="https://user-images.githubusercontent.com/20614643/43829120-27ada26a-9b39-11e8-87a8-5e9e6e049bb7.png" width="600px">
 </p>
 
 - 토큰 전송 이력 조회
