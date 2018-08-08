@@ -90,7 +90,7 @@ yarn
 yarn deploy
 ```
 
-### excution
+### Execution
 
 - node server
 
