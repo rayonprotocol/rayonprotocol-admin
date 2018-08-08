@@ -3,19 +3,19 @@ First developing token-related Admin page. Other Admin-related functions will co
 
 ## About
 
-### Role
+### Components
  - Server
      1. Process events (process into required data forms)
      2. Save processed events (create history)
  - Web UI
-     1. Receive & process events then apply to View
-     2. Data request to server during initial loading
+     1. Data request to server during initial loading
+     2. Receive & process events then apply to View
      3. Publish transfer/mint transactions requested by Admin to blockchain (using MetaMask)
      
-### Folder Structure
+### Folders
 
-- node_server: server in node form
-- shared: model used by both node_server & webapp
+- node_server: admin server 
+- shared: model code shared by both node_server & webapp
 - webapp: admin web page client
 
 ### Client Pages & Functions
@@ -92,7 +92,7 @@ yarn deploy
 
 ### Execution
 
-- node server
+- Run node server
 
 ```
 cd rayonprotocol-admin
@@ -100,13 +100,15 @@ cd node-server
 yarn dev
 ```
 
-- web client
+- Run web server
 
 ```
 cd rayonprotocol-admin
 cd webapp
 yarn start
 ```
+- Open admin web 
+    - http://localhost:8080/
 
 ## Built With
 * [Truffle](https://truffleframework.com/) - Ethereum Smart Contract Framework
@@ -114,5 +116,6 @@ yarn start
 * [React](https://reactjs.org/) - Used to develop web-based user interface
 * [Node.js](https://nodejs.org/en/) - Server application framework
 
-## Acknowledgments
-* client port number is 8080 and server port number is 3000
+## ToDo
+* 
+
