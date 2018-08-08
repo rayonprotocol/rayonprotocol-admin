@@ -42,7 +42,7 @@ First developing token-related Admin page. Other Admin-related functions will co
 
 - 토큰 발행 및 전송
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/20614643/43829137-327ee3f2-9b39-11e8-8f1c-b3105fee73d3.png" width="300px">
+    <img src="https://user-images.githubusercontent.com/20614643/43829137-327ee3f2-9b39-11e8-8f1c-b3105fee73d3.png" width="400px">
 </p>
  
 ## Getting Started
