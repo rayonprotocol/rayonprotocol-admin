@@ -33,8 +33,11 @@ class TransactionView extends Component<{}, TransactionViewState> {
     };
   }
 
-  componentWillMount(): void {
+  async componentWillMount() {
     TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
+    const { labels, chartData } = await TokenDC.fetchChartData();
+    const transferEvents = await TokenDC.fetchTransferEvents();
+    this.setState({ ...this.state, transferEvents, labels, chartData });
   }
 
   componentWillUnmount(): void {

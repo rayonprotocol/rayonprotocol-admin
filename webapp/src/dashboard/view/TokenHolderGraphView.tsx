@@ -41,8 +41,10 @@ class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
     };
   }
 
-  componentWillMount(): void {
+  async componentWillMount() {
     TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
+    const holders = await TokenDC.fetchTop10TokenHolders();
+    this.setState({ ...this.state, holders });
   }
 
   componentWillUnmount(): void {

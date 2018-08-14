@@ -30,7 +30,7 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
     super(props);
     this.state = {
       ...this.state,
-      mintEventList: [],
+      mintEventList: new Array(),
       totalBalance: 0,
     };
     this.onMintEvent = this.onMintEvent.bind(this);

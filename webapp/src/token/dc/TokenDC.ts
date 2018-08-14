@@ -8,6 +8,7 @@ import RayonDC from 'common/dc/RayonDC';
 import {
   RayonEvent,
   RayonEventResponse,
+  TransferEvent,
   TransferArgs,
   MintArgs,
   ChartData,
@@ -46,7 +47,6 @@ class TokenDC extends RayonDC {
 
     // 자신의 트랜잭션인지 확인
     if (event.args.from !== userAccount && event.args.to !== userAccount) return;
-
     const fetchedEvents = await TokenServerAgent.fetchTransferEvents();
     this._events[RayonEvent.Transfer] = fetchedEvents;
     this._eventListeners[RayonEvent.Transfer] &&
@@ -64,15 +64,22 @@ class TokenDC extends RayonDC {
     TokenServerAgent.transfer(toAddress, value);
   }
 
+  public async fetchTransferEvents(): Promise<TransferEvent[]> {
+    return await TokenServerAgent.fetchTransferEvents();
+  }
+  // 토큰의 총 발행량
   public async fetchTokenTotalBalance(): Promise<number> {
     return await TokenServerAgent.fetchTokenTotalBalance();
   }
+  // 토큰 보유자들의 리스트
   public async fetchTokenHolders(): Promise<object> {
     return await TokenServerAgent.fetchTokenHolders();
   }
+  // 상위 10명의 토큰 보유자
   public async fetchTop10TokenHolders(): Promise<object> {
     return await TokenServerAgent.fetchTop10TokenHolders();
   }
+  // Admin page transaction chart에 사용될 데이터(Date 라벨, 트랜잭션 수)
   public async fetchChartData(): Promise<ChartData> {
     return await TokenServerAgent.fetchChartData();
   }

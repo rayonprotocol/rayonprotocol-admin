@@ -18,10 +18,17 @@ abstract class ContractAgent {
   public static FROM_BLOCK = 'latest'; // event watch start block
   public static NETWORK_PORT = 8545;
 
-  private _contract: JSON; // include ABI, contract address
+  /*
+  For Contract
+  */
+  private _contract: JSON; // json which is including ABI and contract address
+  protected _contractInstance;
+
+  /*
+  For Event
+  */
   private _watchEvents: Set<RayonEvent>;
   protected _eventListener: RayonEventListener;
-  protected _contractInstance;
 
   constructor(contract: JSON, watchEvents: Set<RayonEvent>) {
     web3 = this.setWeb3();
@@ -34,7 +41,7 @@ abstract class ContractAgent {
   }
 
   /*
-  Essential excuted functions
+  Essential excuted functions(for initializing)
   */
 
   private setWeb3 = (): Web3 => {
