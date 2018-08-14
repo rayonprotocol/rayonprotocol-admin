@@ -92,6 +92,7 @@ class TokenDC extends RayonDC {
       result_message: 'Fail Response Mint Events',
       data: null,
     };
+    // console.log('this._event[RayonEvent.Mint]', this._event[RayonEvent.Mint]);
 
     if (res.status(200)) {
       result.result_code = 0;
