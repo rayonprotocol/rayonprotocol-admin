@@ -84,7 +84,7 @@ class TokenDC extends RayonDC {
     res.send(result);
   }
 
-  async onMintEvent(event: RayonEventResponse<MintArgs>) {
+  onMintEvent(event: RayonEventResponse<MintArgs>) {
     const newEvent: MintEvent = {
       to: event.args.to,
       amount: event.args.amount.toNumber(),

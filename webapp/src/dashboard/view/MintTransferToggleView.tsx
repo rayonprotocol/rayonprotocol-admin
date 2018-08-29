@@ -26,10 +26,12 @@ class MintTransferToggleView extends Component<{}, MintTransferToggleViewState> 
       isMintMode: true,
     };
   }
+
   isMintInputDataValidationPassed(): boolean {
     const { toAddress, amount } = this.state;
     return toAddress !== undefined && toAddress !== null && amount !== undefined && amount !== null && amount !== 0;
   }
+
   onClickSendButton(): void {
     const { toAddress, amount, isMintMode } = this.state;
     if (!this.isMintInputDataValidationPassed()) alert(' input error!');
@@ -46,7 +48,7 @@ class MintTransferToggleView extends Component<{}, MintTransferToggleViewState> 
     this.setState({ ...this.state, amount });
   }
 
-  onClickToggleButton(event): void {
+  onClickMintAndTransferToggleButton(event): void {
     this.setState({ ...this.state, isMintMode: !this.state.isMintMode });
   }
 
@@ -58,7 +60,7 @@ class MintTransferToggleView extends Component<{}, MintTransferToggleViewState> 
           className={styles.toggleBtn}
           toggleItem={['Mint', 'Transfer']}
           isLeftActivated={isMintMode}
-          onClick={this.onClickToggleButton.bind(this)}
+          onClick={this.onClickMintAndTransferToggleButton.bind(this)}
         />
         <BorderTextInput
           className={styles.textInput}
