@@ -23,9 +23,6 @@ class TokenBlockchainAgent extends ContractAgent {
     super(contract, watchEvents);
   }
 
-  /*
-    about token balance
-  */
   public async getTokenTotalBalance() {
     return (await this._contractInstance.totalSupply()).toNumber();
   }

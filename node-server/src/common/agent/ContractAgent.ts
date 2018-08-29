@@ -21,12 +21,16 @@ abstract class ContractAgent {
   protected _contractInstance;
 
   constructor(contract: JSON, watchEvents: Set<RayonEvent>) {
+    this._contract = contract;
+    this._watchEvents = watchEvents;
+    this.setWeb3();
+    this.fetchContractInstance();
+  }
+
+  private setWeb3() {
     const Web3 = require('web3');
     const provider = new Web3.providers.HttpProvider('http://localhost:8545');
     web3 = new Web3(provider);
-    this._contract = contract;
-    this._watchEvents = watchEvents;
-    this.fetchContractInstance();
   }
 
   protected async fetchContractInstance() {
@@ -52,16 +56,11 @@ abstract class ContractAgent {
     });
   }
 
-  /*
-  Watch blockchain event and set, notify to DataCcontroller.
-  and Event handler
-  */
   public setEventListner(listner: RayonEventListener) {
     this._eventListener = listner;
   }
 
   private onEvent(eventType: RayonEvent, error, event): void {
-    // console.log(eventType, error, event);
     if (error) console.error(error);
     this._eventListener && this._eventListener(eventType, event);
   }

@@ -18,39 +18,33 @@ abstract class ContractAgent {
   public static FROM_BLOCK = 'latest'; // event watch start block
   public static NETWORK_PORT = 8545;
 
-  /*
-  For Contract
-  */
   private _contract: JSON; // json which is including ABI and contract address
   protected _contractInstance;
 
-  /*
-  For Event
-  */
   private _watchEvents: Set<RayonEvent>;
   protected _eventListener: RayonEventListener;
 
   constructor(contract: JSON, watchEvents: Set<RayonEvent>) {
-    web3 = this.setWeb3();
-    web3.eth.getAccounts((err, accounts) => {
-      userAccount = accounts[0];
-    });
     this._contract = contract;
     this._watchEvents = watchEvents;
+    this.setWeb3();
+    this.setUserAccount();
     this.fetchContractInstance();
   }
 
-  /*
-  Essential excuted functions(for initializing)
-  */
+  private setUserAccount(): void {
+    web3.eth.getAccounts((err, accounts) => {
+      userAccount = accounts[0];
+    });
+  }
 
-  private setWeb3 = (): Web3 => {
-    let web3: Web3 = (window as any).web3 as Web3;
-    typeof web3 !== 'undefined'
-      ? (web3 = new Web3(web3.currentProvider))
-      : (web3 = new Web3(new Web3.providers.HttpProvider(`http://localhost: ${ContractAgent.NETWORK_PORT}`)));
-    return web3;
-  };
+  private setWeb3(): void {
+    let browserWeb3: Web3 = (window as any).web3 as Web3;
+    typeof browserWeb3 !== 'undefined'
+      ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
+      : (browserWeb3 = new Web3(new Web3.providers.HttpProvider(`http://localhost: ${ContractAgent.NETWORK_PORT}`)));
+    web3 = browserWeb3;
+  }
 
   public async fetchContractInstance() {
     // Bring a ABI, Make a TruffleContract object
@@ -81,9 +75,6 @@ abstract class ContractAgent {
     });
   }
 
-  /*
-  Get, Post Request function to server
-  */
   public async getRequest<T>(url: string, params?: Object): Promise<T> {
     // To server
     const { data } = await axios.get(`${URL_APIBASE}${url}`, { params: params });
@@ -99,10 +90,6 @@ abstract class ContractAgent {
     return <SendResult<T>>data;
   }
 
-  /*
-  Watch blockchain event and set, notify to DataCcontroller.
-  and Event handler
-  */
   public setEventListner(listner: RayonEventListener) {
     this._eventListener = listner;
   }
@@ -114,9 +101,6 @@ abstract class ContractAgent {
     this._eventListener && this._eventListener(eventType, event);
   }
 
-  /*
-  Common value getter function
-  */
   public getWeb3() {
     return web3;
   }

@@ -30,7 +30,7 @@ interface TransferChart {
 }
 
 class TokenDC extends RayonDC {
-  private _tokenHolders = {};
+  private _tokenHolders = new Object();
   private _chartDate: TransferChart = {};
 
   constructor() {
@@ -62,11 +62,11 @@ class TokenDC extends RayonDC {
 
   public respondChartData(req: Request, res: Response) {
     const sortedLabelList = Object.keys(this._chartDate).sort();
-    const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
-    const chartData = labels.map(item => this._chartDate[item]);
+    const chartLabels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
+    const chartData = chartLabels.map(item => this._chartDate[item]);
 
     const result: SendResult<Object> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Chart Data', { labels, chartData })
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Chart Data', { chartLabels, chartData })
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Response Chart Data', null);
 
     res.send(result);
@@ -90,9 +90,9 @@ class TokenDC extends RayonDC {
       amount: event.args.amount.toNumber(),
     };
 
-    this._events[RayonEvent.Mint] === undefined
-      ? (this._events[RayonEvent.Mint] = [newEvent])
-      : this._events[RayonEvent.Mint].push(newEvent);
+    this._events.has(RayonEvent.Mint)
+      ? this._events[RayonEvent.Mint].push(newEvent)
+      : this._events.set(RayonEvent.Mint, [newEvent]);
     console.log('==========================');
     console.log('mintEvents\n', newEvent);
   }
