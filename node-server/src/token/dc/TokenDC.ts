@@ -65,20 +65,9 @@ class TokenDC extends RayonDC {
     const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
     const chartData = labels.map(item => this._chartDate[item]);
 
-    const result: SendResult<ChartData> = {
-      result_code: 1,
-      result_message: 'Fail Response Chart Data',
-      data: null,
-    };
-
-    if (res.status(200)) {
-      result.result_code = 0;
-      result.result_message = 'Success Response Chart Data';
-      result.data = {
-        labels,
-        chartData,
-      };
-    }
+    const result: SendResult<Object> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Chart Data', { labels, chartData })
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Response Chart Data', null);
 
     res.send(result);
   }
@@ -87,18 +76,10 @@ class TokenDC extends RayonDC {
   About Mint Event
   */
   public respondMintEvent(req: Request, res: Response) {
-    const result: SendResult<MintEvent[]> = {
-      result_code: 1,
-      result_message: 'Fail Response Mint Events',
-      data: null,
-    };
-    // console.log('this._event[RayonEvent.Mint]', this._event[RayonEvent.Mint]);
-
-    if (res.status(200)) {
-      result.result_code = 0;
-      result.result_message = 'Success Response Mint Events';
-      result.data = this._events[RayonEvent.Mint];
-    }
+    const data = this._events[RayonEvent.Mint];
+    const result: SendResult<MintEvent[]> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Mint Events', data)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Response Mint Events', null);
 
     res.send(result);
   }
@@ -121,20 +102,14 @@ class TokenDC extends RayonDC {
   */
 
   public respondTransferEvent(req: Request, res: Response) {
+    if (this._events[RayonEvent.Transfer] === undefined) return;
     const sortedTransferEvent = this._events[RayonEvent.Transfer].sort(
       (a, b) => b.blockTime.timestamp - a.blockTime.timestamp
     );
-    const result: SendResult<TransferEvent[]> = {
-      result_code: 1,
-      result_message: 'Fail Response Transfer Events',
-      data: null,
-    };
 
-    if (res.status(200)) {
-      result.result_code = 0;
-      result.result_message = 'Success Response Transfer Events';
-      result.data = sortedTransferEvent;
-    }
+    const result: SendResult<TransferEvent[]> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Transfer Events', sortedTransferEvent)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Response Transfer Events', null);
 
     res.send(result);
   }
@@ -178,17 +153,9 @@ class TokenDC extends RayonDC {
   public async respondTokenTotalBalance(req: Request, res: Response) {
     const _tokenBalence = await TokenBlockchainAgent.getTokenTotalBalance();
 
-    const result: SendResult<number> = {
-      result_code: 1,
-      result_message: 'Fail Respond Token Total Balance',
-      data: null,
-    };
-
-    if (res.status(200)) {
-      result.result_code = 0;
-      result.result_message = 'Success Respond Token Total Balance';
-      result.data = _tokenBalence;
-    }
+    const result: SendResult<number> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', _tokenBalence)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
 
     res.send(result);
   }
@@ -206,17 +173,9 @@ class TokenDC extends RayonDC {
   }
 
   public async respondTokenHolders(req: Request, res: Response) {
-    const result: SendResult<object> = {
-      result_code: 1,
-      result_message: 'Fail Respond Token Total Balance',
-      data: null,
-    };
-
-    if (res.status(200)) {
-      result.result_code = 0;
-      result.result_message = 'Success Respond Token Total Balance';
-      result.data = this._tokenHolders;
-    }
+    const result: SendResult<Object> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', this._tokenHolders)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
 
     res.send(result);
   }
@@ -238,17 +197,9 @@ class TokenDC extends RayonDC {
     top10TokenHolders['Etc'] =
       sortedTokenHolders.length > 10 ? (await TokenBlockchainAgent.getTokenTotalBalance()) - top10Sum : 0;
 
-    const result: SendResult<object> = {
-      result_code: 1,
-      result_message: 'Fail Respond Token Total Balance',
-      data: null,
-    };
-
-    if (res.status(200)) {
-      result.result_code = 0;
-      result.result_message = 'Success Respond Token Total Balance';
-      result.data = top10TokenHolders;
-    }
+    const result: SendResult<Object> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', top10TokenHolders)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
 
     res.send(result);
   }
