@@ -33,22 +33,24 @@ class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
     'rgba(92,128,1,0.7)',
     'rgba(251,176,45,0.7)',
   ];
+
   constructor(props) {
     super(props);
     this.state = {
       ...this.state,
       holders: {},
     };
+    this.getTransferEvent = this.getTransferEvent.bind(this);
   }
 
   async componentWillMount() {
-    TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
+    TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent);
     const holders = await TokenDC.fetchTop10TokenHolders();
     this.setState({ ...this.state, holders });
   }
 
   componentWillUnmount(): void {
-    TokenDC.removeEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
+    TokenDC.removeEventListener(RayonEvent.Transfer, this.getTransferEvent);
   }
 
   async getTransferEvent(event: TransferEvent[]): Promise<void> {

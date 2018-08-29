@@ -37,7 +37,7 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
   }
 
   componentWillMount(): void {
-    TokenDC.addEventListener(RayonEvent.Mint, this.onMintEvent.bind(this));
+    TokenDC.addEventListener(RayonEvent.Mint, this.onMintEvent);
   }
 
   componentWillUnmount(): void {

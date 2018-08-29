@@ -31,17 +31,18 @@ class TransactionView extends Component<{}, TransactionViewState> {
       chartData: [],
       transferEvents: [],
     };
+    this.getTransferEvent = this.getTransferEvent.bind(this);
   }
 
   async componentWillMount() {
-    TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
+    TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent);
     const { labels, chartData } = await TokenDC.fetchChartData();
     const transferEvents = await TokenDC.fetchTransferEvents();
     this.setState({ ...this.state, transferEvents, labels, chartData });
   }
 
   componentWillUnmount(): void {
-    TokenDC.removeEventListener(RayonEvent.Transfer, this.getTransferEvent.bind(this));
+    TokenDC.removeEventListener(RayonEvent.Transfer, this.getTransferEvent);
   }
 
   async getTransferEvent(event: TransferEvent[]): Promise<void> {
