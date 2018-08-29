@@ -7,15 +7,10 @@
     "node": ">= 8.9.0"
   },
   "scripts": {
-    "clean": "rimraf coverage build tmp",
+    "copy-build": "rm -rf ./build && cp -r ../../rayonprotocol-ico/build ./ ",
     "build": "tsc -p tsconfig.release.json",
     "watch": "tsc -w -p tsconfig.release.json",
-    "lint": "tslint -t stylish --project \"tsconfig.json\"",
-    "pretest": "npm run lint",
-    "test": "npm run test-only",
-    "test-only": "jest --coverage",
-    "test:watch": "jest --watch",
-    "start:dev-server": "nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts"
+    "start:dev": "nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts"
   },
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "APLv2",

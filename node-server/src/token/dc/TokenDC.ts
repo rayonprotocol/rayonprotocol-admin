@@ -30,7 +30,7 @@ interface TransferChart {
 }
 
 class TokenDC extends RayonDC {
-  private _tokenHolders = new Object();
+  private _tokenHolders = {};
   private _chartDate: TransferChart = {};
 
   constructor() {
@@ -90,9 +90,10 @@ class TokenDC extends RayonDC {
       amount: event.args.amount.toNumber(),
     };
 
-    this._events.has(RayonEvent.Mint)
-      ? this._events[RayonEvent.Mint].push(newEvent)
-      : this._events.set(RayonEvent.Mint, [newEvent]);
+    this._events[RayonEvent.Mint] === undefined
+      ? (this._events[RayonEvent.Mint] = [newEvent])
+      : this._events[RayonEvent.Mint].push(newEvent);
+
     console.log('==========================');
     console.log('mintEvents\n', newEvent);
   }

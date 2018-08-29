@@ -8,7 +8,7 @@ export const URLForGetTop10TokenHolders = `${parentUrl}/tokenholders/top10`;
 
 // Event URL
 export const URLForGetMintEvents = `${parentUrl}/mintEvents`;
-export const URLForGetTransferEvents = `${parentUrl}/mransferEvents`;
+export const URLForGetTransferEvents = `${parentUrl}/transferEvents`;
 export const URLForGetTransactionChartData = `${parentUrl}/transactions/chartdata`;
 
 /*

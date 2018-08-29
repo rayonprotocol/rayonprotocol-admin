@@ -49,11 +49,13 @@ abstract class ContractAgent {
   public async fetchContractInstance() {
     // Bring a ABI, Make a TruffleContract object
     const contract = TruffleContract(this._contract);
-    contract.setProvider(this.getWeb3().currentProvider);
+    contract.setProvider(web3.currentProvider);
 
     // find rayon token instance on blockchain
     try {
+      console.log('before');
       this._contractInstance = await contract.deployed();
+      console.log('after');
     } catch (error) {
       console.error(error);
     }
@@ -73,6 +75,12 @@ abstract class ContractAgent {
       const targetEventFunction = this._contractInstance[RayonEvent.getRayonEventName(eventType)]({}, eventRange);
       targetEventFunction.watch(this.onEvent.bind(this, eventType));
     });
+  }
+
+  // prevent call a undefined contract instance by data conroller
+  // check contract instance is undefined and refetch
+  protected async checkAndFetchContractInstance() {
+    !this._contractInstance && (await this.fetchContractInstance());
   }
 
   public async getRequest<T>(url: string, params?: Object): Promise<T> {

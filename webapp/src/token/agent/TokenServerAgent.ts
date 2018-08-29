@@ -27,11 +27,13 @@ class TokenServerAgent extends ContractAgent {
   Excute token basic function
   */
 
-  public mint(toAddress: string, value: number): void {
+  public async mint(toAddress: string, value: number): Promise<void> {
+    await this.checkAndFetchContractInstance();
     this._contractInstance.mint(toAddress, value, { from: this.getUserAccount() });
   }
 
-  public transfer(toAddress: string, value: number): void {
+  public async transfer(toAddress: string, value: number): Promise<void> {
+    await this.checkAndFetchContractInstance();
     this._contractInstance.transfer(toAddress, value, { from: this.getUserAccount() });
   }
 
