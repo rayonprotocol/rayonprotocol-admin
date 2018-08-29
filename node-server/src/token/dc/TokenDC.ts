@@ -62,11 +62,11 @@ class TokenDC extends RayonDC {
 
   public respondChartData(req: Request, res: Response) {
     const sortedLabelList = Object.keys(this._chartDate).sort();
-    const chartLabels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
-    const chartData = chartLabels.map(item => this._chartDate[item]);
+    const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
+    const chartData = labels.map(item => this._chartDate[item]);
 
     const result: SendResult<Object> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Chart Data', { chartLabels, chartData })
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Chart Data', { labels, chartData })
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Response Chart Data', null);
 
     res.send(result);
