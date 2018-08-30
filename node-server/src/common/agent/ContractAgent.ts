@@ -8,12 +8,15 @@ import { RayonEvent } from '../../../../shared/token/model/Token';
 // dc
 import TokenDC from '../../token/dc/TokenDC';
 
+// util
+import ContractProvider from '../util/ContractProvider';
+
 let web3: Web3;
 
 type RayonEventListener = ((eventType: RayonEvent, event: any) => void);
 
 abstract class ContractAgent {
-  public static FROM_BLOCK = 0;
+  public static FROM_BLOCK = 3931119;
 
   private _contract: JSON;
   private _watchEvents: Set<RayonEvent>;
@@ -29,7 +32,7 @@ abstract class ContractAgent {
 
   private setWeb3() {
     const Web3 = require('web3');
-    const provider = new Web3.providers.HttpProvider('http://localhost:8545');
+    const provider = ContractProvider.getProvider();
     web3 = new Web3(provider);
   }
 
@@ -43,13 +46,17 @@ abstract class ContractAgent {
         return contract.currentProvider.send.apply(contract.currentProvider, arguments);
       };
     }
-    this._contractInstance = await contract.deployed();
+    try {
+      this._contractInstance = await contract.deployed();
+    } catch (error) {
+      console.error(error);
+    }
+
     this.startEventWatch();
   }
 
   protected startEventWatch() {
     const eventRange = this.getEventRange();
-
     this._watchEvents.forEach(eventType => {
       const targetEventFunction = this._contractInstance[RayonEvent.getRayonEventName(eventType)]({}, eventRange);
       targetEventFunction.watch(this.onEvent.bind(this, eventType));
@@ -61,7 +68,11 @@ abstract class ContractAgent {
   }
 
   private onEvent(eventType: RayonEvent, error, event): void {
-    if (error) console.error(error);
+    console.log('onEvent', event);
+    if (error) {
+      console.error(error);
+      return;
+    }
     this._eventListener && this._eventListener(eventType, event);
   }
 

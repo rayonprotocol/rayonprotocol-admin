@@ -10,7 +10,8 @@
     "copy-build": "rm -rf ./build && cp -r ../../rayonprotocol-ico/build ./ ",
     "build": "tsc -p tsconfig.release.json",
     "watch": "tsc -w -p tsconfig.release.json",
-    "start:dev": "nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts"
+    "start:dev": "ENV_BLOCKCHAIN=local nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts  ",
+    "start:testnet": "ENV_BLOCKCHAIN=ropsten nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts"
   },
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "APLv2",
@@ -24,10 +25,12 @@
     "@types/jest": "~22.2.3",
     "@types/node": "~8.10.18",
     "bignumber.js": "^7.2.1",
+    "dotenv": "^6.0.0",
     "jest": "~23.1.0",
     "nodemon": "^1.18.3",
     "rimraf": "~2.6.2",
     "truffle-contract": "^3.0.6",
+    "truffle-hdwallet-provider": "^0.0.6",
     "ts-jest": "~22.4.6",
     "ts-node": "^7.0.0",
     "tslint": "~5.10.0",

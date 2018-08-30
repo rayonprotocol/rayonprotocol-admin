@@ -46,6 +46,7 @@ class TransactionView extends Component<{}, TransactionViewState> {
   }
 
   async getTransferEvent(event: TransferEvent[]): Promise<void> {
+    console.log('getTransferEvent event', event);
     const transferEvents = event.length >= 5 ? event.slice(-5).reverse() : event;
     const { labels, chartData } = await TokenDC.fetchChartData();
     this.setState({ ...this.state, transferEvents, labels, chartData });
