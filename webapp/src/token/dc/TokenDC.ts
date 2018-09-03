@@ -11,7 +11,6 @@ import {
   TransferEvent,
   TransferArgs,
   MintArgs,
-  ChartData,
 } from '../../../../shared/token/model/Token';
 
 class TokenDC extends RayonDC {
@@ -46,7 +45,7 @@ class TokenDC extends RayonDC {
     const userAccount: string = TokenServerAgent.getUserAccount();
 
     // 자신의 트랜잭션인지 확인
-    if (event.args.from !== userAccount && event.args.to !== userAccount) return;
+    if (event.returnValues.from !== userAccount && event.returnValues.to !== userAccount) return;
     const fetchedEvents = await TokenServerAgent.fetchTransferEvents();
     this._events[RayonEvent.Transfer] = fetchedEvents;
     this._eventListeners[RayonEvent.Transfer] &&
@@ -78,10 +77,6 @@ class TokenDC extends RayonDC {
   // 상위 10명의 토큰 보유자
   public async fetchTop10TokenHolders(): Promise<object> {
     return await TokenServerAgent.fetchTop10TokenHolders();
-  }
-  // Admin page transaction chart에 사용될 데이터(Date 라벨, 트랜잭션 수)
-  public async fetchChartData(): Promise<ChartData> {
-    return await TokenServerAgent.fetchChartData();
   }
 }
 

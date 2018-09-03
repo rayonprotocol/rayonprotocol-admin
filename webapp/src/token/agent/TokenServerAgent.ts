@@ -11,7 +11,6 @@ import {
   URLForGetTransactionChartData,
   MintEvent,
   TransferEvent,
-  ChartData,
   RayonEvent,
 } from '../../../../shared/token/model/Token';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
@@ -66,11 +65,6 @@ class TokenServerAgent extends ContractAgent {
   // 상위 10명의 토큰 보유자
   async fetchTop10TokenHolders(): Promise<object> {
     return await this.getRequest<object>(URLForGetTop10TokenHolders);
-  }
-
-  // Admin page transaction chart에 사용될 데이터(Date 라벨, 트랜잭션 수)
-  async fetchChartData(): Promise<ChartData> {
-    return await this.getRequest<ChartData>(URLForGetTransactionChartData);
   }
 }
 

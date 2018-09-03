@@ -23,7 +23,6 @@ import {
   TransferArgs,
   TransferEvent,
   BlockTime,
-  ChartData,
 } from '../../../../shared/token/model/Token';
 
 interface TransferChart {
@@ -32,7 +31,6 @@ interface TransferChart {
 
 class TokenDC extends RayonDC {
   private _tokenHolders = {};
-  private _chartDate: TransferChart = {};
 
   constructor() {
     super();
@@ -43,7 +41,6 @@ class TokenDC extends RayonDC {
     app.get(URLForGetMintEvents, this.respondMintEvent.bind(this));
     app.get(URLForGetTokenHolders, this.respondTokenHolders.bind(this));
     app.get(URLForGetTransferEvents, this.respondTransferEvent.bind(this));
-    app.get(URLForGetTransactionChartData, this.respondChartData.bind(this));
     app.get(URLForGetTokenTotalBalance, this.respondTokenTotalBalance.bind(this));
     app.get(URLForGetTop10TokenHolders, this.respondTop10TokenHolders.bind(this));
   }
@@ -61,18 +58,6 @@ class TokenDC extends RayonDC {
     }
   }
 
-  public respondChartData(req: Request, res: Response) {
-    const sortedLabelList = Object.keys(this._chartDate).sort();
-    const labels = sortedLabelList.length >= 10 ? sortedLabelList.slice(-10) : sortedLabelList;
-    const chartData = labels.map(item => this._chartDate[item]);
-
-    const result: SendResult<Object> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Chart Data', { labels, chartData })
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Response Chart Data', null);
-
-    res.send(result);
-  }
-
   /*
   About Mint Event
   */
@@ -87,8 +72,8 @@ class TokenDC extends RayonDC {
 
   onMintEvent(event: RayonEventResponse<MintArgs>) {
     const newEvent: MintEvent = {
-      to: event.args.to,
-      amount: event.args.amount.toNumber(),
+      to: event.returnValues.to,
+      amount: event.returnValues.amount,
     };
 
     this._events[RayonEvent.Mint] === undefined
@@ -117,37 +102,42 @@ class TokenDC extends RayonDC {
   }
 
   async onTransferEvent(event: RayonEventResponse<TransferArgs>) {
-    const block = await TokenBlockchainAgent.getBlock(event.blockNumber);
+    // const latestBlock = await TokenBlockchainAgent.getBlock('latest');
+    // let timestamp;
+    // if (latestBlock.number < event.blockNumber) {
+    //   timestamp = latestBlock.timestamp;
+    // } else {
+    //   const block = await TokenBlockchainAgent.getBlock(event.blockNumber);
+    //   timestamp = block.timestamp;
+    // }
 
-    const newDate = new Date(block.timestamp * 1000);
-    const newBlockTime: BlockTime = {
-      timestamp: block.timestamp * 1000,
-      year: newDate.getFullYear(),
-      month: newDate.getMonth() + 1,
-      date: newDate.getDate(),
-    };
+    // console.log('latest Block', latestBlock);
+    // console.log('new block', timestamp);
+
+    // const newDate = new Date(timestamp * 1000);
+    // const newBlockTime: BlockTime = {
+    //   timestamp: timestamp * 1000,
+    //   year: newDate.getFullYear(),
+    //   month: newDate.getMonth() + 1,
+    //   date: newDate.getDate(),
+    // };
 
     const newEvent: TransferEvent = {
       txHash: event.transactionHash,
       blockNumber: event.blockNumber,
-      blockTime: newBlockTime,
-      from: event.args.from,
-      to: event.args.to,
-      amount: event.args.value.toNumber(),
+      blockTime: undefined,
+      // blockTime: newBlockTime,
+      from: event.returnValues.from,
+      to: event.returnValues.to,
+      amount: event.returnValues.value,
     };
 
     this._events[RayonEvent.Transfer] === undefined
       ? (this._events[RayonEvent.Transfer] = [newEvent])
       : this._events[RayonEvent.Transfer].push(newEvent);
-    this.setChartData(newEvent);
     this.setHolders(newEvent.from, newEvent.to, newEvent.amount);
     console.log('==========================');
     console.log('transferEvents\n', newEvent);
-  }
-
-  setChartData(event: TransferEvent) {
-    const dateKey = event.blockTime.year + '&' + event.blockTime.month + '/' + event.blockTime.date;
-    this._chartDate[dateKey] = this._chartDate[dateKey] === undefined ? 1 : (this._chartDate[dateKey] += 1);
   }
 
   /*

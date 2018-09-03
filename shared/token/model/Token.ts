@@ -28,15 +28,15 @@ export namespace RayonEvent {
 }
 
 export interface RayonEventResponse<T> {
-  logIndex: number;
-  transactionIndex: number;
-  transactionHash: string;
   blockHash: string;
   blockNumber: number;
+  logIndex: number;
+  transactionHash: string;
+  transactionIndex: number;
   address: string;
   type: string;
   event: string;
-  args: T;
+  returnValues: T;
 }
 
 /*
@@ -44,7 +44,7 @@ Event Respond and Event Arguments interface
 */
 export interface MintArgs {
   to: string;
-  amount: BigNumber;
+  amount: number;
 }
 
 export interface MintEvent {
@@ -55,7 +55,7 @@ export interface MintEvent {
 export interface TransferArgs {
   from: string;
   to: string;
-  value: BigNumber;
+  value: number;
 }
 
 export interface TransferEvent {
@@ -70,11 +70,6 @@ export interface TransferEvent {
 /*
 Etc
 */
-export interface ChartData {
-  labels: string[];
-  chartData: number[];
-}
-
 export interface BlockTime {
   timestamp: number;
   year: number;

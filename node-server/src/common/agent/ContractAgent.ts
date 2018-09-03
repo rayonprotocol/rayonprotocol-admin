@@ -42,12 +42,12 @@ abstract class ContractAgent {
     const contractAddress = this.getContractAddressFromArtifact();
 
     try {
-      this._contractInstance = new web3.eth.Contract(abi,contractAddress);
+      this._contractInstance = new web3.eth.Contract(abi, contractAddress);
     } catch (error) {
       console.error(error);
     }
-
-    // this.startEventWatch();
+    this.getPastEvents();
+    this.addEventListenerOnBlockchain();
   }
 
   private getAbiFromArtifact() {
@@ -59,11 +59,28 @@ abstract class ContractAgent {
     return this._contract['networks'][ROPSTEN_NETWORK_ID]['address'];
   }
 
-  protected startEventWatch() {
-    const eventRange = this.getEventRange();
+  protected getPastEvents() {
     this._watchEvents.forEach(eventType => {
-      const targetEventFunction = this._contractInstance[RayonEvent.getRayonEventName(eventType)]({}, eventRange);
-      targetEventFunction.watch(this.onEvent.bind(this, eventType));
+      this._contractInstance.getPastEvents(
+        RayonEvent.getRayonEventName(eventType),
+        this.getEventRange(),
+        this.handlePastEventFetched.bind(this, eventType)
+      );
+    });
+  }
+
+  protected handlePastEventFetched(eventType, error, events) {
+    events.forEach(event => {
+      this.onEvent(eventType, error, event);
+    });
+  }
+
+  private addEventListenerOnBlockchain() {
+    this._watchEvents.forEach(eventType => {
+      this._contractInstance.events[RayonEvent.getRayonEventName(eventType)](
+        { fromBlock: this.FROM_BLOCK },
+        this.onEvent.bind(this, eventType)
+      );
     });
   }
 
