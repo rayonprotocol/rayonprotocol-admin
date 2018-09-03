@@ -55,7 +55,7 @@ export interface MintEvent {
 export interface TransferArgs {
   from: string;
   to: string;
-  value: number;
+  value: string;
 }
 
 export interface TransferEvent {

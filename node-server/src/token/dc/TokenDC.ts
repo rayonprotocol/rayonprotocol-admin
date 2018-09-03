@@ -25,12 +25,8 @@ import {
   BlockTime,
 } from '../../../../shared/token/model/Token';
 
-interface TransferChart {
-  [date: string]: number;
-}
-
 class TokenDC extends RayonDC {
-  private _tokenHolders = {};
+  private _tokenHolders = new Object();
 
   constructor() {
     super();
@@ -129,13 +125,13 @@ class TokenDC extends RayonDC {
       // blockTime: newBlockTime,
       from: event.returnValues.from,
       to: event.returnValues.to,
-      amount: event.returnValues.value,
+      amount: parseInt(event.returnValues.value, 10),
     };
 
     this._events[RayonEvent.Transfer] === undefined
       ? (this._events[RayonEvent.Transfer] = [newEvent])
       : this._events[RayonEvent.Transfer].push(newEvent);
-    this.setHolders(newEvent.from, newEvent.to, newEvent.amount);
+    this.calculateAndSetHolderBalance(newEvent.from, newEvent.to, newEvent.amount);
     // console.log('==========================');
     // console.log('transferEvents\n', newEvent);
   }
@@ -146,12 +142,10 @@ class TokenDC extends RayonDC {
   public async respondTokenTotalBalance(req: Request, res: Response) {
     const _tokenBalence = await TokenBlockchainAgent.getTokenTotalBalance();
 
-
     const result: SendResult<number> = res.status(200)
       ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', _tokenBalence)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
 
-    console.log('result', result);
     res.send(result);
   }
 
@@ -162,7 +156,7 @@ class TokenDC extends RayonDC {
     return this._tokenHolders;
   }
 
-  public setHolders(from: string, to: string, amount: number) {
+  public calculateAndSetHolderBalance(from: string, to: string, amount: number) {
     this._tokenHolders[from] = this._tokenHolders[from] === undefined ? -amount : this._tokenHolders[from] - amount;
     this._tokenHolders[to] = this._tokenHolders[to] === undefined ? amount : this._tokenHolders[to] + amount;
   }
@@ -176,27 +170,37 @@ class TokenDC extends RayonDC {
   }
 
   public async respondTop10TokenHolders(req: Request, res: Response) {
-    const top10TokenHolders = {};
-    let top10Sum = 0;
-
-    let sortedTokenHolders = Object.keys(this._tokenHolders).sort(
-      (a, b) => this._tokenHolders[b] - this._tokenHolders[a]
-    );
-
-    sortedTokenHolders = sortedTokenHolders.length > 10 ? sortedTokenHolders.slice(10) : sortedTokenHolders;
-    sortedTokenHolders.forEach(item => {
-      top10Sum += this._tokenHolders[item];
-      top10TokenHolders[item] = this._tokenHolders[item];
-    });
-
-    top10TokenHolders['Etc'] =
-      sortedTokenHolders.length > 10 ? (await TokenBlockchainAgent.getTokenTotalBalance()) - top10Sum : 0;
+    const top10TokenHolders = await this.adjustTop10TokenHolders();
 
     const result: SendResult<Object> = res.status(200)
       ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', top10TokenHolders)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
 
     res.send(result);
+  }
+
+  public async adjustTop10TokenHolders() {
+    const top10TokenHolders = {};
+    let top10TotalBalance = 0;
+
+    let sortedTokenHolders = Object.keys(this._tokenHolders).sort(
+      (prev, post) => this._tokenHolders[post] - this._tokenHolders[prev]
+    );
+
+    sortedTokenHolders = sortedTokenHolders.length > 10 ? sortedTokenHolders.slice(10) : sortedTokenHolders;
+    sortedTokenHolders.forEach(item => {
+      if (item === '0x0000000000000000000000000000000000000000') {
+        top10TotalBalance -= this._tokenHolders[item];
+        return;
+      }
+      top10TotalBalance += this._tokenHolders[item];
+      top10TokenHolders[item] = this._tokenHolders[item];
+    });
+
+    top10TokenHolders['Etc'] =
+      sortedTokenHolders.length > 10 ? (await TokenBlockchainAgent.getTokenTotalBalance()) - top10TotalBalance : 0;
+
+    return top10TokenHolders;
   }
 }
 
