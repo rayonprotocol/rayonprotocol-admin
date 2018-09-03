@@ -24,22 +24,6 @@ class TokenServerAgent extends ContractAgent {
     const watchEvents: Set<RayonEvent> = new Set([RayonEvent.Mint, RayonEvent.Transfer]);
     super(contract, watchEvents);
   }
-
-  /*
-  Communicate to blockchain
-  Excute token basic function
-  */
-
-  public async mint(toAddress: string, value: number): Promise<void> {
-    await this.checkAndFetchContractInstance();
-    this._contractInstance.mint(toAddress, value, { from: this.getUserAccount() });
-  }
-
-  public async transfer(toAddress: string, value: number): Promise<void> {
-    await this.checkAndFetchContractInstance();
-    this._contractInstance.transfer(toAddress, value, { from: this.getUserAccount() });
-  }
-
   /*
   Communicate to node-server
   Fetch Kind of rayon token event

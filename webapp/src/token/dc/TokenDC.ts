@@ -52,17 +52,6 @@ class TokenDC extends RayonDC {
       this._eventListeners[RayonEvent.Transfer].forEach(listner => listner(this._events[RayonEvent.Transfer]));
   }
 
-  /*
-  Token basic function
-  */
-  public mint(toAddress: string, value: number): void {
-    TokenServerAgent.mint(toAddress, value);
-  }
-
-  public transfer(toAddress: string, value: number): void {
-    TokenServerAgent.transfer(toAddress, value);
-  }
-
   public async fetchTransferEvents(): Promise<TransferEvent[]> {
     return await TokenServerAgent.fetchTransferEvents();
   }

@@ -21,7 +21,6 @@ interface TotalTokenViewProps {
 }
 
 interface TotalTokenViewState {
-  mintEventList: MintEvent[];
   totalBalance: number;
 }
 
@@ -30,7 +29,6 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
     super(props);
     this.state = {
       ...this.state,
-      mintEventList: new Array(),
       totalBalance: 0,
     };
     this.onMintEvent = this.onMintEvent.bind(this);
@@ -46,7 +44,7 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
 
   async onMintEvent(event: MintEvent[]): Promise<void> {
     const totalBalance = await TokenDC.fetchTokenTotalBalance();
-    this.setState({ ...this.state, mintEventList: event, totalBalance });
+    this.setState({ ...this.state, totalBalance });
   }
 
   onClickDetailButton(): void {
@@ -54,24 +52,13 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
   }
 
   render() {
-    const { mintEventList, totalBalance } = this.state;
-    let latestMintEventList: MintEvent[] = mintEventList.length >= 2 ? mintEventList.slice(-2) : mintEventList;
+    const { totalBalance } = this.state;
+
     return (
       <DashboardContainer className={styles.totalTokenView} title={'Total Token'}>
         <div className={styles.totalTokenSection}>
           <p className={styles.subTitle}>Balance</p>
           <p className={styles.totalToken}>{MakeFormatedNumber(totalBalance)} RYN</p>
-        </div>
-
-        <div className={styles.extraMintedTokenSection}>
-          <p className={styles.subTitle}>Extra Minted Token</p>
-          {latestMintEventList.reverse().map((item, index) => {
-            return (
-              <p key={index} className={styles.extraMintedToken}>
-                {MakeFormatedNumber(item.amount)} RYN
-              </p>
-            );
-          })}
         </div>
 
         <RayonButton
