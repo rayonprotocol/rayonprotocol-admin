@@ -80,8 +80,8 @@ class TokenDC extends RayonDC {
       ? (this._events[RayonEvent.Mint] = [newEvent])
       : this._events[RayonEvent.Mint].push(newEvent);
 
-    console.log('==========================');
-    console.log('mintEvents\n', newEvent);
+    // console.log('==========================');
+    // console.log('mintEvents\n', newEvent);
   }
 
   /*
@@ -136,8 +136,8 @@ class TokenDC extends RayonDC {
       ? (this._events[RayonEvent.Transfer] = [newEvent])
       : this._events[RayonEvent.Transfer].push(newEvent);
     this.setHolders(newEvent.from, newEvent.to, newEvent.amount);
-    console.log('==========================');
-    console.log('transferEvents\n', newEvent);
+    // console.log('==========================');
+    // console.log('transferEvents\n', newEvent);
   }
 
   /*
@@ -146,10 +146,12 @@ class TokenDC extends RayonDC {
   public async respondTokenTotalBalance(req: Request, res: Response) {
     const _tokenBalence = await TokenBlockchainAgent.getTokenTotalBalance();
 
+
     const result: SendResult<number> = res.status(200)
       ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', _tokenBalence)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
 
+    console.log('result', result);
     res.send(result);
   }
 

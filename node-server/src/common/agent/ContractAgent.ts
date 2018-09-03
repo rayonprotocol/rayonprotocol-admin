@@ -46,6 +46,7 @@ abstract class ContractAgent {
     } catch (error) {
       console.error(error);
     }
+    // console.log('this._contractInstance123123', this._contractInstance);
     this.getPastEvents();
     this.addEventListenerOnBlockchain();
   }
@@ -89,7 +90,7 @@ abstract class ContractAgent {
   }
 
   private onEvent(eventType: number, error, event): void {
-    console.log('onEvent', event);
+    // console.log('onEvent', event);
     if (error) {
       console.error(error);
       return;
@@ -111,6 +112,10 @@ abstract class ContractAgent {
 
   public getEventRange() {
     return { fromBlock: this.FROM_BLOCK, toBlock: 'latest' };
+  }
+
+  public async getTokenTotalBalance() {
+    return await this._contractInstance.methods.totalSupply().call();
   }
 }
 

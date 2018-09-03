@@ -14,8 +14,6 @@ import RayonRoutes from 'main/controller/RayonRoutes';
 // style
 import 'common/asset/style.scss';
 
-console.log(process.env.ENV_BLOCKCHAIN)
-
 ReactDom.render(
   <AppContainer>
     <Router history={history}>

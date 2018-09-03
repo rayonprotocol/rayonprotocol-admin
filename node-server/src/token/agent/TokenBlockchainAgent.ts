@@ -8,12 +8,7 @@ import ContractAgent from '../../common/agent/ContractAgent';
 // model
 import SendResult from '../../../../shared/common/model/SendResult';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
-import {
-  URLForGetTokenTotalBalance,
-  URLForGetTokenHolders,
-  URLForGetTop10TokenHolders,
-  RayonEvent,
-} from '../../../../shared/token/model/Token';
+import { RayonEvent } from '../../../../shared/token/model/Token';
 
 // util
 import ContractUtil from '../../common/util/ContractUtil';
@@ -25,9 +20,7 @@ class TokenBlockchainAgent extends ContractAgent {
     super(contract, watchEvents);
   }
 
-  public async getTokenTotalBalance() {
-    return await this._contractInstance.totalSupply;
-  }
+  
 }
 
 export default new TokenBlockchainAgent();

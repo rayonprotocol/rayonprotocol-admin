@@ -16,7 +16,7 @@ class DashboardVC extends Component<{}, {}> {
         <Container>
           <TotalTokenView />
           <TokenHolderView />
-          <TokenHolderGraphView />
+          {/* <TokenHolderGraphView /> */}
         </Container>
       </div>
     );

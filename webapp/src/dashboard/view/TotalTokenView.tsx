@@ -10,9 +10,6 @@ import TokenDC from 'token/dc/TokenDC';
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import RayonButton from 'common/view/button/RayonButton';
 
-// util
-import MakeFormatedNumber from 'common/util/MakeFormatedNumber';
-
 // styles
 import styles from './TotalTokenView.scss';
 
@@ -34,8 +31,10 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
     this.onMintEvent = this.onMintEvent.bind(this);
   }
 
-  componentWillMount(): void {
+  async componentWillMount() {
     TokenDC.addEventListener(RayonEvent.Mint, this.onMintEvent);
+    const totalBalance = await TokenDC.fetchTokenTotalBalance();
+    this.setState({ ...this.state, totalBalance });
   }
 
   componentWillUnmount(): void {
@@ -52,13 +51,11 @@ class TotalTokenView extends Component<TotalTokenViewProps, TotalTokenViewState>
   }
 
   render() {
-    const { totalBalance } = this.state;
-
     return (
       <DashboardContainer className={styles.totalTokenView} title={'Total Token'}>
         <div className={styles.totalTokenSection}>
           <p className={styles.subTitle}>Balance</p>
-          <p className={styles.totalToken}>{MakeFormatedNumber(totalBalance)} RYN</p>
+          <p className={styles.totalToken}>{this.state.totalBalance} RYN</p>
         </div>
 
         <RayonButton

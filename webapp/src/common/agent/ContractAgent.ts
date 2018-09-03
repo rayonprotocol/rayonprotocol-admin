@@ -1,10 +1,8 @@
 import Web3 from 'web3';
 import axios from 'axios';
-import TruffleContract from 'truffle-contract';
 
 // model
 import SendResult from '../../../../shared/common/model/SendResult';
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 // util
 import { RayonEvent } from '../../../../shared/token/model/Token';
@@ -40,46 +38,44 @@ abstract class ContractAgent {
   }
 
   private setWeb3(): void {
-    let browserWeb3: Web3 = (window as any).web3 as Web3;
-    typeof browserWeb3 !== 'undefined'
-      ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
-      : (browserWeb3 = new Web3(ContractUtil.getProvider()));
-    web3 = browserWeb3;
+    // let browserWeb3: Web3 = (window as any).web3 as Web3;
+    // typeof browserWeb3 !== 'undefined'
+    //   ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
+    //   : (browserWeb3 = new Web3(ContractUtil.getProvider()));
+    // web3 = browserWeb3;
+    web3 = new Web3(ContractUtil.getProvider());
   }
 
   public async fetchContractInstance() {
-    // Bring a ABI, Make a TruffleContract object
-    const contract = TruffleContract(this._contract);
-    contract.setProvider(web3.currentProvider);
+    const abi = this.getAbiFromArtifact();
+    const contractAddress = this.getContractAddressFromArtifact();
 
     // find rayon token instance on blockchain
     try {
-      this._contractInstance = await contract.deployed();
+      this._contractInstance = new web3.eth.Contract(abi, contractAddress);
     } catch (error) {
       console.error(error);
     }
 
-    this.startEventWatch();
+    this.addEventListenerOnBlockchain();
   }
 
-  public startEventWatch() {
-    const eventRange = this.getEventRange();
+  private getAbiFromArtifact() {
+    return this._contract['abi'];
+  }
 
-    if (this._contractInstance === undefined) {
-      console.error(`contract Instance is undefined, please check network port ${ContractConfigure.NETWORK_PORT}`);
-      return;
-    }
+  private getContractAddressFromArtifact() {
+    const ROPSTEN_NETWORK_ID = 3;
+    return this._contract['networks'][ROPSTEN_NETWORK_ID]['address'];
+  }
 
+  private addEventListenerOnBlockchain() {
     this._watchEvents.forEach(eventType => {
-      const targetEventFunction = this._contractInstance[RayonEvent.getRayonEventName(eventType)]({}, eventRange);
-      targetEventFunction.watch(this.onEvent.bind(this, eventType));
+      this._contractInstance.events[RayonEvent.getRayonEventName(eventType)](
+        { fromBlock: ContractAgent.FROM_BLOCK },
+        this.onEvent.bind(this, eventType)
+      );
     });
-  }
-
-  // prevent call a undefined contract instance by data conroller
-  // check contract instance is undefined and refetch
-  protected async checkAndFetchContractInstance() {
-    !this._contractInstance && (await this.fetchContractInstance());
   }
 
   public async getRequest<T>(url: string, params?: Object): Promise<T> {
@@ -104,7 +100,10 @@ abstract class ContractAgent {
   // when event trigger on blockchain, this handler will occur
   private onEvent(eventType: RayonEvent, error, event): void {
     console.log('event', event);
-    if (error) console.error(error);
+    if (error) {
+      console.error(error);
+      return;
+    }
     this._eventListener && this._eventListener(eventType, event);
   }
 

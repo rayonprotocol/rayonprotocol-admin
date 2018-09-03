@@ -24,6 +24,7 @@ class TokenServerAgent extends ContractAgent {
     const watchEvents: Set<RayonEvent> = new Set([RayonEvent.Mint, RayonEvent.Transfer]);
     super(contract, watchEvents);
   }
+
   /*
   Communicate to node-server
   Fetch Kind of rayon token event
@@ -38,7 +39,7 @@ class TokenServerAgent extends ContractAgent {
 
   // 토큰의 총 발행량
   async fetchTokenTotalBalance(): Promise<number> {
-    return await this.getRequest<number>(URLForGetTokenTotalBalance);
+    return await this._contractInstance.methods.totalSupply().call();
   }
 
   // 토큰 보유자들의 리스트
