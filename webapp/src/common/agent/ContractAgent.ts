@@ -4,10 +4,11 @@ import TruffleContract from 'truffle-contract';
 
 // model
 import SendResult from '../../../../shared/common/model/SendResult';
-import Environment from '../../../../shared/common/model/Environment';
+import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 // util
 import { RayonEvent } from '../../../../shared/token/model/Token';
+import ContractUtil from 'common/util/ContractUtil';
 
 let web3: Web3;
 let userAccount: string;
@@ -42,7 +43,7 @@ abstract class ContractAgent {
     let browserWeb3: Web3 = (window as any).web3 as Web3;
     typeof browserWeb3 !== 'undefined'
       ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
-      : (browserWeb3 = new Web3(new Web3.providers.HttpProvider(`http://localhost: ${Environment.NETWORK_PORT}`)));
+      : (browserWeb3 = new Web3(ContractUtil.getProvider()));
     web3 = browserWeb3;
   }
 
@@ -65,7 +66,7 @@ abstract class ContractAgent {
     const eventRange = this.getEventRange();
 
     if (this._contractInstance === undefined) {
-      console.error(`contract Instance is undefined, please check network port ${Environment.NETWORK_PORT}`);
+      console.error(`contract Instance is undefined, please check network port ${ContractConfigure.NETWORK_PORT}`);
       return;
     }
 

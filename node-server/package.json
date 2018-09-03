@@ -7,11 +7,12 @@
     "node": ">= 8.9.0"
   },
   "scripts": {
-    "copy-build": "rm -rf ./build && cp -r ../../rayonprotocol-ico/build ./ ",
+    "copy-build:dev": "rm -rf ./build && cp -r ../../rayonprotocol-ico/build/contracts/RayonToken.json ../shared/build/dev/",
+    "copy-build:ropsten": "rm -rf ./build && cp -r ../../rayonprotocol-ico/build/contracts/RayonToken.json ../shared/build/ropsten/",
     "build": "tsc -p tsconfig.release.json",
     "watch": "tsc -w -p tsconfig.release.json",
-    "start:dev": "ENV_BLOCKCHAIN=local nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts  ",
-    "start:testnet": "ENV_BLOCKCHAIN=ropsten nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts"
+    "start:dev": "ENV_BLOCKCHAIN=local nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts",
+    "start:ropsten": "ENV_BLOCKCHAIN=ropsten nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts"
   },
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "APLv2",
@@ -29,14 +30,12 @@
     "jest": "~23.1.0",
     "nodemon": "^1.18.3",
     "rimraf": "~2.6.2",
-    "truffle-contract": "^3.0.6",
-    "truffle-hdwallet-provider": "^0.0.6",
     "ts-jest": "~22.4.6",
     "ts-node": "^7.0.0",
     "tslint": "~5.10.0",
     "tslint-microsoft-contrib": "~5.0.3",
     "tsutils": "~2.27.1",
     "typescript": "~2.9.1",
-    "web3": "^1.0.0-beta.34"
+    "web3": "^1.0.0-beta.35"
   }
 }

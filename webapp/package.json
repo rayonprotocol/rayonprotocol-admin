@@ -7,7 +7,8 @@
   "scripts": {
     "copy-build": "rm -rf ./build && cp -r ../../rayonprotocol-ico/build ./ ",
     "build": "npm run clean-dist && NODE_ENV=production webpack -p --config=configs/webpack/prod.js",
-    "start": "npm run start-dev",
+    "start:dev": "ENV_BLOCKCHAIN=development npm run start-dev",
+    "start:testnet": "ENV_BLOCKCHAIN=ropsten npm run start-dev",
     "start-dev": "NODE_ENV=development webpack-dev-server --config=configs/webpack/dev.js",
     "start-prod": "npm run build && node express.js"
   },
@@ -32,6 +33,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "console-polyfill": "^0.3.0",
     "css-loader": "^0.28.9",
+    "dotenv": "^6.0.0",
     "express": "^4.16.2",
     "file-loader": "^1.1.6",
     "html-webpack-plugin": "^2.30.1",
@@ -57,6 +59,7 @@
     "tslint": "^4.5.1",
     "typescript": "^2.7.1",
     "uglifyjs-webpack-plugin": "^1.1.8",
+    "web3": "^1.0.0-beta.35",
     "web3-typescript-typings": "^0.10.2",
     "webpack": "^3.10.0",
     "webpack-dev-middleware": "^2.0.4",

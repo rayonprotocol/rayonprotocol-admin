@@ -1,3 +1,4 @@
+import { promisify } from 'util';
 import { Express, Request, Response } from 'express';
 
 // agent
@@ -117,6 +118,7 @@ class TokenDC extends RayonDC {
 
   async onTransferEvent(event: RayonEventResponse<TransferArgs>) {
     const block = await TokenBlockchainAgent.getBlock(event.blockNumber);
+
     const newDate = new Date(block.timestamp * 1000);
     const newBlockTime: BlockTime = {
       timestamp: block.timestamp * 1000,

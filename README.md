@@ -84,13 +84,11 @@ cd shared
 yarn
 ```
 
-### Deployment
+### Deploy & Execution 
 
-```
-yarn deploy
-```
+- ICO 소스 코드는 현재 레포지터리가 아닌 별도의 레포지터리에 있다.
 
-### Execution
+
 
 - Run node server
 

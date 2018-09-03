@@ -6,6 +6,9 @@ import TokenDC from '../../token/dc/TokenDC';
 const express = require('express');
 const app = express();
 
+// for use .env variables
+require('dotenv').config();
+
 // defined use middle ware
 app.use(cors({ origin: true, credentials: true }));
 

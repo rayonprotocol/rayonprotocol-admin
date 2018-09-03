@@ -1,22 +1,24 @@
 import Web3 from 'web3';
+import { promisify } from 'util';
 import * as fs from 'fs';
 import * as path from 'path';
 
 // model
 import { RayonEvent } from '../../../../shared/token/model/Token';
+import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 // dc
 import TokenDC from '../../token/dc/TokenDC';
 
 // util
-import ContractProvider from '../util/ContractProvider';
+import ContractUtil from '../util/ContractUtil';
 
 let web3: Web3;
 
 type RayonEventListener = ((eventType: RayonEvent, event: any) => void);
 
 abstract class ContractAgent {
-  public static FROM_BLOCK = 3931119;
+  public FROM_BLOCK = ContractUtil.getContractBlock();
 
   private _contract: JSON;
   private _watchEvents: Set<RayonEvent>;
@@ -32,27 +34,29 @@ abstract class ContractAgent {
 
   private setWeb3() {
     const Web3 = require('web3');
-    const provider = ContractProvider.getProvider();
-    web3 = new Web3(provider);
+    web3 = new Web3(ContractUtil.getProvider());
   }
 
   protected async fetchContractInstance() {
-    const TruffleContract = require('truffle-contract');
+    const abi = this.getAbiFromArtifact();
+    const contractAddress = this.getContractAddressFromArtifact();
 
-    const contract = TruffleContract(this._contract);
-    contract.setProvider(this.getWeb3().currentProvider);
-    if (typeof contract.currentProvider.sendAsync !== 'function') {
-      contract.currentProvider.sendAsync = function() {
-        return contract.currentProvider.send.apply(contract.currentProvider, arguments);
-      };
-    }
     try {
-      this._contractInstance = await contract.deployed();
+      this._contractInstance = new web3.eth.Contract(abi,contractAddress);
     } catch (error) {
       console.error(error);
     }
 
-    this.startEventWatch();
+    // this.startEventWatch();
+  }
+
+  private getAbiFromArtifact() {
+    return this._contract['abi'];
+  }
+
+  private getContractAddressFromArtifact() {
+    const ROPSTEN_NETWORK_ID = 3;
+    return this._contract['networks'][ROPSTEN_NETWORK_ID]['address'];
   }
 
   protected startEventWatch() {
@@ -67,7 +71,7 @@ abstract class ContractAgent {
     this._eventListener = listner;
   }
 
-  private onEvent(eventType: RayonEvent, error, event): void {
+  private onEvent(eventType: number, error, event): void {
     console.log('onEvent', event);
     if (error) {
       console.error(error);
@@ -84,12 +88,12 @@ abstract class ContractAgent {
     return this._contractInstance;
   }
 
-  public async getBlock(blockNumber: number) {
+  public async getBlock(blockNumber) {
     return await web3.eth.getBlock(blockNumber);
   }
 
   public getEventRange() {
-    return { fromBlock: ContractAgent.FROM_BLOCK, toBlock: 'latest' };
+    return { fromBlock: this.FROM_BLOCK, toBlock: 'latest' };
   }
 }
 

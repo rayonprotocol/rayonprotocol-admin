@@ -14,10 +14,14 @@ import {
   ChartData,
   RayonEvent,
 } from '../../../../shared/token/model/Token';
+import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+
+// util
+import ContractUtil from 'common/util/ContractUtil';
 
 class TokenServerAgent extends ContractAgent {
   constructor() {
-    const contract = require('../../../build/contracts/RayonToken.json');
+    const contract = ContractUtil.getContract(ContractConfigure.ADDR_RAYONTOKEN);
     const watchEvents: Set<RayonEvent> = new Set([RayonEvent.Mint, RayonEvent.Transfer]);
     super(contract, watchEvents);
   }

@@ -107,6 +107,7 @@ module.exports = {
       BUILD_ENV: JSON.stringify(isDev ? 'development' : 'production'),
       EMAIL_SUB_API_ROOT: JSON.stringify(isDev ? `http://localhost:3000` : `https://api.march.eco`),
       URL_APIBASE: JSON.stringify(isDev ? `http://${localIp}:3000` : 'https://api.rayonprotocol.io'),
+      ENV_BLOCKCHAIN: JSON.stringify(process.env.ENV_BLOCKCHAIN),
     }),
     new CheckerPlugin(),
     new HtmlWebpackPlugin({

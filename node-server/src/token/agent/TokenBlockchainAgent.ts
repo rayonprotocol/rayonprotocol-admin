@@ -7,6 +7,7 @@ import ContractAgent from '../../common/agent/ContractAgent';
 
 // model
 import SendResult from '../../../../shared/common/model/SendResult';
+import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import {
   URLForGetTokenTotalBalance,
   URLForGetTokenHolders,
@@ -14,11 +15,12 @@ import {
   RayonEvent,
 } from '../../../../shared/token/model/Token';
 
+// util
+import ContractUtil from '../../common/util/ContractUtil';
+
 class TokenBlockchainAgent extends ContractAgent {
   constructor() {
-    const contract = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '../../../../webapp/build/contracts/RayonToken.json'), 'utf8')
-    );
+    const contract = ContractUtil.getContract(ContractConfigure.ADDR_RAYONTOKEN);
     const watchEvents: Set<RayonEvent> = new Set([RayonEvent.Mint, RayonEvent.Transfer]);
     super(contract, watchEvents);
   }
