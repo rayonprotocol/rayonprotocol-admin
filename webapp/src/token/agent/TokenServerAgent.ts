@@ -3,7 +3,6 @@ import ContractAgent from 'common/agent/ContractAgent';
 
 // model
 import {
-  URLForGetTokenTotalBalance,
   URLForGetTokenHolders,
   URLForGetTop10TokenHolders,
   URLForGetMintEvents,

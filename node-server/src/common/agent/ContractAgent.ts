@@ -46,7 +46,6 @@ abstract class ContractAgent {
     } catch (error) {
       console.error(error);
     }
-    console.log('this._contractInstance123123', this._contractInstance);
     this.getPastEvents();
     this.addEventListenerOnBlockchain();
   }

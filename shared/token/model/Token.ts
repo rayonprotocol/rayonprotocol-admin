@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js';
 import { relativeUrl as parentUrl } from '../../interface/Ajax';
 
 // Token URL
-export const URLForGetTokenTotalBalance = `${parentUrl}/totalbalance`;
 export const URLForGetTokenHolders = `${parentUrl}/tokenholders`;
 export const URLForGetTop10TokenHolders = `${parentUrl}/tokenholders/top10`;
 
@@ -70,6 +69,17 @@ export interface TransferEvent {
 /*
 Etc
 */
+export type UserTokenHistory = {
+  [userAddress: string]: TokenHistory[];
+};
+
+export interface TokenHistory {
+  from: string;
+  to: string;
+  amount: number;
+  balance: number;
+}
+
 export interface BlockTime {
   timestamp: number;
   year: number;

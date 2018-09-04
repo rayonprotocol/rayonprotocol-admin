@@ -10,7 +10,6 @@ import RayonDC from '../../common/dc/RayonDC';
 // model
 import SendResult from '../../../../shared/common/model/SendResult';
 import {
-  URLForGetTokenTotalBalance,
   URLForGetTokenHolders,
   URLForGetTop10TokenHolders,
   URLForGetMintEvents,
@@ -23,10 +22,13 @@ import {
   TransferArgs,
   TransferEvent,
   BlockTime,
+  UserTokenHistory,
+  TokenHistory,
 } from '../../../../shared/token/model/Token';
 
 class TokenDC extends RayonDC {
   private _tokenHolders = new Object();
+  private _userTokenHistory: UserTokenHistory = {};
 
   constructor() {
     super();
@@ -37,7 +39,6 @@ class TokenDC extends RayonDC {
     app.get(URLForGetMintEvents, this.respondMintEvent.bind(this));
     app.get(URLForGetTokenHolders, this.respondTokenHolders.bind(this));
     app.get(URLForGetTransferEvents, this.respondTransferEvent.bind(this));
-    app.get(URLForGetTokenTotalBalance, this.respondTokenTotalBalance.bind(this));
     app.get(URLForGetTop10TokenHolders, this.respondTop10TokenHolders.bind(this));
   }
 
@@ -95,6 +96,7 @@ class TokenDC extends RayonDC {
     res.send(result);
   }
 
+  // TODO: 메서드 분리하여 세분화 해야함
   async onTransferEvent(event: RayonEventResponse<TransferArgs>) {
     // const latestBlock = await TokenBlockchainAgent.getBlock('latest');
     // let timestamp;
@@ -129,22 +131,22 @@ class TokenDC extends RayonDC {
     this._events[RayonEvent.Transfer] === undefined
       ? (this._events[RayonEvent.Transfer] = [newEvent])
       : this._events[RayonEvent.Transfer].push(newEvent);
-    this.calculateAndSetHolderBalance(newEvent.from, newEvent.to, newEvent.amount);
+
+    this.setHolderBalance(newEvent.from, newEvent.amount);
+    this.setHolderBalance(newEvent.to, newEvent.amount);
+
+    const newHistory: TokenHistory = {
+      from: newEvent.from,
+      to: newEvent.to,
+      amount: newEvent.amount,
+      balance: 0,
+    };
+
+    this.addTokenHistory(newHistory, newHistory.from);
+    this.addTokenHistory(newHistory, newHistory.to);
+
     // console.log('==========================');
     // console.log('transferEvents\n', newEvent);
-  }
-
-  /*
-    about token balance
-  */
-  public async respondTokenTotalBalance(req: Request, res: Response) {
-    const _tokenBalence = await TokenBlockchainAgent.getTokenTotalBalance();
-
-    const result: SendResult<number> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', _tokenBalence)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
-
-    res.send(result);
   }
 
   /*
@@ -154,9 +156,19 @@ class TokenDC extends RayonDC {
     return this._tokenHolders;
   }
 
-  public calculateAndSetHolderBalance(from: string, to: string, amount: number) {
-    this._tokenHolders[from] = this._tokenHolders[from] === undefined ? -amount : this._tokenHolders[from] - amount;
-    this._tokenHolders[to] = this._tokenHolders[to] === undefined ? amount : this._tokenHolders[to] + amount;
+  public setHolderBalance(userAddress: string, amount: number) {
+    this._tokenHolders[userAddress] =
+      this._tokenHolders[userAddress] === undefined ? -amount : this._tokenHolders[userAddress] - amount;
+  }
+
+  public addTokenHistory(history: TokenHistory, balanceAddress: string) {
+    if (this._userTokenHistory[balanceAddress] === undefined) {
+      history.balance = this._tokenHolders[balanceAddress];
+      this._userTokenHistory[balanceAddress] = [history];
+    } else {
+      history.balance = this._tokenHolders[balanceAddress];
+      this._userTokenHistory[balanceAddress].push(history);
+    }
   }
 
   public async respondTokenHolders(req: Request, res: Response) {
