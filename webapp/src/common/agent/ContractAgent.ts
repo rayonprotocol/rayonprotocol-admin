@@ -91,20 +91,20 @@ abstract class ContractAgent {
     this._eventListener && this._eventListener(eventType, event);
   }
 
-  public getEventRange() {
+  public getEventRange(): Object {
     return { fromBlock: ContractAgent.FROM_BLOCK, toBlock: 'latest' };
   }
 
   // TODO: 아래의 메서드들은 TOKEN DC와 성격이 맞지 않으니 이관해야함
-  public getWeb3() {
+  public getWeb3(): Web3 {
     return web3;
   }
 
-  public async getUserAccount() {
+  public async getUserAccount(): Promise<string> {
     return (await web3.eth.getAccounts())[0];
   }
 
-  public async getNetworkName() {
+  public async getNetworkName(): Promise<string> {
     const networkId = await web3.eth.net.getId();
     if (networkId === 1) return 'Mainnet';
     else if (networkId === 3) return 'Ropsten';

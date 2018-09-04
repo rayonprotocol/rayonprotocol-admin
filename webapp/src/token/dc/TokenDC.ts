@@ -69,11 +69,11 @@ class TokenDC extends RayonDC {
   }
 
   // TODO: 아래의 메서드들은 TOKEN DC와 성격이 맞지 않으니 이관해야함
-  public async getUserAccount() {
+  public async getUserAccount(): Promise<string> {
     return await TokenServerAgent.getUserAccount();
   }
 
-  public async getNetworkName() {
+  public async getNetworkName(): Promise<string> {
     return await TokenServerAgent.getNetworkName();
   }
 }
