@@ -19,7 +19,7 @@ class TotalSupplyView extends Component<TotalSupplyViewProps, {}> {
           <p className={styles.subTitle}>Total Supply</p>
           <p className={styles.totalToken}>
             <AnimatedNumber
-              component={'text'}
+              component={'span'}
               value={this.props.totalBalance}
               style={{
                 transition: '0.8s ease-out',

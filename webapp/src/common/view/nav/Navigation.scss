@@ -3,6 +3,7 @@
 .navigation {
   padding: 15px 50px;
   background-color: $rayon-lake;
+  @include clearfix();
   img {
     width: 120px;
     padding-top: 8px;
@@ -16,6 +17,33 @@
     font-size: 24px;
     a {
       margin-right: 50px;
+    }
+  }
+  .sideNav {
+    float: right;
+    padding-top: 10px;
+  }
+
+  .noMetamaskDesc {
+    font-size: 24px;
+    color: white;
+  }
+  .userInfo {
+    display: inline-block;
+    vertical-align: bottom;
+    p {
+      max-width: 150px;
+      display: inline-block;
+      font-size: 14px;
+      color: white;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      &:first-child {
+        margin-right: 10px;
+      }
+    }
+    &:first-child {
+      margin-right: 30px;
     }
   }
 }

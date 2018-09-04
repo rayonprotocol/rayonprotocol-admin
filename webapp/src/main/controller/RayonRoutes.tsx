@@ -1,13 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-
-// nav
-import Navigation from 'common/view/nav/Navigation';
+import Web3 from 'web3';
 
 // view
+import Navigation from 'common/view/nav/Navigation';
 import DashboardVC from 'dashboard/vc/DashboardVC';
 
-class Router extends Component<{}, {}> {
+interface RouterState {
+  web3: Web3;
+}
+
+class Router extends Component<{}, RouterState> {
   route = [
     {
       path: '/',

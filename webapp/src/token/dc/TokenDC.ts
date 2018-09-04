@@ -42,9 +42,8 @@ class TokenDC extends RayonDC {
   }
 
   private async onTransferEvent(event: RayonEventResponse<TransferArgs>): Promise<void> {
-    const userAccount: string = TokenServerAgent.getUserAccount();
-
     // 자신의 트랜잭션인지 확인
+    // const userAccount: string = this.getUserAccount();
     // if (event.returnValues.from !== userAccount && event.returnValues.to !== userAccount) return;
 
     const fetchedEvents = await TokenServerAgent.fetchTransferEvents();
@@ -67,6 +66,15 @@ class TokenDC extends RayonDC {
   // 상위 10명의 토큰 보유자
   public async fetchTop10TokenHolders(): Promise<object> {
     return await TokenServerAgent.fetchTop10TokenHolders();
+  }
+
+  // TODO: 아래의 메서드들은 TOKEN DC와 성격이 맞지 않으니 이관해야함
+  public async getUserAccount() {
+    return await TokenServerAgent.getUserAccount();
+  }
+
+  public async getNetworkName() {
+    return await TokenServerAgent.getNetworkName();
   }
 }
 

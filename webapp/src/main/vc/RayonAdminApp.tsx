@@ -3,9 +3,7 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDom from 'react-dom';
 import { Router } from 'react-router-dom';
-
 import { AppContainer } from 'react-hot-loader';
-
 import history from 'common/util/Histroy';
 
 // view

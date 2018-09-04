@@ -18,21 +18,17 @@ interface TokenHolderGraphViewState {
 
 class TokenHolderGraphView extends Component<TokenHolderGraphViewProps, TokenHolderGraphViewState> {
   backgroundColor = [
-    'rgba(240, 102, 111,0.7)',
-    'rgba(234,248,191,0.7)',
-    'rgba(170,189,140,0.7)',
-    'rgba(233,227,180,0.7)',
-    'rgba(243,155,109,0.7)',
-    'rgba(251,97,7,0.7)',
-    'rgba(243,222,44,0.7)',
-    'rgba(124,181,24,0.7)',
-    'rgba(92,128,1,0.7)',
-    'rgba(251,176,45,0.7)',
+    'rgba(119, 151, 255,0.7)',
+    'rgba(109,170,232,0.7)',
+    'rgba(132,215,255,0.7)',
+    'rgba(109,132,229,0.7)',
+    'rgba(119,255,213,0.7)',
+    'rgba(207,153,255,0.7)',
+    'rgba(174,159,232,0.7)',
+    'rgba(188,195,255,0.7)',
+    'rgba(159,190,232,0.7)',
+    'rgba(175,234,255,0.7)',
   ];
-
-  onClickDetailButton(): void {
-    console.log('click');
-  }
 
   render() {
     const holdersList = Object.keys(this.props.holders);
@@ -47,7 +43,7 @@ class TokenHolderGraphView extends Component<TokenHolderGraphViewProps, TokenHol
           backgroundColor={this.backgroundColor}
           borderColor={this.backgroundColor}
           height={300}
-        />
+    />
       </DashboardContainer>
     );
   }

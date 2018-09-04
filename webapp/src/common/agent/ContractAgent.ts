@@ -9,7 +9,6 @@ import { RayonEvent } from '../../../../shared/token/model/Token';
 import ContractUtil from 'common/util/ContractUtil';
 
 let web3: Web3;
-let userAccount: string;
 
 type RayonEventListener = ((eventType: RayonEvent, event: any) => void);
 
@@ -27,28 +26,22 @@ abstract class ContractAgent {
     this._contract = contract;
     this._watchEvents = watchEvents;
     this.setWeb3();
-    this.setUserAccount();
     this.fetchContractInstance();
   }
 
-  private setUserAccount(): void {
-    web3.eth.getAccounts((err, accounts) => {
-      userAccount = accounts[0];
-    });
-  }
-
   private setWeb3(): void {
-    // let browserWeb3: Web3 = (window as any).web3 as Web3;
-    // typeof browserWeb3 !== 'undefined'
-    //   ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
-    //   : (browserWeb3 = new Web3(ContractUtil.getProvider()));
-    // web3 = browserWeb3;
-    web3 = new Web3(ContractUtil.getProvider());
+    let browserWeb3: Web3 = (window as any).web3 as Web3;
+    typeof browserWeb3 !== 'undefined'
+      ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
+      : (browserWeb3 = new Web3(ContractUtil.getWebsocketProvider()));
+
+    web3 = browserWeb3;
+    // web3 = new Web3(ContractUtil.getWebsocketProvider());
   }
 
   public async fetchContractInstance() {
-    const abi = this.getAbiFromArtifact();
-    const contractAddress = this.getContractAddressFromArtifact();
+    const abi = ContractUtil.getAbiFromArtifact(this._contract);
+    const contractAddress = ContractUtil.getContractAddressFromArtifact(this._contract);
 
     // find rayon token instance on blockchain
     try {
@@ -58,15 +51,6 @@ abstract class ContractAgent {
     }
 
     this.addEventListenerOnBlockchain();
-  }
-
-  private getAbiFromArtifact() {
-    return this._contract['abi'];
-  }
-
-  private getContractAddressFromArtifact() {
-    const ROPSTEN_NETWORK_ID = 3;
-    return this._contract['networks'][ROPSTEN_NETWORK_ID]['address'];
   }
 
   private addEventListenerOnBlockchain() {
@@ -107,16 +91,24 @@ abstract class ContractAgent {
     this._eventListener && this._eventListener(eventType, event);
   }
 
+  public getEventRange() {
+    return { fromBlock: ContractAgent.FROM_BLOCK, toBlock: 'latest' };
+  }
+
+  // TODO: 아래의 메서드들은 TOKEN DC와 성격이 맞지 않으니 이관해야함
   public getWeb3() {
     return web3;
   }
 
-  public getUserAccount() {
-    return userAccount;
+  public async getUserAccount() {
+    return (await web3.eth.getAccounts())[0];
   }
 
-  public getEventRange() {
-    return { fromBlock: ContractAgent.FROM_BLOCK, toBlock: 'latest' };
+  public async getNetworkName() {
+    const networkId = await web3.eth.net.getId();
+    if (networkId === 1) return 'Mainnet';
+    else if (networkId === 3) return 'Ropsten';
+    else return 'Local';
   }
 }
 

@@ -20,7 +20,7 @@ import ContractUtil from 'common/util/ContractUtil';
 
 class TokenServerAgent extends ContractAgent {
   constructor() {
-    const contract = ContractUtil.getContract(ContractConfigure.ADDR_RAYONTOKEN);
+    const contract = ContractUtil.getContractArtifact(ContractConfigure.ADDR_RAYONTOKEN);
     const watchEvents: Set<RayonEvent> = new Set([RayonEvent.Mint, RayonEvent.Transfer]);
     super(contract, watchEvents);
   }
