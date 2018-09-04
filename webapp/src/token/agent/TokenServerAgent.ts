@@ -39,7 +39,7 @@ class TokenServerAgent extends ContractAgent {
 
   // 토큰의 총 발행량
   async fetchTokenTotalBalance(): Promise<number> {
-    return await this._contractInstance.methods.totalSupply().call();
+    return parseInt(await this._contractInstance.methods.totalSupply().call(), 10);
   }
 
   // 토큰 보유자들의 리스트
