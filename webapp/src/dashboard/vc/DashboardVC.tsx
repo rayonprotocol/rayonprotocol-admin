@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // model
-import { TransferEvent, MintEvent, RayonEvent } from '../../../../shared/token/model/Token';
+import { TransferEvent, MintEvent, RayonEvent, UserTokenHistory } from '../../../../shared/token/model/Token';
 
 // dc
 import TokenDC from 'token/dc/TokenDC';
@@ -10,6 +10,7 @@ import TokenDC from 'token/dc/TokenDC';
 import Container from 'common/view/container/Container';
 import TotalSupplyView from 'dashboard/view/TotalSupplyView';
 import TokenHolderView from 'dashboard/view/TokenHolderView';
+import TokenHolderHistoryView from 'dashboard/view/TokenHolderHistoryView';
 import TokenHolderGraphView from 'dashboard/view/TokenHolderGraphView';
 
 // styles
@@ -18,6 +19,8 @@ import styles from './DashboardVC.scss';
 interface DashboardVCState {
   holders: object;
   totalBalance: number;
+  userTokenHistory: UserTokenHistory;
+  selUserAccount: string;
 }
 
 class DashboardVC extends Component<{}, DashboardVCState> {
@@ -27,17 +30,17 @@ class DashboardVC extends Component<{}, DashboardVCState> {
       ...this.state,
       holders: {},
       totalBalance: 0,
+      userTokenHistory: {},
+      selUserAccount: '',
     };
     this.onTransferEvent = this.onTransferEvent.bind(this);
     this.onMintEvent = this.onMintEvent.bind(this);
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     TokenDC.addEventListener(RayonEvent.Transfer, this.onTransferEvent);
     TokenDC.addEventListener(RayonEvent.Mint, this.onMintEvent);
-    const totalBalance = await TokenDC.fetchTokenTotalBalance();
-    const holders = await TokenDC.fetchTop10TokenHolders();
-    this.setState({ ...this.state, totalBalance, holders });
+    this.setDashboardState();
   }
 
   componentWillUnmount(): void {
@@ -45,14 +48,24 @@ class DashboardVC extends Component<{}, DashboardVCState> {
     TokenDC.removeEventListener(RayonEvent.Mint, this.onMintEvent);
   }
 
-  async onTransferEvent(event: TransferEvent[]): Promise<void> {
-    const holders = await TokenDC.fetchTop10TokenHolders();
-    this.setState({ ...this.state, holders });
+  onTransferEvent(event: TransferEvent[]): void {
+    this.setDashboardState();
   }
 
-  async onMintEvent(event: MintEvent[]): Promise<void> {
+  onMintEvent(event: MintEvent[]): void {
+    this.setDashboardState();
+  }
+
+  async setDashboardState() {
     const totalBalance = await TokenDC.fetchTokenTotalBalance();
-    this.setState({ ...this.state, totalBalance });
+    const holders = await TokenDC.fetchTop10TokenHolders();
+    const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
+    this.setState({ ...this.state, totalBalance, holders, userTokenHistory });
+  }
+
+  onClickHolderAddress(holderAddress: string) {
+    console.log(holderAddress);
+    this.setState({ ...this.state, selUserAccount: holderAddress });
   }
 
   onClickHolderDetailButton() {
@@ -65,7 +78,8 @@ class DashboardVC extends Component<{}, DashboardVCState> {
         <Container>
           <TotalSupplyView totalBalance={this.state.totalBalance} />
           <TokenHolderGraphView holders={this.state.holders} />
-          <TokenHolderView holders={this.state.holders} />
+          <TokenHolderView holders={this.state.holders} onClickHolderAddress={this.onClickHolderAddress.bind(this)} />
+          <TokenHolderHistoryView tokenHistory={this.state.userTokenHistory[this.state.selUserAccount]} />
         </Container>
       </div>
     );

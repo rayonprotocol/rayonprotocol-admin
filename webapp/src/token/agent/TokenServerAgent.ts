@@ -3,14 +3,15 @@ import ContractAgent from 'common/agent/ContractAgent';
 
 // model
 import {
+  URLForGetTokenHistory,
   URLForGetTokenHolders,
   URLForGetTop10TokenHolders,
   URLForGetMintEvents,
   URLForGetTransferEvents,
-  URLForGetTransactionChartData,
   MintEvent,
   TransferEvent,
   RayonEvent,
+  UserTokenHistory,
 } from '../../../../shared/token/model/Token';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
@@ -49,6 +50,11 @@ class TokenServerAgent extends ContractAgent {
   // 상위 10명의 토큰 보유자
   async fetchTop10TokenHolders(): Promise<object> {
     return await this.getRequest<object>(URLForGetTop10TokenHolders);
+  }
+
+  // 유저 별 토큰 전송 히스토리
+  async fetchTokenHistory(): Promise<UserTokenHistory> {
+    return await this.getRequest<UserTokenHistory>(URLForGetTokenHistory);
   }
 }
 

@@ -1,39 +1,54 @@
 import React, { Component } from 'react';
 
+// model
+import { TokenHistory } from '../../../../shared/token/model/Token';
+
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
+
+// util
+import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 
 // styles
 import styles from './TokenHolderHistoryView.scss';
 
 interface TokenHolderHistoryViewProps {
-  userAddress: string;
+  tokenHistory: TokenHistory[];
 }
 
 class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> {
+  getLatest10TokenHistory(): TokenHistory[] {
+    if (ArrayUtil.isEmpty(this.props.tokenHistory)) return [];
+    return this.props.tokenHistory.length > 10
+      ? this.props.tokenHistory.slice(this.props.tokenHistory.length - 10, -1)
+      : this.props.tokenHistory;
+  }
+
   render() {
+    const latest10TokenHistory = this.getLatest10TokenHistory();
+
     return (
-      <DashboardContainer className={styles.tokenHolderView} title={`Token History ${this.props.userAddress}`}>
+      <DashboardContainer className={styles.tokenHolderHistoryView} title={`Token History`}>
         <table>
           <thead>
             <tr>
               <th>From</th>
               <th>To</th>
-              <th>Value</th>
+              <th>Amount</th>
               <th>Balance</th>
             </tr>
           </thead>
           <tbody>
-            {/* {holdersList.map((address, index) => {
+            {latest10TokenHistory.map((history, index) => {
               return (
                 <tr key={index}>
-                  <td>{index}</td>
-                  <td>{address}</td>
-                  <td>{this.props.holders[address]} RYN</td>
-                  <td>{this.props.holders[address]} RYN</td>
+                  <td>{history.from}</td>
+                  <td>{history.to}</td>
+                  <td>{history.amount} RYN</td>
+                  <td>{history.balance} RYN</td>
                 </tr>
               );
-            })} */}
+            })}
           </tbody>
         </table>
       </DashboardContainer>

@@ -14,7 +14,6 @@ import {
   URLForGetTop10TokenHolders,
   URLForGetMintEvents,
   URLForGetTransferEvents,
-  URLForGetTransactionChartData,
   RayonEvent,
   RayonEventResponse,
   MintArgs,
@@ -24,6 +23,7 @@ import {
   BlockTime,
   UserTokenHistory,
   TokenHistory,
+  URLForGetTokenHistory,
 } from '../../../../shared/token/model/Token';
 
 class TokenDC extends RayonDC {
@@ -40,6 +40,7 @@ class TokenDC extends RayonDC {
     app.get(URLForGetTokenHolders, this.respondTokenHolders.bind(this));
     app.get(URLForGetTransferEvents, this.respondTransferEvent.bind(this));
     app.get(URLForGetTop10TokenHolders, this.respondTop10TokenHolders.bind(this));
+    app.get(URLForGetTokenHistory, this.respondTokenHistory.bind(this));
   }
 
   private onEvent(eventType: RayonEvent, event: any): void {
@@ -183,8 +184,8 @@ class TokenDC extends RayonDC {
     const top10TokenHolders = await this.adjustTop10TokenHolders();
 
     const result: SendResult<Object> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', top10TokenHolders)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Top 10 Token Holders', top10TokenHolders)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Top 10 Token Holders', null);
 
     res.send(result);
   }
@@ -211,6 +212,14 @@ class TokenDC extends RayonDC {
       sortedTokenHolders.length > 10 ? (await TokenBlockchainAgent.getTokenTotalBalance()) - top10TotalBalance : 0;
 
     return top10TokenHolders;
+  }
+
+  public respondTokenHistory(req: Request, res: Response) {
+    const result: SendResult<Object> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token History', this._userTokenHistory)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token History', null);
+
+    res.send(result);
   }
 }
 

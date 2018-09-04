@@ -11,6 +11,7 @@ import {
   TransferEvent,
   TransferArgs,
   MintArgs,
+  UserTokenHistory,
 } from '../../../../shared/token/model/Token';
 
 class TokenDC extends RayonDC {
@@ -66,6 +67,11 @@ class TokenDC extends RayonDC {
   // 상위 10명의 토큰 보유자
   public async fetchTop10TokenHolders(): Promise<object> {
     return await TokenServerAgent.fetchTop10TokenHolders();
+  }
+
+  // 유저 별 토큰 전송 히스토리
+  async fetchTokenHistory(): Promise<UserTokenHistory> {
+    return await TokenServerAgent.fetchTokenHistory();
   }
 
   // TODO: 아래의 메서드들은 TOKEN DC와 성격이 맞지 않으니 이관해야함

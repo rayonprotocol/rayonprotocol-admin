@@ -7,6 +7,7 @@ import DashboardContainer from 'common/view/container/DashboardContainer';
 import styles from './TokenHolderView.scss';
 
 interface TokenHolderProps {
+  onClickHolderAddress: (holderAddress: string) => void;
   holders: object;
 }
 
@@ -26,7 +27,7 @@ class TokenHolderView extends Component<TokenHolderProps, {}> {
           <tbody>
             {holdersList.map((address, index) => {
               return (
-                <tr key={index}>
+                <tr key={index} onClick={() => this.props.onClickHolderAddress(address)}>
                   <td>{index}</td>
                   <td>{address}</td>
                   <td>{this.props.holders[address]} RYN</td>
