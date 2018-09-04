@@ -133,8 +133,7 @@ class TokenDC extends RayonDC {
       ? (this._events[RayonEvent.Transfer] = [newEvent])
       : this._events[RayonEvent.Transfer].push(newEvent);
 
-    this.setHolderBalance(newEvent.from, newEvent.amount);
-    this.setHolderBalance(newEvent.to, newEvent.amount);
+    this.setHolderBalance(newEvent);
 
     const newHistory: TokenHistory = {
       from: newEvent.from,
@@ -157,9 +156,15 @@ class TokenDC extends RayonDC {
     return this._tokenHolders;
   }
 
-  public setHolderBalance(userAddress: string, amount: number) {
-    this._tokenHolders[userAddress] =
-      this._tokenHolders[userAddress] === undefined ? -amount : this._tokenHolders[userAddress] - amount;
+  public setHolderBalance(newEvent: TransferEvent) {
+    this._tokenHolders[newEvent.from] =
+      this._tokenHolders[newEvent.from] === undefined
+        ? newEvent.amount
+        : this._tokenHolders[newEvent.from] - newEvent.amount;
+    this._tokenHolders[newEvent.to] =
+      this._tokenHolders[newEvent.to] === undefined
+        ? newEvent.amount
+        : this._tokenHolders[newEvent.to] + newEvent.amount;
   }
 
   public addTokenHistory(history: TokenHistory, balanceAddress: string) {
