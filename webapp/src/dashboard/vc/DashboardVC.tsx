@@ -8,7 +8,7 @@ import TokenDC from 'token/dc/TokenDC';
 
 // view
 import Container from 'common/view/container/Container';
-import TotalTokenView from 'dashboard/view/TotalTokenView';
+import TotalSupplyView from 'dashboard/view/TotalSupplyView';
 import TokenHolderView from 'dashboard/view/TokenHolderView';
 import TokenHolderGraphView from 'dashboard/view/TokenHolderGraphView';
 
@@ -63,9 +63,9 @@ class DashboardVC extends Component<{}, DashboardVCState> {
     return (
       <div className={styles.dashboard}>
         <Container>
-          <TotalTokenView totalBalance={this.state.totalBalance} />
-          <TokenHolderView holders={this.state.holders} />
+          <TotalSupplyView totalBalance={this.state.totalBalance} />
           <TokenHolderGraphView holders={this.state.holders} />
+          <TokenHolderView holders={this.state.holders} />
         </Container>
       </div>
     );

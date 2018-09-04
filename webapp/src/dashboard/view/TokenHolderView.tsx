@@ -21,7 +21,6 @@ class TokenHolderView extends Component<TokenHolderProps, {}> {
               <th>Rank</th>
               <th>Address</th>
               <th>Quantity</th>
-              {/* <th>Percentage</th> */}
             </tr>
           </thead>
           <tbody>
@@ -31,7 +30,6 @@ class TokenHolderView extends Component<TokenHolderProps, {}> {
                   <td>{index}</td>
                   <td>{address}</td>
                   <td>{this.props.holders[address]} RYN</td>
-                  {/* <td>{item.percentage}%</td> */}
                 </tr>
               );
             })}

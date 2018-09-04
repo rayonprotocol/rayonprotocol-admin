@@ -5,18 +5,18 @@ import AnimatedNumber from 'react-animated-number';
 import DashboardContainer from 'common/view/container/DashboardContainer';
 
 // styles
-import styles from './TotalTokenView.scss';
+import styles from './TotalSupplyView.scss';
 
-interface TotalTokenViewProps {
+interface TotalSupplyViewProps {
   totalBalance: number;
 }
 
-class TotalTokenView extends Component<TotalTokenViewProps, {}> {
+class TotalSupplyView extends Component<TotalSupplyViewProps, {}> {
   render() {
     return (
-      <DashboardContainer className={styles.totalTokenView} title={'Total Token'}>
+      <DashboardContainer className={styles.totalTokenView} title={'Total Supply'}>
         <div className={styles.totalTokenSection}>
-          <p className={styles.subTitle}>Balance</p>
+          <p className={styles.subTitle}>Total Supply</p>
           <p className={styles.totalToken}>
             <AnimatedNumber
               component={'text'}
@@ -39,4 +39,4 @@ class TotalTokenView extends Component<TotalTokenViewProps, {}> {
   }
 }
 
-export default TotalTokenView;
+export default TotalSupplyView;

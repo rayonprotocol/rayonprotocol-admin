@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import DoughnutChart from 'common/view/chart/DoughnutChart';
-import RayonButton from 'common/view/button/RayonButton';
 
 // styles
 import styles from './TokenHolderGraphView.scss';
@@ -48,11 +47,6 @@ class TokenHolderGraphView extends Component<TokenHolderGraphViewProps, TokenHol
           backgroundColor={this.backgroundColor}
           borderColor={this.backgroundColor}
           height={300}
-        />
-        <RayonButton
-          className={styles.detailBtn}
-          title={'detail'}
-          onClickButton={this.onClickDetailButton.bind(this)}
         />
       </DashboardContainer>
     );
