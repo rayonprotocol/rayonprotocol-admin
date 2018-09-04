@@ -45,7 +45,8 @@ class TokenDC extends RayonDC {
     const userAccount: string = TokenServerAgent.getUserAccount();
 
     // 자신의 트랜잭션인지 확인
-    if (event.returnValues.from !== userAccount && event.returnValues.to !== userAccount) return;
+    // if (event.returnValues.from !== userAccount && event.returnValues.to !== userAccount) return;
+
     const fetchedEvents = await TokenServerAgent.fetchTransferEvents();
     this._events[RayonEvent.Transfer] = fetchedEvents;
     this._eventListeners[RayonEvent.Transfer] &&

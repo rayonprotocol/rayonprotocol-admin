@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
 
-// model
-import { TransferEvent, RayonEvent } from '../../../../shared/token/model/Token';
-
-// dc
-import TokenDC from 'token/dc/TokenDC';
-
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import DoughnutChart from 'common/view/chart/DoughnutChart';
@@ -14,13 +8,16 @@ import RayonButton from 'common/view/button/RayonButton';
 // styles
 import styles from './TokenHolderGraphView.scss';
 
-interface TokenHolderGraphViewState {
-  labels: string[];
-  data: number[];
+interface TokenHolderGraphViewProps {
   holders: object;
 }
 
-class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
+interface TokenHolderGraphViewState {
+  labels: string[];
+  data: number[];
+}
+
+class TokenHolderGraphView extends Component<TokenHolderGraphViewProps, TokenHolderGraphViewState> {
   backgroundColor = [
     'rgba(240, 102, 111,0.7)',
     'rgba(234,248,191,0.7)',
@@ -34,38 +31,13 @@ class TokenHolderGraphView extends Component<{}, TokenHolderGraphViewState> {
     'rgba(251,176,45,0.7)',
   ];
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      ...this.state,
-      holders: {},
-    };
-    this.getTransferEvent = this.getTransferEvent.bind(this);
-  }
-
-  async componentWillMount() {
-    TokenDC.addEventListener(RayonEvent.Transfer, this.getTransferEvent);
-    const holders = await TokenDC.fetchTop10TokenHolders();
-    this.setState({ ...this.state, holders });
-  }
-
-  componentWillUnmount(): void {
-    TokenDC.removeEventListener(RayonEvent.Transfer, this.getTransferEvent);
-  }
-
-  async getTransferEvent(event: TransferEvent[]): Promise<void> {
-    const holders = await TokenDC.fetchTop10TokenHolders();
-    this.setState({ ...this.state, holders });
-  }
-
   onClickDetailButton(): void {
     console.log('click');
   }
 
   render() {
-    const { holders } = this.state;
-    const holdersList = Object.keys(holders);
-    const data = holdersList.map(address => holders[address]);
+    const holdersList = Object.keys(this.props.holders);
+    const data = holdersList.map(address => this.props.holders[address]);
 
     return (
       <DashboardContainer className={styles.tokenHolderGraphView} title={'Top 10 Holders'}>

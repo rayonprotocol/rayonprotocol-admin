@@ -86,9 +86,7 @@ class TokenDC extends RayonDC {
 
   public respondTransferEvent(req: Request, res: Response) {
     if (this._events[RayonEvent.Transfer] === undefined) return;
-    const sortedTransferEvent = this._events[RayonEvent.Transfer].sort(
-      (a, b) => b.blockTime.timestamp - a.blockTime.timestamp
-    );
+    const sortedTransferEvent = this._events[RayonEvent.Transfer].sort((a, b) => b.blockNumber - a.blockNumber);
 
     const result: SendResult<TransferEvent[]> = res.status(200)
       ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Transfer Events', sortedTransferEvent)
