@@ -35,7 +35,7 @@ class DashboardVC extends Component<{}, DashboardVCState> {
       totalSupply: 0,
       userTokenHistory: {},
       selUserAccount: '',
-      intervalTimerId: setInterval(this.setLoadingAndfetchDashboadState.bind(this), 2000),
+      intervalTimerId: setInterval(this.setLoadingAndfetchDashboadState.bind(this), 30000),
       isStateLoading: true,
     };
   }
@@ -45,12 +45,10 @@ class DashboardVC extends Component<{}, DashboardVCState> {
   }
 
   setLoadingAndfetchDashboadState() {
-    console.log('yo');
     this.setState({ ...this.state, isStateLoading: true }, this.fetchDashboardStates.bind(this));
   }
 
   async fetchDashboardStates() {
-    console.log('wow');
     const totalSupply = await TokenDC.fetchTokenTotalBalance();
     const holders = await TokenDC.fetchTop10TokenHolders();
     const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();

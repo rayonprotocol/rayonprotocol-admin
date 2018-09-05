@@ -21,8 +21,8 @@ class TokenHolderGraphView extends Component<TokenHolderGraphViewProps, TokenHol
     'rgba(119, 151, 255,0.7)',
     'rgba(109,170,232,0.7)',
     'rgba(132,215,255,0.7)',
-    'rgba(109,132,229,0.7)',
     'rgba(119,255,213,0.7)',
+    'rgba(109,132,229,0.7)',
     'rgba(207,153,255,0.7)',
     'rgba(174,159,232,0.7)',
     'rgba(188,195,255,0.7)',
@@ -43,7 +43,7 @@ class TokenHolderGraphView extends Component<TokenHolderGraphViewProps, TokenHol
           backgroundColor={this.backgroundColor}
           borderColor={this.backgroundColor}
           height={300}
-    />
+        />
       </DashboardContainer>
     );
   }
