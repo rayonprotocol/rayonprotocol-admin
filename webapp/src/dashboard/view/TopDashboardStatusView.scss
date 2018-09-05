@@ -1,0 +1,22 @@
+@import '~common/asset/partial';
+
+.topDashboardStatus {
+  @include clearfix();
+  .loadingStatus {
+    float: right;
+    p {
+      display: inline-block;
+      &:first-child {
+        margin-right: 20px;
+        color: #007e33;
+      }
+    }
+  }
+  .isLoading {
+    p {
+      &:first-child {
+        color: #cc0000;
+      }
+    }
+  }
+}

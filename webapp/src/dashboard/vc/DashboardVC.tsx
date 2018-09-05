@@ -12,6 +12,7 @@ import TotalSupplyView from 'dashboard/view/TotalSupplyView';
 import TokenHolderView from 'dashboard/view/TokenHolderView';
 import TokenHolderHistoryView from 'dashboard/view/TokenHolderHistoryView';
 import TokenHolderGraphView from 'dashboard/view/TokenHolderGraphView';
+import TopDashboardStatusView from 'dashboard/view/TopDashboardStatusView';
 
 // styles
 import styles from './DashboardVC.scss';
@@ -21,6 +22,8 @@ interface DashboardVCState {
   totalSupply: number;
   userTokenHistory: UserTokenHistory;
   selUserAccount: string;
+  intervalTimerId: number;
+  isStateLoading: boolean;
 }
 
 class DashboardVC extends Component<{}, DashboardVCState> {
@@ -32,18 +35,26 @@ class DashboardVC extends Component<{}, DashboardVCState> {
       totalSupply: 0,
       userTokenHistory: {},
       selUserAccount: '',
+      intervalTimerId: setInterval(this.setLoadingAndfetchDashboadState.bind(this), 2000),
+      isStateLoading: true,
     };
   }
 
   componentWillMount() {
-    this.setDashboardState();
+    this.setLoadingAndfetchDashboadState();
   }
 
-  async setDashboardState() {
+  setLoadingAndfetchDashboadState() {
+    console.log('yo');
+    this.setState({ ...this.state, isStateLoading: true }, this.fetchDashboardStates.bind(this));
+  }
+
+  async fetchDashboardStates() {
+    console.log('wow');
     const totalSupply = await TokenDC.fetchTokenTotalBalance();
     const holders = await TokenDC.fetchTop10TokenHolders();
     const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
-    this.setState({ ...this.state, totalSupply, holders, userTokenHistory });
+    this.setState({ ...this.state, totalSupply, holders, userTokenHistory, isStateLoading: false });
   }
 
   onClickHolderAddress(holderAddress: string) {
@@ -58,6 +69,7 @@ class DashboardVC extends Component<{}, DashboardVCState> {
     return (
       <div className={styles.dashboard}>
         <Container>
+          <TopDashboardStatusView isLoading={this.state.isStateLoading} />
           <TotalSupplyView totalSupply={this.state.totalSupply} />
           <TokenHolderGraphView holders={this.state.holders} />
           <TokenHolderView holders={this.state.holders} onClickHolderAddress={this.onClickHolderAddress.bind(this)} />

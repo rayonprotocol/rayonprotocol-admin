@@ -35,7 +35,7 @@ abstract class ContractAgent {
     const abi = ContractUtil.getAbiFromArtifact(this._contract);
     const contractAddress = ContractUtil.getContractAddressFromArtifact(this._contract);
 
-    // find rayon token instance on blockchain
+    // make contract instance(including api to communicate blockchain)
     try {
       this._contractInstance = new web3.eth.Contract(abi, contractAddress);
     } catch (error) {
@@ -43,19 +43,19 @@ abstract class ContractAgent {
     }
   }
 
+  public async postRequest<T>(url: string, params?: Object): Promise<SendResult<T>> {
+    const { data } = await axios.post(`${URL_APIBASE}${url}`, params);
+    return <SendResult<T>>data;
+  }
+
   public async getRequest<T>(url: string, params?: Object): Promise<T> {
-    // To server
     const { data } = await axios.get(`${URL_APIBASE}${url}`, { params: params });
-    // Return undfined in case of failure
-    if (data === undefined || data['result_code'] !== ContractAgent.RESULTCODE_SUCCESS) return undefined;
+    if (this.isRequestFail(data)) return undefined;
     else return data['data'];
   }
 
-  public async postRequest<T>(url: string, params?: Object): Promise<SendResult<T>> {
-    // To server
-    const { data } = await axios.post(`${URL_APIBASE}${url}`, params);
-    // Return undfined in case of failure
-    return <SendResult<T>>data;
+  private isRequestFail(responsedData): boolean {
+    return responsedData === undefined || responsedData['result_code'] !== ContractAgent.RESULTCODE_SUCCESS;
   }
 
   // TODO: 아래의 메서드들은 TOKEN DC와 성격이 맞지 않으니 이관해야함
