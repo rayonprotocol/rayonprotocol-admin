@@ -10,7 +10,6 @@ import {
   URLForGetTransferEvents,
   MintEvent,
   TransferEvent,
-  RayonEvent,
   UserTokenHistory,
 } from '../../../../shared/token/model/Token';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
@@ -21,14 +20,9 @@ import ContractUtil from 'common/util/ContractUtil';
 class TokenServerAgent extends ContractAgent {
   constructor() {
     const contract = ContractUtil.getContractArtifact(ContractConfigure.ADDR_RAYONTOKEN);
-    const watchEvents: Set<RayonEvent> = new Set([RayonEvent.Mint, RayonEvent.Transfer]);
-    super(contract, watchEvents);
+    super(contract);
   }
 
-  /*
-  Communicate to node-server
-  Fetch Kind of rayon token event
-  */
   async fetchMintEvents(): Promise<MintEvent[]> {
     return await this.getRequest<MintEvent[]>(URLForGetMintEvents);
   }

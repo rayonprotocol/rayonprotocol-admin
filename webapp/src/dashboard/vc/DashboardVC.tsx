@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // model
-import { TransferEvent, MintEvent, RayonEvent, UserTokenHistory } from '../../../../shared/token/model/Token';
+import { UserTokenHistory } from '../../../../shared/token/model/Token';
 
 // dc
 import TokenDC from 'token/dc/TokenDC';
@@ -33,28 +33,9 @@ class DashboardVC extends Component<{}, DashboardVCState> {
       userTokenHistory: {},
       selUserAccount: '',
     };
-    this.onTransferEvent = this.onTransferEvent.bind(this);
-    this.onMintEvent = this.onMintEvent.bind(this);
   }
 
   componentWillMount() {
-    TokenDC.addEventListener(RayonEvent.Transfer, this.onTransferEvent);
-    TokenDC.addEventListener(RayonEvent.Mint, this.onMintEvent);
-    this.setDashboardState();
-  }
-
-  componentWillUnmount(): void {
-    TokenDC.removeEventListener(RayonEvent.Transfer, this.onTransferEvent);
-    TokenDC.removeEventListener(RayonEvent.Mint, this.onMintEvent);
-  }
-
-  onTransferEvent(event: TransferEvent[]): void {
-    console.log('transferevent',event)
-    this.setDashboardState();
-  }
-
-  onMintEvent(event: MintEvent[]): void {
-    console.log('mintevent',event)
     this.setDashboardState();
   }
 
