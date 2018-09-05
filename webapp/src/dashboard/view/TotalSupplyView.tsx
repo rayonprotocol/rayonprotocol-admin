@@ -8,7 +8,7 @@ import DashboardContainer from 'common/view/container/DashboardContainer';
 import styles from './TotalSupplyView.scss';
 
 interface TotalSupplyViewProps {
-  totalBalance: number;
+  totalSupply: number;
 }
 
 class TotalSupplyView extends Component<TotalSupplyViewProps, {}> {
@@ -20,7 +20,7 @@ class TotalSupplyView extends Component<TotalSupplyViewProps, {}> {
           <p className={styles.totalToken}>
             <AnimatedNumber
               component={'span'}
-              value={this.props.totalBalance}
+              value={this.props.totalSupply}
               style={{
                 transition: '0.8s ease-out',
                 fontSize: 48,

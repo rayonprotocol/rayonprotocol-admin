@@ -14,7 +14,7 @@ type RayonEventListener = ((eventType: RayonEvent, event: any) => void);
 
 abstract class ContractAgent {
   public static RESULTCODE_SUCCESS: number = 0;
-  public static FROM_BLOCK = 'latest'; // event watch start block
+  public static FROM_BLOCK = ContractUtil.getContractDeployedBlock(); // event watch start block
 
   private _contract: JSON; // json which is including ABI and contract address
   protected _contractInstance;
@@ -30,13 +30,13 @@ abstract class ContractAgent {
   }
 
   private setWeb3(): void {
-    let browserWeb3: Web3 = (window as any).web3 as Web3;
-    typeof browserWeb3 !== 'undefined'
-      ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
-      : (browserWeb3 = new Web3(ContractUtil.getWebsocketProvider()));
+    // let browserWeb3: Web3 = (window as any).web3 as Web3;
+    // typeof browserWeb3 !== 'undefined'
+    //   ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
+    //   : (browserWeb3 = new Web3(ContractUtil.getWebsocketProvider()));
 
-    web3 = browserWeb3;
-    // web3 = new Web3(ContractUtil.getWebsocketProvider());
+    // web3 = browserWeb3;
+    web3 = new Web3(ContractUtil.getWebsocketProvider());
   }
 
   public async fetchContractInstance() {

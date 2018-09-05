@@ -15,7 +15,7 @@ class ContractUtil {
     return new Web3.providers.WebsocketProvider(nodeUrl);
   }
 
-  public getContractBlock(): number {
+  public getContractDeployedBlock(): number {
     if (process.env.ENV_BLOCKCHAIN === ContractConfigure.ENV_LOCAL) return ContractConfigure.CONTRACTBLOCK_LOCAL;
     else if (process.env.ENV_BLOCKCHAIN === ContractConfigure.ENV_TESTNET)
       return ContractConfigure.CONTRACTBLOCK_TESTNET;

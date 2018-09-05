@@ -102,31 +102,30 @@ class TokenDC extends RayonDC {
 
   // TODO: 메서드 분리하여 세분화 해야함
   async onTransferEvent(event: RayonEventResponse<TransferArgs>) {
-    // const latestBlock = await TokenBlockchainAgent.getBlock('latest');
-    // let timestamp;
-    // if (latestBlock.number < event.blockNumber) {
-    //   timestamp = latestBlock.timestamp;
-    // } else {
-    //   const block = await TokenBlockchainAgent.getBlock(event.blockNumber);
-    //   timestamp = block.timestamp;
-    // }
+    let newEventBlock;
+    let flag = 0;
 
-    // console.log('latest Block', latestBlock);
-    // console.log('new block', timestamp);
+    newEventBlock = await TokenBlockchainAgent.getBlock(event.blockNumber);
 
-    // const newDate = new Date(timestamp * 1000);
-    // const newBlockTime: BlockTime = {
-    //   timestamp: timestamp * 1000,
-    //   year: newDate.getFullYear(),
-    //   month: newDate.getMonth() + 1,
-    //   date: newDate.getDate(),
-    // };
+    while (newEventBlock === undefined || newEventBlock === null) {
+      this.wait(1000);
+      newEventBlock = await TokenBlockchainAgent.getBlock(event.blockNumber);
+      flag++;
+      if (flag > 10) newEventBlock = await TokenBlockchainAgent.getBlock('latest');
+    }
+
+    const newDate = new Date(newEventBlock.timestamp * 1000);
+    const newBlockTime: BlockTime = {
+      timestamp: newEventBlock.timestamp * 1000,
+      year: newDate.getFullYear(),
+      month: newDate.getMonth() + 1,
+      date: newDate.getDate(),
+    };
 
     const newEvent: TransferEvent = {
       txHash: event.transactionHash,
       blockNumber: event.blockNumber,
-      blockTime: undefined,
-      // blockTime: newBlockTime,
+      blockTime: newBlockTime,
       from: event.returnValues.from,
       to: event.returnValues.to,
       amount: parseInt(event.returnValues.value, 10),
@@ -142,6 +141,14 @@ class TokenDC extends RayonDC {
 
     // console.log('==========================');
     // console.log('transferEvents\n', newEvent);
+  }
+
+  wait(ms) {
+    let start = Date.now(),
+      now = start;
+    while (now - start < ms) {
+      now = Date.now();
+    }
   }
 
   /*

@@ -18,7 +18,7 @@ let web3: Web3;
 type RayonEventListener = ((eventType: RayonEvent, event: any) => void);
 
 abstract class ContractAgent {
-  public FROM_BLOCK = ContractUtil.getContractBlock();
+  public FROM_BLOCK = ContractUtil.getContractDeployedBlock();
 
   private _contract: JSON;
   private _watchEvents: Set<RayonEvent>;
@@ -89,7 +89,7 @@ abstract class ContractAgent {
   }
 
   private onEvent(eventType: number, error, event): void {
-    // console.log('onEvent', event);
+    console.log('onEvent', event);
     if (error) {
       console.error(error);
       return;

@@ -18,7 +18,7 @@ import styles from './DashboardVC.scss';
 
 interface DashboardVCState {
   holders: object;
-  totalBalance: number;
+  totalSupply: number;
   userTokenHistory: UserTokenHistory;
   selUserAccount: string;
 }
@@ -29,7 +29,7 @@ class DashboardVC extends Component<{}, DashboardVCState> {
     this.state = {
       ...this.state,
       holders: {},
-      totalBalance: 0,
+      totalSupply: 0,
       userTokenHistory: {},
       selUserAccount: '',
     };
@@ -49,18 +49,20 @@ class DashboardVC extends Component<{}, DashboardVCState> {
   }
 
   onTransferEvent(event: TransferEvent[]): void {
+    console.log('transferevent',event)
     this.setDashboardState();
   }
 
   onMintEvent(event: MintEvent[]): void {
+    console.log('mintevent',event)
     this.setDashboardState();
   }
 
   async setDashboardState() {
-    const totalBalance = await TokenDC.fetchTokenTotalBalance();
+    const totalSupply = await TokenDC.fetchTokenTotalBalance();
     const holders = await TokenDC.fetchTop10TokenHolders();
     const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
-    this.setState({ ...this.state, totalBalance, holders, userTokenHistory });
+    this.setState({ ...this.state, totalSupply, holders, userTokenHistory });
   }
 
   onClickHolderAddress(holderAddress: string) {
@@ -75,7 +77,7 @@ class DashboardVC extends Component<{}, DashboardVCState> {
     return (
       <div className={styles.dashboard}>
         <Container>
-          <TotalSupplyView totalBalance={this.state.totalBalance} />
+          <TotalSupplyView totalSupply={this.state.totalSupply} />
           <TokenHolderGraphView holders={this.state.holders} />
           <TokenHolderView holders={this.state.holders} onClickHolderAddress={this.onClickHolderAddress.bind(this)} />
           <TokenHolderHistoryView tokenHistory={this.state.userTokenHistory[this.state.selUserAccount]} />
