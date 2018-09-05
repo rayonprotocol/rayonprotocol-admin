@@ -26,6 +26,9 @@ import {
   URLForGetTokenHistory,
 } from '../../../../shared/token/model/Token';
 
+// util
+import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
+
 class TokenDC extends RayonDC {
   private _tokenHolders = new Object();
   private _userTokenHistory: UserTokenHistory = {};
@@ -135,15 +138,7 @@ class TokenDC extends RayonDC {
 
     this.setHolderBalance(newEvent);
 
-    const newHistory: TokenHistory = {
-      from: newEvent.from,
-      to: newEvent.to,
-      amount: newEvent.amount,
-      balance: 0,
-    };
-
-    this.addTokenHistory(newHistory, newHistory.from);
-    this.addTokenHistory(newHistory, newHistory.to);
+    this.addTokenHistory(newEvent);
 
     // console.log('==========================');
     // console.log('transferEvents\n', newEvent);
@@ -167,14 +162,26 @@ class TokenDC extends RayonDC {
         : this._tokenHolders[newEvent.to] + newEvent.amount;
   }
 
-  public addTokenHistory(history: TokenHistory, balanceAddress: string) {
-    if (this._userTokenHistory[balanceAddress] === undefined) {
-      history.balance = this._tokenHolders[balanceAddress];
-      this._userTokenHistory[balanceAddress] = [history];
-    } else {
-      history.balance = this._tokenHolders[balanceAddress];
-      this._userTokenHistory[balanceAddress].push(history);
-    }
+  public addTokenHistory(transferEvent: TransferEvent) {
+    const fromHistory: TokenHistory = this.getNewTokenHistory(transferEvent, this._tokenHolders[transferEvent.from]);
+    const toHistory: TokenHistory = this.getNewTokenHistory(transferEvent, this._tokenHolders[transferEvent.to]);
+
+    if (ArrayUtil.isEmpty(this._userTokenHistory[transferEvent.from]))
+      this._userTokenHistory[transferEvent.from] = new Array<TokenHistory>();
+    if (ArrayUtil.isEmpty(this._userTokenHistory[transferEvent.to]))
+      this._userTokenHistory[transferEvent.to] = new Array<TokenHistory>();
+
+    this._userTokenHistory[transferEvent.from].push(fromHistory);
+    this._userTokenHistory[transferEvent.to].push(toHistory);
+  }
+
+  public getNewTokenHistory(transferEvent: TransferEvent, balance: number) {
+    return {
+      from: transferEvent.from,
+      to: transferEvent.to,
+      amount: transferEvent.amount,
+      balance,
+    };
   }
 
   public async respondTokenHolders(req: Request, res: Response) {

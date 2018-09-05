@@ -19,9 +19,7 @@ interface TokenHolderHistoryViewProps {
 class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> {
   getLatest10TokenHistory(): TokenHistory[] {
     if (ArrayUtil.isEmpty(this.props.tokenHistory)) return [];
-    return this.props.tokenHistory.length > 10
-      ? this.props.tokenHistory.slice(this.props.tokenHistory.length - 10, -1)
-      : this.props.tokenHistory;
+    return this.props.tokenHistory.length > 10 ? this.props.tokenHistory.slice(-10) : this.props.tokenHistory;
   }
 
   render() {

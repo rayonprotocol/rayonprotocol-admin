@@ -64,7 +64,6 @@ class DashboardVC extends Component<{}, DashboardVCState> {
   }
 
   onClickHolderAddress(holderAddress: string) {
-    console.log(holderAddress);
     this.setState({ ...this.state, selUserAccount: holderAddress });
   }
 
