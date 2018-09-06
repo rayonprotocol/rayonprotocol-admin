@@ -54,7 +54,7 @@ class DashboardVC extends Component<{}, DashboardVCState> {
 
   async fetchDashboardStates() {
     const totalSupply = await TokenDC.fetchTokenTotalBalance();
-    const holders = await TokenDC.fetchTop10TokenHolders();
+    const holders = await TokenDC.fetchTokenHolders();
     const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
     this.setState({ ...this.state, totalSupply, holders, userTokenHistory, isStateLoading: false });
   }

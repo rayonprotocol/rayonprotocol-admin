@@ -16,11 +16,6 @@ class TokenDC {
   public async fetchTokenHolders(): Promise<object> {
     return await TokenServerAgent.fetchTokenHolders();
   }
-  // 상위 10명의 토큰 보유자
-  public async fetchTop10TokenHolders(): Promise<object> {
-    return await TokenServerAgent.fetchTop10TokenHolders();
-  }
-
   // 유저 별 토큰 전송 히스토리
   async fetchTokenHistory(): Promise<UserTokenHistory> {
     return await TokenServerAgent.fetchTokenHistory();

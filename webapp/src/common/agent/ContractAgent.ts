@@ -39,7 +39,6 @@ abstract class ContractAgent {
     try {
       this._contractInstance = new web3.eth.Contract(abi, contractAddress);
     } catch (error) {
-      console.log('error!!')
       console.error(error);
     }
   }
