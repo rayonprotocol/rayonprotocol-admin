@@ -10,6 +10,8 @@ class ContractConfigure {
   public static CONTRACTBLOCK_TESTNET = 3936470;
   public static CONTRACTBLOCK_MAINNET = 3936470;
 
+  public static AUTOMAITC_REQUEST_TIME_INTERVAL = 2000;
+
   private static url = {
     development: 'http://localhost:8545',
     ropsten: 'wss://ropsten.infura.io/ws',

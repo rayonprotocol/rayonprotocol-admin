@@ -19,8 +19,6 @@ class TokenBlockchainAgent extends ContractAgent {
     const watchEvents: Set<RayonEvent> = new Set([RayonEvent.Mint, RayonEvent.Transfer]);
     super(contract, watchEvents);
   }
-
-  
 }
 
 export default new TokenBlockchainAgent();

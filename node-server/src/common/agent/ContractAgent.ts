@@ -12,29 +12,40 @@ import TokenDC from '../../token/dc/TokenDC';
 
 // util
 import ContractUtil from '../util/ContractUtil';
+import { Block } from 'web3/types';
 
 let web3: Web3;
+
+let blockChcekFlag: number = 0;
 
 type RayonEventListener = ((eventType: RayonEvent, event: any) => void);
 
 abstract class ContractAgent {
   public FROM_BLOCK = ContractUtil.getContractDeployedBlock();
 
+  private _lastReadedBlockNumber: number = ContractUtil.getContractDeployedBlock();
+  private _latestBlockNumber: number;
+
   private _contract: JSON;
   private _watchEvents: Set<RayonEvent>;
   protected _eventListener: RayonEventListener;
-  protected _contractInstance;
+  protected _contractInstance: any;
 
   constructor(contract: JSON, watchEvents: Set<RayonEvent>) {
     this._contract = contract;
     this._watchEvents = watchEvents;
     this.setWeb3();
     this.fetchContractInstance();
+    this.setTimer();
   }
 
   private setWeb3() {
     const Web3 = require('web3');
     web3 = new Web3(ContractUtil.getProvider());
+  }
+
+  private setTimer() {
+    setInterval(this.getPastEvents.bind(this), ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL);
   }
 
   protected async fetchContractInstance() {
@@ -47,7 +58,6 @@ abstract class ContractAgent {
       console.error(error);
     }
     this.getPastEvents();
-    this.addEventListenerOnBlockchain();
   }
 
   private getAbiFromArtifact() {
@@ -59,7 +69,21 @@ abstract class ContractAgent {
     return this._contract['networks'][ROPSTEN_NETWORK_ID]['address'];
   }
 
-  protected getPastEvents() {
+  protected async getPastEvents(): Promise<void> {
+    const latestBlock: Block = await this.getBlock('latest');
+    const isAlreadyReaded: boolean = latestBlock.number <= this._lastReadedBlockNumber;
+
+    console.log('blockCheck... ', ++blockChcekFlag);
+
+    if (isAlreadyReaded) return;
+
+    blockChcekFlag = 0;
+
+    this._latestBlockNumber = latestBlock.number;
+    console.log('====================================');
+    console.log('event Range: ', this.getEventRange());
+    console.log('new Block!:', this._latestBlockNumber);
+
     this._watchEvents.forEach(eventType => {
       this._contractInstance.getPastEvents(
         RayonEvent.getRayonEventName(eventType),
@@ -67,21 +91,11 @@ abstract class ContractAgent {
         this.handlePastEventFetched.bind(this, eventType)
       );
     });
+    this._lastReadedBlockNumber = latestBlock.number;
   }
 
   protected handlePastEventFetched(eventType, error, events) {
-    events.forEach(event => {
-      this.onEvent(eventType, error, event);
-    });
-  }
-
-  private addEventListenerOnBlockchain() {
-    this._watchEvents.forEach(eventType => {
-      this._contractInstance.events[RayonEvent.getRayonEventName(eventType)](
-        { fromBlock: this.FROM_BLOCK },
-        this.onEvent.bind(this, eventType)
-      );
-    });
+    events.forEach(event => this.onEvent(eventType, error, event));
   }
 
   public setEventListner(listner: RayonEventListener) {
@@ -89,7 +103,7 @@ abstract class ContractAgent {
   }
 
   private onEvent(eventType: number, error, event): void {
-    console.log('onEvent', event);
+    console.log('new event:', event['event']);
     if (error) {
       console.error(error);
       return;
@@ -105,12 +119,12 @@ abstract class ContractAgent {
     return this._contractInstance;
   }
 
-  public async getBlock(blockNumber) {
+  public async getBlock(blockNumber: any): Promise<Block> {
     return await web3.eth.getBlock(blockNumber);
   }
 
   public getEventRange() {
-    return { fromBlock: this.FROM_BLOCK, toBlock: 'latest' };
+    return { fromBlock: this._lastReadedBlockNumber + 1, toBlock: this._latestBlockNumber };
   }
 
   public async getTokenTotalBalance() {

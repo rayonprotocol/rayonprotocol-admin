@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 // model
 import { UserTokenHistory } from '../../../../shared/token/model/Token';
+import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 // dc
 import TokenDC from 'token/dc/TokenDC';
@@ -35,7 +36,10 @@ class DashboardVC extends Component<{}, DashboardVCState> {
       totalSupply: 0,
       userTokenHistory: {},
       selUserAccount: '',
-      intervalTimerId: setInterval(this.setLoadingAndfetchDashboadState.bind(this), 30000),
+      intervalTimerId: setInterval(
+        this.setLoadingAndfetchDashboadState.bind(this),
+        ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL
+      ),
       isStateLoading: true,
     };
   }
