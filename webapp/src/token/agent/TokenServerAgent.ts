@@ -31,22 +31,18 @@ class TokenServerAgent extends ContractAgent {
     return await this.getRequest<TransferEvent[]>(URLForGetTransferEvents);
   }
 
-  // 상위 10명의 토큰 보유자
   async fetchDashboardTokenHolders(): Promise<object> {
     return await this.getRequest<object>(URLForGetDashboardTokenHolders);
   }
 
-  // 토큰의 총 발행량
   async fetchTokenTotalBalance(): Promise<number> {
     return parseInt(await this._contractInstance.methods.totalSupply().call(), 10);
   }
 
-  // 토큰 보유자들의 리스트
   async fetchTokenHolders(): Promise<object> {
     return await this.getRequest<object>(URLForGetTokenHolders);
   }
 
-  // 유저 별 토큰 전송 히스토리
   async fetchTokenHistory(): Promise<UserTokenHistory> {
     return await this.getRequest<UserTokenHistory>(URLForGetTokenHistory);
   }

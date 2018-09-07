@@ -63,8 +63,9 @@ class DashboardVC extends Component<{}, DashboardVCState> {
     this.setState({ ...this.state, selUserAccount: holderAddress });
   }
 
-  onClickHolderDetailButton() {
-    console.log('click');
+  onClickSearchButton(userName: string) {
+    const selUserAccount = this.state.userTokenHistory[userName] !== undefined ? userName : '';
+    this.setState({ ...this.state, selUserAccount });
   }
 
   render() {
@@ -75,7 +76,10 @@ class DashboardVC extends Component<{}, DashboardVCState> {
           <TotalSupplyView totalSupply={this.state.totalSupply} />
           <TokenHolderGraphView holders={this.state.holders} />
           <TokenHolderView holders={this.state.holders} onClickHolderAddress={this.onClickHolderAddress.bind(this)} />
-          <TokenHolderHistoryView tokenHistory={this.state.userTokenHistory[this.state.selUserAccount]} />
+          <TokenHolderHistoryView
+            tokenHistory={this.state.userTokenHistory[this.state.selUserAccount]}
+            onClickSearchButton={this.onClickSearchButton.bind(this)}
+          />
         </Container>
       </div>
     );
