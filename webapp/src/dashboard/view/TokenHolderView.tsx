@@ -28,7 +28,7 @@ class TokenHolderView extends Component<TokenHolderProps, {}> {
             {holdersList.map((address, index) => {
               return (
                 <tr key={index} onClick={() => this.props.onClickHolderAddress(address)}>
-                  <td>{index}</td>
+                  <td>{(index + 1)}</td>
                   <td>{address}</td>
                   <td>{this.props.holders[address]} RYN</td>
                 </tr>

@@ -13,6 +13,7 @@ import {
   URLForGetTokenHolders,
   URLForGetMintEvents,
   URLForGetTransferEvents,
+  URLForGetDashboardTokenHolders,
   RayonEvent,
   RayonEventResponse,
   MintArgs,
@@ -41,7 +42,53 @@ class TokenDC extends RayonDC {
     app.get(URLForGetMintEvents, this.respondMintEvent.bind(this));
     app.get(URLForGetTokenHolders, this.respondTokenHolders.bind(this));
     app.get(URLForGetTransferEvents, this.respondTransferEvent.bind(this));
+    app.get(URLForGetDashboardTokenHolders, this.respondDashboardTokenHolders.bind(this));
     app.get(URLForGetTokenHistory, this.respondTokenHistory.bind(this));
+  }
+
+  public respondMintEvent(req: Request, res: Response) {
+    const data = this._events[RayonEvent.Mint];
+    const result: SendResult<MintEvent[]> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Mint Events', data)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Response Mint Events', null);
+
+    res.send(result);
+  }
+
+  public respondTransferEvent(req: Request, res: Response) {
+    if (this._events[RayonEvent.Transfer] === undefined) return;
+    const sortedTransferEvent = this._events[RayonEvent.Transfer].sort((a, b) => b.blockNumber - a.blockNumber);
+
+    const result: SendResult<TransferEvent[]> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Transfer Events', sortedTransferEvent)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Response Transfer Events', null);
+
+    res.send(result);
+  }
+
+  public async respondTokenHolders(req: Request, res: Response) {
+    const result: SendResult<Object> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', this._tokenHolders)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
+
+    res.send(result);
+  }
+
+  public async respondDashboardTokenHolders(req: Request, res: Response) {
+    const sortedTokenHolder = this._getTop10TokenHolders();
+    const result: SendResult<Object> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', sortedTokenHolder)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
+
+    res.send(result);
+  }
+
+  public respondTokenHistory(req: Request, res: Response) {
+    const result: SendResult<Object> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token History', this._userTokenHistory)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token History', null);
+
+    res.send(result);
   }
 
   private onEvent(eventType: RayonEvent, event: any): void {
@@ -57,25 +104,13 @@ class TokenDC extends RayonDC {
     }
   }
 
-  /*
-  About Mint Event
-  */
-  public respondMintEvent(req: Request, res: Response) {
-    const data = this._events[RayonEvent.Mint];
-    const result: SendResult<MintEvent[]> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Mint Events', data)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Response Mint Events', null);
-
-    res.send(result);
-  }
-
   onMintEvent(event: RayonEventResponse<MintArgs>) {
     const newEvent: MintEvent = {
       to: event.returnValues.to,
       amount: event.returnValues.amount,
     };
 
-    this._events[RayonEvent.Mint] === undefined
+    ArrayUtil.isEmpty(this._events[RayonEvent.Mint])
       ? (this._events[RayonEvent.Mint] = [newEvent])
       : this._events[RayonEvent.Mint].push(newEvent);
 
@@ -83,34 +118,11 @@ class TokenDC extends RayonDC {
     // console.log('mintEvents\n', newEvent);
   }
 
-  /*
-  About Transfer Event
-  */
-
-  public respondTransferEvent(req: Request, res: Response) {
-    if (this._events[RayonEvent.Transfer] === undefined) return;
-    const sortedTransferEvent = this._events[RayonEvent.Transfer].sort((a, b) => b.blockNumber - a.blockNumber);
-
-    const result: SendResult<TransferEvent[]> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Response Transfer Events', sortedTransferEvent)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Response Transfer Events', null);
-
-    res.send(result);
-  }
-
   // TODO: 메서드 분리하여 세분화 해야함
   async onTransferEvent(event: RayonEventResponse<TransferArgs>) {
     let newEventBlock;
-    // let flag = 0;
 
     newEventBlock = await TokenBlockchainAgent.getBlock(event.blockNumber);
-
-    // while (newEventBlock === undefined || newEventBlock === null) {
-    //   this.wait(1000);
-    //   newEventBlock = await TokenBlockchainAgent.getBlock(event.blockNumber);
-    //   flag++;
-    //   if (flag > 10) newEventBlock = await TokenBlockchainAgent.getBlock('latest');
-    // }
 
     const newDate = new Date(newEventBlock.timestamp * 1000);
     const newBlockTime: BlockTime = {
@@ -129,34 +141,34 @@ class TokenDC extends RayonDC {
       amount: parseInt(event.returnValues.value, 10),
     };
 
-    this._events[RayonEvent.Transfer] === undefined
+    ArrayUtil.isEmpty(this._events[RayonEvent.Transfer])
       ? (this._events[RayonEvent.Transfer] = [newEvent])
       : this._events[RayonEvent.Transfer].push(newEvent);
 
-    this.setHolderBalance(newEvent);
-
-    this.addTokenHistory(newEvent);
+    this._setHolderBalance(newEvent);
+    this._addTokenHistory(newEvent);
 
     // console.log('==========================');
     // console.log('transferEvents\n', newEvent);
   }
 
-  wait(ms) {
-    let start = Date.now(),
-      now = start;
-    while (now - start < ms) {
-      now = Date.now();
-    }
+  public _getTop10TokenHolders() {
+    const top10TokenHolders = {};
+
+    let sortedTokenHolderKeys = Object.keys(this._tokenHolders).sort(
+      (prev, post) => this._tokenHolders[post] - this._tokenHolders[prev]
+    );
+
+    sortedTokenHolderKeys = sortedTokenHolderKeys.length > 10 ? sortedTokenHolderKeys.slice(10) : sortedTokenHolderKeys;
+    sortedTokenHolderKeys.forEach(
+      addr =>
+        addr !== '0x0000000000000000000000000000000000000000' && (top10TokenHolders[addr] = this._tokenHolders[addr])
+    );
+
+    return top10TokenHolders;
   }
 
-  /*
-    about token holders
-  */
-  public getHolders() {
-    return this._tokenHolders;
-  }
-
-  public setHolderBalance(newEvent: TransferEvent) {
+  private _setHolderBalance(newEvent: TransferEvent) {
     this._tokenHolders[newEvent.from] =
       this._tokenHolders[newEvent.from] === undefined
         ? newEvent.amount
@@ -167,9 +179,9 @@ class TokenDC extends RayonDC {
         : this._tokenHolders[newEvent.to] + newEvent.amount;
   }
 
-  public addTokenHistory(transferEvent: TransferEvent) {
-    const fromHistory: TokenHistory = this.getNewTokenHistory(transferEvent, this._tokenHolders[transferEvent.from]);
-    const toHistory: TokenHistory = this.getNewTokenHistory(transferEvent, this._tokenHolders[transferEvent.to]);
+  private _addTokenHistory(transferEvent: TransferEvent) {
+    const fromHistory: TokenHistory = this._makeNewTokenHistory(transferEvent, this._tokenHolders[transferEvent.from]);
+    const toHistory: TokenHistory = this._makeNewTokenHistory(transferEvent, this._tokenHolders[transferEvent.to]);
 
     if (ArrayUtil.isEmpty(this._userTokenHistory[transferEvent.from]))
       this._userTokenHistory[transferEvent.from] = new Array<TokenHistory>();
@@ -180,29 +192,13 @@ class TokenDC extends RayonDC {
     this._userTokenHistory[transferEvent.to].push(toHistory);
   }
 
-  public getNewTokenHistory(transferEvent: TransferEvent, balance: number) {
+  private _makeNewTokenHistory(transferEvent: TransferEvent, balance: number) {
     return {
       from: transferEvent.from,
       to: transferEvent.to,
       amount: transferEvent.amount,
       balance,
     };
-  }
-
-  public async respondTokenHolders(req: Request, res: Response) {
-    const result: SendResult<Object> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', this._tokenHolders)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
-
-    res.send(result);
-  }
-
-  public respondTokenHistory(req: Request, res: Response) {
-    const result: SendResult<Object> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token History', this._userTokenHistory)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token History', null);
-
-    res.send(result);
   }
 }
 

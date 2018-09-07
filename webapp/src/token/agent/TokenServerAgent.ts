@@ -7,6 +7,7 @@ import {
   URLForGetTokenHolders,
   URLForGetMintEvents,
   URLForGetTransferEvents,
+  URLForGetDashboardTokenHolders,
   MintEvent,
   TransferEvent,
   UserTokenHistory,
@@ -28,6 +29,11 @@ class TokenServerAgent extends ContractAgent {
 
   async fetchTransferEvents(): Promise<TransferEvent[]> {
     return await this.getRequest<TransferEvent[]>(URLForGetTransferEvents);
+  }
+
+  // 상위 10명의 토큰 보유자
+  async fetchDashboardTokenHolders(): Promise<object> {
+    return await this.getRequest<object>(URLForGetDashboardTokenHolders);
   }
 
   // 토큰의 총 발행량
