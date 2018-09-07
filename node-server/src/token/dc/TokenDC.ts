@@ -101,16 +101,16 @@ class TokenDC extends RayonDC {
   // TODO: 메서드 분리하여 세분화 해야함
   async onTransferEvent(event: RayonEventResponse<TransferArgs>) {
     let newEventBlock;
-    let flag = 0;
+    // let flag = 0;
 
     newEventBlock = await TokenBlockchainAgent.getBlock(event.blockNumber);
 
-    while (newEventBlock === undefined || newEventBlock === null) {
-      this.wait(1000);
-      newEventBlock = await TokenBlockchainAgent.getBlock(event.blockNumber);
-      flag++;
-      if (flag > 10) newEventBlock = await TokenBlockchainAgent.getBlock('latest');
-    }
+    // while (newEventBlock === undefined || newEventBlock === null) {
+    //   this.wait(1000);
+    //   newEventBlock = await TokenBlockchainAgent.getBlock(event.blockNumber);
+    //   flag++;
+    //   if (flag > 10) newEventBlock = await TokenBlockchainAgent.getBlock('latest');
+    // }
 
     const newDate = new Date(newEventBlock.timestamp * 1000);
     const newBlockTime: BlockTime = {
