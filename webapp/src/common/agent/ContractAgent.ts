@@ -22,13 +22,15 @@ abstract class ContractAgent {
   }
 
   private setWeb3(): void {
-    let browserWeb3: Web3 = (window as any).web3 as Web3;
-    typeof browserWeb3 !== 'undefined'
-      ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
-      : (browserWeb3 = new Web3(ContractUtil.getWebsocketProvider()));
+    // let browserWeb3: Web3 = (window as any).web3 as Web3;
+    // typeof browserWeb3 !== 'undefined'
+    //   ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
+    //   : (browserWeb3 = new Web3(ContractUtil.getWebsocketProvider()));
 
-    web3 = browserWeb3;
+    // web3 = browserWeb3;
+
     // web3 = new Web3(ContractUtil.getWebsocketProvider());
+    web3 = new Web3(ContractUtil.getHttpProvider());
   }
 
   public async fetchContractInstance() {

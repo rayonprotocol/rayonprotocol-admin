@@ -108,6 +108,7 @@ module.exports = {
       EMAIL_SUB_API_ROOT: JSON.stringify(isDev ? `http://localhost:3000` : `https://api.march.eco`),
       URL_APIBASE: JSON.stringify(isDev ? `http://${localIp}:3000` : 'https://api.rayonprotocol.io'),
       ENV_BLOCKCHAIN: JSON.stringify(process.env.ENV_BLOCKCHAIN),
+      INFURA_API_KEY: JSON.stringify(process.env.INFURA_API_KEY),
     }),
     new CheckerPlugin(),
     new HtmlWebpackPlugin({

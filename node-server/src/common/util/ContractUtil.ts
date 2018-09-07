@@ -11,7 +11,7 @@ class ContractUtil {
 
   public getProvider() {
     const Web3 = require('web3');
-    const nodeUrl: Object = ContractConfigure.getNodeUrl(process.env.ENV_BLOCKCHAIN);
+    const nodeUrl: Object = ContractConfigure.getWebsocketUrl(process.env.ENV_BLOCKCHAIN);
     return new Web3.providers.WebsocketProvider(nodeUrl);
   }
 

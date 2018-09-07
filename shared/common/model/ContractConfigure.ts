@@ -12,15 +12,26 @@ class ContractConfigure {
 
   public static AUTOMAITC_REQUEST_TIME_INTERVAL = 2000;
 
-  private static url = {
+  private static websocketUrl = {
     development: 'http://localhost:8545',
     ropsten: 'wss://ropsten.infura.io/ws',
     rinkeby: 'wss://rinkeby.infura.io/ws',
     mainnet: 'wss://mainnet.infura.io/ws',
   };
 
-  public static getNodeUrl(blockchainEnv: string) {
-    return ContractConfigure.url[blockchainEnv];
+  private static httpUrl = {
+    development: 'http://localhost:8545',
+    ropsten: 'https://ropsten.infura.io/',
+    rinkeby: 'https://rinkeby.infura.io/',
+    mainnet: 'https://mainnet.infura.io/',
+  };
+
+  public static getWebsocketUrl(blockchainEnv: string) {
+    return ContractConfigure.websocketUrl[blockchainEnv];
+  }
+
+  public static getHttpUrl(blockchainEnv: string) {
+    return ContractConfigure.httpUrl[blockchainEnv];
   }
 }
 
