@@ -66,6 +66,7 @@ abstract class ContractAgent {
   }
 
   public async getUserAccount(): Promise<string> {
+    console.log('account', await web3.eth.getAccounts()[0]);
     return (await web3.eth.getAccounts())[0];
   }
 

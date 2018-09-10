@@ -44,7 +44,7 @@ class DashboardVC extends Component<{}, DashboardVCState> {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setLoadingAndfetchDashboadState();
   }
 

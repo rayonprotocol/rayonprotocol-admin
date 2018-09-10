@@ -1,4 +1,7 @@
 class ContractConfigure {
+
+  public static ADDR_CONTRACT_ADMIN = '';
+
   public static ADDR_RAYONTOKEN = '0xf9a8a966d310cb240c4edc98ca43eb7ff1c5d491';
 
   public static ENV_LOCAL = 'local';
@@ -9,6 +12,10 @@ class ContractConfigure {
   public static CONTRACTBLOCK_LOCAL = 0;
   public static CONTRACTBLOCK_TESTNET = 3936470;
   public static CONTRACTBLOCK_MAINNET = 3936470;
+
+  public static PROVIDER_METAMASK = 'metamask';
+  public static PROVIDER_INFURA = 'infura';
+  public static PROVIDER_LOCALHOST = 'localhost';
 
   public static AUTOMAITC_REQUEST_TIME_INTERVAL = 2000;
 

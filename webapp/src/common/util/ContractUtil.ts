@@ -1,3 +1,4 @@
+import Web3 from 'web3';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 class ContractUtil {
@@ -34,6 +35,18 @@ class ContractUtil {
   public getContractAddressFromArtifact(contract) {
     const ROPSTEN_NETWORK_ID = 3;
     return contract['networks'][ROPSTEN_NETWORK_ID]['address'];
+  }
+
+  public getCurrentProvider(web3: Web3) {
+    if (web3.currentProvider['isMetaMask']) return ContractConfigure.PROVIDER_METAMASK;
+    if (web3.currentProvider['host'] && web3.currentProvider['host'].indexOf(ContractConfigure.PROVIDER_INFURA) !== -1)
+      return ContractConfigure.PROVIDER_INFURA;
+    if (
+      web3.currentProvider['host'] &&
+      web3.currentProvider['host'].indexOf(ContractConfigure.PROVIDER_LOCALHOST) !== -1
+    )
+      return ContractConfigure.PROVIDER_LOCALHOST;
+    return 'unknown';
   }
 }
 

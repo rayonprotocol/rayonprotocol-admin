@@ -19,6 +19,7 @@ module.exports = {
       dashboard: path.join(__dirname, '../../src/dashboard'),
       token: path.join(__dirname, '../../src/token'),
       main: path.join(__dirname, '../../src/main'),
+      contract: path.join(__dirname, '../../src/contract'),
     },
   },
   context: resolve(__dirname, '../../src'),
@@ -67,6 +68,9 @@ module.exports = {
           },
           {
             loader: 'sass-loader', // compiles Sass to CSS
+            options: {
+              data: '@import "~common/asset/partial";',
+            },
           },
         ],
       },
