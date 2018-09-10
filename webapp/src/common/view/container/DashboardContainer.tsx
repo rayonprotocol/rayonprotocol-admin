@@ -12,12 +12,7 @@ interface DashboardContainerProps {
 class DashboardContainer extends Component<DashboardContainerProps, {}> {
   render() {
     const { title } = this.props;
-    return (
-      <div className={classNames(styles.dashboardContainer, this.props.className)}>
-        <div className={styles.title}>{title}</div>
-        <div className={styles.dashboardInner}>{this.props.children}</div>
-      </div>
-    );
+    return <div className={classNames(styles.dashboardContainer, this.props.className)}>{this.props.children}</div>;
   }
 }
 

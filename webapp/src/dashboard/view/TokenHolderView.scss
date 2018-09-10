@@ -1,28 +1,37 @@
- 
-
 .tokenHolderView {
   display: inline-block;
-  width: 66%;
-  margin-left: 2%;
+  width: 100%;
   margin-top: 30px;
-  table {
-    width: 100%;
-    th {
-      border-top: 1px solid $rayon-gray;
-      border-bottom: 1px solid $rayon-gray;
-      background-color: $rayon-lightgray;
+  .topHolderTable {
+    display: inline-block;
+    vertical-align: top;
+    padding: 30px;
+    width: 70%;
+    table {
+      width: 100%;
+      th {
+        border-top: 1px solid $rayon-gray;
+        border-bottom: 1px solid $rayon-gray;
+        background-color: $rayon-lightgray;
+      }
+      td {
+        border-bottom: 1px solid $rayon-lightgray;
+      }
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        font-size: 14px;
+      }
+      tr {
+        cursor: pointer;
+      }
     }
-    td {
-      border-bottom: 1px solid $rayon-lightgray;
-    }
-    th,
-    td {
-      padding: 8px;
-      text-align: left;
-      font-size: 14px;
-    }
-    tr{
-      cursor: pointer;
-    }
+  }
+  .topHolderGraph {
+    display: inline-block;
+    vertical-align: top;
+    width: 30%;
+    border-right: 2px solid $rayon-lightgray;
   }
 }

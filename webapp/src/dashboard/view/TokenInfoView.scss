@@ -1,0 +1,39 @@
+.tokenInfoView {
+  width: 68%;
+  margin-left: 2%;
+  margin-top: 30px;
+  .capSection {
+    display: inline-block;
+    vertical-align: top;
+    width: 35%;
+    border-right: 2px solid $rayon-lightgray;
+    .symbolImg {
+      width: 100px;
+    }
+    p {
+      display: inline-block;
+      vertical-align: top;
+      margin-top: 30px;
+      @include set-font(24px, $rayon-deepgray);
+    }
+  }
+  .tokenInfoSection {
+    display: inline-block;
+    vertical-align: top;
+    width: 65%;
+    padding: 24px;
+
+    .tokenInfo {
+      p {
+        display: inline-block;
+        &:first-child {
+          margin-right: 10px;
+          @include set-font(16px, $rayon-deepgray);
+        }
+        &:last-child {
+          @include set-font(18px, black);
+        }
+      }
+    }
+  }
+}

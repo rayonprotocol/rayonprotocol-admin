@@ -14,7 +14,7 @@ interface TotalSupplyViewProps {
 class TotalSupplyView extends Component<TotalSupplyViewProps, {}> {
   render() {
     return (
-      <DashboardContainer className={styles.totalTokenView} title={'Total Supply'}>
+      <DashboardContainer className={styles.totalTokenView}>
         <div className={styles.totalTokenSection}>
           <p className={styles.subTitle}>Total Supply</p>
           <p className={styles.totalToken}>

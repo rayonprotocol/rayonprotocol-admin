@@ -9,10 +9,10 @@ import TokenDC from 'token/dc/TokenDC';
 
 // view
 import Container from 'common/view/container/Container';
+import TokenInfoView from 'dashboard/view/TokenInfoView';
 import TotalSupplyView from 'dashboard/view/TotalSupplyView';
 import TokenHolderView from 'dashboard/view/TokenHolderView';
 import TokenHolderHistoryView from 'dashboard/view/TokenHolderHistoryView';
-import TokenHolderGraphView from 'dashboard/view/TokenHolderGraphView';
 import TopDashboardStatusView from 'dashboard/view/TopDashboardStatusView';
 
 // styles
@@ -74,7 +74,7 @@ class DashboardVC extends Component<{}, DashboardVCState> {
         <Container>
           <TopDashboardStatusView isLoading={this.state.isStateLoading} />
           <TotalSupplyView totalSupply={this.state.totalSupply} />
-          <TokenHolderGraphView holders={this.state.holders} />
+          <TokenInfoView />
           <TokenHolderView holders={this.state.holders} onClickHolderAddress={this.onClickHolderAddress.bind(this)} />
           <TokenHolderHistoryView
             tokenHistory={this.state.userTokenHistory[this.state.selUserAccount]}
