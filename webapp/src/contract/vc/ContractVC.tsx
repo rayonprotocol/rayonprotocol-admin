@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 
 // model
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+import Metamask from 'common/model/metamask/Metamask';
+
+// dc
+import ContractDC from 'contract/dc/ContractDC';
 
 // view
 import Container from 'common/view/container/Container';
@@ -24,6 +28,27 @@ class ContractVC extends Component<{}, ContractVCState> {
     this.state = {
       userAccount: undefined,
     };
+  }
+
+  async componentDidMount() {
+    let userAccount = await ContractDC.getUserAccount();
+    if (!StringUtil.isEmpty(this.state.userAccount) && this.isAdminUser()) {
+      ContractDC.setWeb3();
+      userAccount = await ContractDC.getUserAccount();
+    } else {
+      ContractDC.setMetamaskLoginListener(this.onMetamaskLogin.bind(this));
+    }
+    this.setState({ ...this.state, userAccount });
+  }
+
+  onMetamaskLogin(loginResult: Metamask) {
+    // console.log(loginResult);
+    if (StringUtil.isEmpty(loginResult.selectedAddress)) return;
+    this.setState({ ...this.state, userAccount: loginResult.selectedAddress });
+  }
+
+  isAdminUser() {
+    return this.state.userAccount.toLowerCase() === ContractConfigure.ADDR_CONTRACT_ADMIN.toLowerCase();
   }
 
   renderNoUser() {
@@ -52,8 +77,10 @@ class ContractVC extends Component<{}, ContractVCState> {
 
   render() {
     console.log(this.state.userAccount);
+    console.log(ContractConfigure.ADDR_CONTRACT_ADMIN);
+    console.log(this.state.userAccount === ContractConfigure.ADDR_CONTRACT_ADMIN);
     if (StringUtil.isEmpty(this.state.userAccount)) return this.renderNoUser();
-    else if (this.state.userAccount !== ContractConfigure.ADDR_CONTRACT_ADMIN) return this.renderAdminOnly();
+    else if (!this.isAdminUser()) return this.renderAdminOnly();
     else return this.renderContractAdmin();
   }
 }

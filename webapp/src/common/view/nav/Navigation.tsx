@@ -24,6 +24,7 @@ class Navigation extends Component<{}, NavigationState> {
   async componentWillMount() {
     const userAccount = await TokenDC.getUserAccount();
     const networkName = await TokenDC.getNetworkName();
+    console.log('userAccount', userAccount);
     this.setState({ ...this.state, userAccount, networkName });
   }
 
@@ -49,7 +50,9 @@ class Navigation extends Component<{}, NavigationState> {
   render() {
     return (
       <nav className={styles.navigation}>
-        <img src={require('../../../common/asset/img/rayon-white-logo.png')} />
+        <Link to={'/'}>
+          <img src={require('../../../common/asset/img/rayon-white-logo.png')} />
+        </Link>
         <div className={styles.navList}>
           <Link to={'/'}>Dashbard</Link>
           <Link to={'/kyc'}>KYC</Link>

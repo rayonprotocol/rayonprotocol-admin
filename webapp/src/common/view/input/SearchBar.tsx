@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
+// util
+import StringUtil from '../../../../../shared/common/util/StringUtil';
+
 // styles
 import styles from './SearchBar.scss';
 
@@ -14,11 +17,19 @@ interface SearchBarState {
 }
 
 class SearchBar extends Component<SearchBarProps, SearchBarState> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      inputValue: undefined,
+    };
+  }
+
   onChangeSearchBar(inputValue: string) {
     this.setState({ inputValue });
   }
 
   onClickSearchButton() {
+    if (StringUtil.isEmpty(this.state.inputValue)) return;
     this.props.onClickSearchButton(this.state.inputValue);
   }
 

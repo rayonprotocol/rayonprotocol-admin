@@ -9,7 +9,7 @@ import ContractUtil from 'common/util/ContractUtil';
 
 let web3: Web3;
 
-abstract class ContractAgent {
+abstract class RayonContractAgent {
   public static RESULTCODE_SUCCESS: number = 0;
 
   private _contract: JSON; // json which is including ABI and contract address
@@ -21,16 +21,16 @@ abstract class ContractAgent {
     this.fetchContractInstance();
   }
 
-  private setWeb3(): void {
-    // let browserWeb3: Web3 = (window as any).web3 as Web3;
-    // typeof browserWeb3 !== 'undefined'
-    //   ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
-    //   : (browserWeb3 = new Web3(ContractUtil.getWebsocketProvider()));
+  public setWeb3(): void {
+    let browserWeb3: Web3 = (window as any).web3 as Web3;
+    typeof browserWeb3 !== 'undefined'
+      ? (browserWeb3 = new Web3(browserWeb3.currentProvider))
+      : (browserWeb3 = web3 = new Web3(ContractUtil.getHttpProvider()));
 
-    // web3 = browserWeb3;
+    web3 = browserWeb3;
 
     // web3 = new Web3(ContractUtil.getWebsocketProvider());
-    web3 = new Web3(ContractUtil.getHttpProvider());
+    // web3 = new Web3(ContractUtil.getHttpProvider());
   }
 
   public async fetchContractInstance() {
@@ -57,7 +57,7 @@ abstract class ContractAgent {
   }
 
   private isRequestFail(responsedData): boolean {
-    return responsedData === undefined || responsedData['result_code'] !== ContractAgent.RESULTCODE_SUCCESS;
+    return responsedData === undefined || responsedData['result_code'] !== RayonContractAgent.RESULTCODE_SUCCESS;
   }
 
   // TODO: 아래의 메서드들은 TOKEN DC와 성격이 맞지 않으니 이관해야함
@@ -66,7 +66,6 @@ abstract class ContractAgent {
   }
 
   public async getUserAccount(): Promise<string> {
-    console.log('account', await web3.eth.getAccounts()[0]);
     return (await web3.eth.getAccounts())[0];
   }
 
@@ -78,4 +77,4 @@ abstract class ContractAgent {
   }
 }
 
-export default ContractAgent;
+export default RayonContractAgent;

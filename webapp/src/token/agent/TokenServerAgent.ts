@@ -1,5 +1,5 @@
 // agent
-import ContractAgent from 'common/agent/ContractAgent';
+import RayonContractAgent from 'common/agent/RayonContractAgent';
 
 // model
 import {
@@ -17,7 +17,7 @@ import ContractConfigure from '../../../../shared/common/model/ContractConfigure
 // util
 import ContractUtil from 'common/util/ContractUtil';
 
-class TokenServerAgent extends ContractAgent {
+class TokenServerAgent extends RayonContractAgent {
   constructor() {
     const contract = ContractUtil.getContractArtifact(ContractConfigure.ADDR_RAYONTOKEN);
     super(contract);
