@@ -1,8 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
+// model
+import Metamask from 'common/model/metamask/Metamask';
+
 // dc
 import TokenDC from 'token/dc/TokenDC';
+import KycDC from 'kyc/dc/KycDC';
 
 // styles
 import styles from './Navigation.scss';
@@ -24,8 +28,12 @@ class Navigation extends Component<{}, NavigationState> {
   async componentWillMount() {
     const userAccount = await TokenDC.getUserAccount();
     const networkName = await TokenDC.getNetworkName();
-    console.log('userAccount', userAccount);
+    KycDC.setMetamaskLoginListener(this.onMetamaskLogin.bind(this));
     this.setState({ ...this.state, userAccount, networkName });
+  }
+
+  onMetamaskLogin(loginResult: Metamask) {
+    this.setState({ ...this.state, userAccount: loginResult.selectedAddress });
   }
 
   renderNoUserInfoSideNav() {

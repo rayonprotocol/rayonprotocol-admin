@@ -20,7 +20,7 @@ let blockChcekFlag: number = 0;
 
 type RayonEventListener = ((eventType: RayonEvent, event: any) => void);
 
-abstract class ContractAgent {
+abstract class RayonContractAgent {
   public FROM_BLOCK = ContractUtil.getContractDeployedBlock();
 
   private _lastReadedBlockNumber: number = ContractUtil.getContractDeployedBlock();
@@ -137,4 +137,4 @@ abstract class ContractAgent {
   }
 }
 
-export default ContractAgent;
+export default RayonContractAgent;

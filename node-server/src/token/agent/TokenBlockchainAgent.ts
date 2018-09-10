@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // agent
-import ContractAgent from '../../common/agent/ContractAgent';
+import RayonContractAgent from '../../common/agent/RayonContractAgent';
 
 // model
 import SendResult from '../../../../shared/common/model/SendResult';
@@ -13,7 +13,7 @@ import { RayonEvent } from '../../../../shared/token/model/Token';
 // util
 import ContractUtil from '../../common/util/ContractUtil';
 
-class TokenBlockchainAgent extends ContractAgent {
+class TokenBlockchainAgent extends RayonContractAgent {
   constructor() {
     const contract = ContractUtil.getContract(ContractConfigure.ADDR_RAYONTOKEN);
     const watchEvents: Set<RayonEvent> = new Set([RayonEvent.Mint, RayonEvent.Transfer]);
