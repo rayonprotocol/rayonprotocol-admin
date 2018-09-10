@@ -25,6 +25,7 @@ abstract class ContractAgent {
 
   private _lastReadedBlockNumber: number = ContractUtil.getContractDeployedBlock();
   private _latestBlockNumber: number;
+  private _totalTokenSupply: number;
 
   private _contract: JSON;
   private _watchEvents: Set<RayonEvent>;
@@ -127,8 +128,12 @@ abstract class ContractAgent {
     return { fromBlock: this._lastReadedBlockNumber + 1, toBlock: this._latestBlockNumber };
   }
 
-  public async getTokenTotalBalance() {
-    return await this._contractInstance.methods.totalSupply().call();
+  public getTokenTotalBalance(): number {
+    return this._totalTokenSupply;
+  }
+
+  public async setTokenTotalBalance(): Promise<void> {
+    this._totalTokenSupply = parseInt(await this._contractInstance.methods.totalSupply().call(), 10);
   }
 }
 

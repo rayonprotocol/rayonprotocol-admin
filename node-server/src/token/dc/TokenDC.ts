@@ -24,6 +24,7 @@ import {
   UserTokenHistory,
   TokenHistory,
   URLForGetTokenHistory,
+  URLForGetTokenTotalSupply,
 } from '../../../../shared/token/model/Token';
 
 // util
@@ -44,6 +45,7 @@ class TokenDC extends RayonDC {
     app.get(URLForGetTransferEvents, this.respondTransferEvent.bind(this));
     app.get(URLForGetDashboardTokenHolders, this.respondDashboardTokenHolders.bind(this));
     app.get(URLForGetTokenHistory, this.respondTokenHistory.bind(this));
+    app.get(URLForGetTokenTotalSupply, this.respondTotalSupply.bind(this));
   }
 
   public respondMintEvent(req: Request, res: Response) {
@@ -91,6 +93,15 @@ class TokenDC extends RayonDC {
     res.send(result);
   }
 
+  public async respondTotalSupply(req: Request, res: Response) {
+    const totalSupply = await TokenBlockchainAgent.getTokenTotalBalance();
+    const result: SendResult<Object> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Total Supply', totalSupply)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Total Supply', null);
+
+    res.send(result);
+  }
+
   private onEvent(eventType: RayonEvent, event: any): void {
     switch (eventType) {
       case RayonEvent.Mint:
@@ -114,6 +125,7 @@ class TokenDC extends RayonDC {
       ? (this._events[RayonEvent.Mint] = [newEvent])
       : this._events[RayonEvent.Mint].push(newEvent);
 
+    TokenBlockchainAgent.setTokenTotalBalance();
     // console.log('==========================');
     // console.log('mintEvents\n', newEvent);
   }

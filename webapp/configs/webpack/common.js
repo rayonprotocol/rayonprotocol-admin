@@ -20,6 +20,7 @@ module.exports = {
       token: path.join(__dirname, '../../src/token'),
       main: path.join(__dirname, '../../src/main'),
       contract: path.join(__dirname, '../../src/contract'),
+      kyc: path.join(__dirname, '../../src/kyc'),
     },
   },
   context: resolve(__dirname, '../../src'),

@@ -5,7 +5,7 @@ import ContractConfigure from '../../../../shared/common/model/ContractConfigure
 import Metamask from 'common/model/metamask/Metamask';
 
 // dc
-import ContractDC from 'contract/dc/ContractDC';
+import KycDC from 'kyc/dc/KycDC';
 
 // view
 import Container from 'common/view/container/Container';
@@ -16,13 +16,13 @@ import NoMetamaskView from 'common/view/view/NoMetamaskView';
 import StringUtil from '../../../../shared/common/util/StringUtil';
 
 // styles
-import styles from './ContractVC.scss';
+import styles from './KycVC.scss';
 
-interface ContractVCState {
+interface KycVCState {
   userAccount: string;
 }
 
-class ContractVC extends Component<{}, ContractVCState> {
+class KycVC extends Component<{}, KycVCState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,12 +31,12 @@ class ContractVC extends Component<{}, ContractVCState> {
   }
 
   async componentDidMount() {
-    let userAccount = await ContractDC.getUserAccount();
+    let userAccount = await KycDC.getUserAccount();
     if (!StringUtil.isEmpty(this.state.userAccount) && this.isAdminUser()) {
-      ContractDC.setWeb3();
-      userAccount = await ContractDC.getUserAccount();
+      KycDC.setWeb3();
+      userAccount = await KycDC.getUserAccount();
     } else {
-      ContractDC.setMetamaskLoginListener(this.onMetamaskLogin.bind(this));
+      KycDC.setMetamaskLoginListener(this.onMetamaskLogin.bind(this));
     }
     this.setState({ ...this.state, userAccount });
   }
@@ -65,10 +65,10 @@ class ContractVC extends Component<{}, ContractVCState> {
     );
   }
 
-  renderContractAdmin() {
+  renderKycAdmin() {
     return (
       <Container>
-        <div>this is contract admin page</div>
+        <div>this is Kyc admin page</div>
       </Container>
     );
   }
@@ -76,8 +76,8 @@ class ContractVC extends Component<{}, ContractVCState> {
   render() {
     if (StringUtil.isEmpty(this.state.userAccount)) return this.renderNoUser();
     else if (!this.isAdminUser()) return this.renderAdminOnly();
-    else return this.renderContractAdmin();
+    else return this.renderKycAdmin();
   }
 }
 
-export default ContractVC;
+export default KycVC;

@@ -3,6 +3,7 @@ import { relativeUrl as parentUrl } from '../../interface/Ajax';
 
 // Token URL
 export const URLForGetTokenHolders = `${parentUrl}/tokenholders`;
+export const URLForGetTokenTotalSupply = `${parentUrl}/totaltokensupply`;
 export const URLForGetTokenHistory = `${parentUrl}/tokenhistory`;
 export const URLForGetDashboardTokenHolders = `${parentUrl}/tokenholders/dashboard`;
 

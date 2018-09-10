@@ -6,6 +6,7 @@ import Web3 from 'web3';
 import Navigation from 'common/view/nav/Navigation';
 import DashboardVC from 'dashboard/vc/DashboardVC';
 import ContractVC from 'contract/vc/ContractVC';
+import KycVC from 'kyc/vc/KycVC';
 
 interface RouterState {
   web3: Web3;
@@ -21,6 +22,11 @@ class Router extends Component<{}, RouterState> {
     {
       path: '/contract',
       component: ContractVC,
+      exact: true,
+    },
+    {
+      path: '/kyc',
+      component: KycVC,
       exact: true,
     },
   ];
