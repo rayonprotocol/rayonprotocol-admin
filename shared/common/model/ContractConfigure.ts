@@ -1,6 +1,5 @@
 class ContractConfigure {
-
-  public static ADDR_CONTRACT_ADMIN = '';
+  public static ADDR_CONTRACT_ADMIN = '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290';
 
   public static ADDR_RAYONTOKEN = '0xf9a8a966d310cb240c4edc98ca43eb7ff1c5d491';
 

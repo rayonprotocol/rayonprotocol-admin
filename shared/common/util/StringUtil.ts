@@ -1,6 +1,6 @@
 class StringUtil {
   static isEmpty(str: string): boolean {
-    return str === '' || str === undefined;
+    return str === '' || str === undefined || str === null;
   }
 
   static ChangeToUrlFormat(str: string): string {

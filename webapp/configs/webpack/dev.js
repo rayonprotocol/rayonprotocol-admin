@@ -1,5 +1,5 @@
 // development config
-const { resolve } = require('path');
+const { resolve, join } = require('path');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const commonConfig = require('./common');
@@ -15,6 +15,7 @@ module.exports = merge(commonConfig, {
     hot: true, // enable HMR on the server
     contentBase: resolve(__dirname, '../../static'),
     historyApiFallback: true,
+    fileName
   },
   devtool: 'cheap-module-eval-source-map',
   plugins: [

@@ -19,7 +19,7 @@ class Router extends Component<{}, RouterState> {
       exact: true,
     },
     {
-      path: '/admin/contract',
+      path: '/contract',
       component: ContractVC,
       exact: true,
     },
