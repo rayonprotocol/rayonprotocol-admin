@@ -55,7 +55,10 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
   render() {
     return (
       <DashboardContainer className={styles.tokenHolderHistoryView} title={`Token History`}>
-        <SearchBar className={styles.searchBar} onClickSearchButton={this.props.onClickSearchButton} />
+        <div className={styles.topTitleBar}>
+            <p className={styles.title}>Token history</p>
+          <SearchBar className={styles.searchBar} onClickSearchButton={this.props.onClickSearchButton} />
+        </div>
         <table>
           <thead>
             <tr>

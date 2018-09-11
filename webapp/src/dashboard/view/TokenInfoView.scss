@@ -2,7 +2,7 @@
   width: 68%;
   margin-left: 2%;
   margin-top: 30px;
-  .capSection {
+  .symbolSection {
     display: inline-block;
     vertical-align: top;
     width: 35%;
@@ -21,9 +21,11 @@
     display: inline-block;
     vertical-align: top;
     width: 65%;
-    padding: 24px;
+    padding: 15px 24px;
 
     .tokenInfo {
+      display: inline-block;
+      width: 50%;
       p {
         display: inline-block;
         &:first-child {
@@ -35,5 +37,19 @@
         }
       }
     }
+
+    .tokenCap {
+      @include clearfix();
+      .subTitle {
+        font-size: 30px;
+        margin-top: 13px;
+        display: inline-block;
+      }
+      .capValue {
+        float: right;
+      }
+    }
+  }
+  .progressBar {
   }
 }

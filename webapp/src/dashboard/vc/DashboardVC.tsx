@@ -25,6 +25,7 @@ interface DashboardVCState {
   selUserAccount: string;
   intervalTimerId: number;
   isStateLoading: boolean;
+  tokenCap: number;
 }
 
 class DashboardVC extends Component<{}, DashboardVCState> {
@@ -34,6 +35,7 @@ class DashboardVC extends Component<{}, DashboardVCState> {
       ...this.state,
       holders: {},
       totalSupply: 0,
+      tokenCap: 0,
       userTokenHistory: {},
       selUserAccount: '',
       intervalTimerId: setInterval(
@@ -56,7 +58,8 @@ class DashboardVC extends Component<{}, DashboardVCState> {
     const totalSupply = await TokenDC.fetchTokenTotalBalance();
     const holders = await TokenDC.fetchDashboardTokenHolders();
     const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
-    this.setState({ ...this.state, totalSupply, holders, userTokenHistory, isStateLoading: false });
+    const tokenCap = await TokenDC.fetchTokenCap();
+    this.setState({ ...this.state, totalSupply, holders, userTokenHistory, tokenCap, isStateLoading: false });
   }
 
   onClickHolderAddress(holderAddress: string) {
@@ -74,7 +77,11 @@ class DashboardVC extends Component<{}, DashboardVCState> {
         <Container>
           <TopDashboardStatusView isLoading={this.state.isStateLoading} />
           <TotalSupplyView totalSupply={this.state.totalSupply} />
-          <TokenInfoView />
+          <TokenInfoView
+            tokenCap={this.state.tokenCap}
+            // percentage={(this.state.totalSupply / this.state.tokenCap) * 100}
+            percentage={13}
+          />
           <TokenHolderView holders={this.state.holders} onClickHolderAddress={this.onClickHolderAddress.bind(this)} />
           <TokenHolderHistoryView
             tokenHistory={this.state.userTokenHistory[this.state.selUserAccount]}

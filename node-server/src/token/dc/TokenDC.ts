@@ -14,6 +14,7 @@ import {
   URLForGetMintEvents,
   URLForGetTransferEvents,
   URLForGetDashboardTokenHolders,
+  URLForGetTokenCap,
   RayonEvent,
   RayonEventResponse,
   MintArgs,
@@ -46,6 +47,8 @@ class TokenDC extends RayonDC {
     app.get(URLForGetDashboardTokenHolders, this.respondDashboardTokenHolders.bind(this));
     app.get(URLForGetTokenHistory, this.respondTokenHistory.bind(this));
     app.get(URLForGetTokenTotalSupply, this.respondTotalSupply.bind(this));
+    app.get(URLForGetTokenCap, this.respondTokenCap.bind(this));
+    TokenBlockchainAgent.setTokenCap();
   }
 
   public respondMintEvent(req: Request, res: Response) {
@@ -94,10 +97,19 @@ class TokenDC extends RayonDC {
   }
 
   public async respondTotalSupply(req: Request, res: Response) {
-    const totalSupply = await TokenBlockchainAgent.getTokenTotalBalance();
-    const result: SendResult<Object> = res.status(200)
+    const totalSupply: number = await TokenBlockchainAgent.getTokenTotalBalance();
+    const result: SendResult<number> = res.status(200)
       ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Total Supply', totalSupply)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Total Supply', null);
+
+    res.send(result);
+  }
+
+  public async respondTokenCap(req: Request, res: Response) {
+    const tokenCap: number = await TokenBlockchainAgent.getTokenCap();
+    const result: SendResult<number> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Cap', tokenCap)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Cap', null);
 
     res.send(result);
   }

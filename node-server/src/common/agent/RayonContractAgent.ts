@@ -26,6 +26,7 @@ abstract class RayonContractAgent {
   private _lastReadedBlockNumber: number = ContractUtil.getContractDeployedBlock();
   private _latestBlockNumber: number;
   private _totalTokenSupply: number;
+  private _tokenCap: number;
 
   private _contract: JSON;
   private _watchEvents: Set<RayonEvent>;
@@ -132,8 +133,16 @@ abstract class RayonContractAgent {
     return this._totalTokenSupply;
   }
 
+  public getTokenCap(): number {
+    return this._tokenCap;
+  }
+
   public async setTokenTotalBalance(): Promise<void> {
     this._totalTokenSupply = parseInt(await this._contractInstance.methods.totalSupply().call(), 10);
+  }
+
+  public async setTokenCap(): Promise<void> {
+    this._tokenCap = parseInt(await this._contractInstance.methods.cap().call(), 10) / 1000000000000000000;
   }
 }
 

@@ -2,20 +2,27 @@
   display: inline-block;
   width: 100%;
   margin-top: 30px;
+  .title {
+    margin-bottom: 30px;
+    @include set-font(24px, black, $fontweight-bold);
+  }
   .topHolderTable {
     display: inline-block;
     vertical-align: top;
-    padding: 30px;
+    padding: 0px 30px;
     width: 70%;
     table {
       width: 100%;
+      transition: all 0.5s linear;
       th {
         border-top: 1px solid $rayon-gray;
         border-bottom: 1px solid $rayon-gray;
         background-color: $rayon-lightgray;
+        transition: all 0.5s linear;
       }
       td {
         border-bottom: 1px solid $rayon-lightgray;
+        transition: all 0.5s linear;
       }
       th,
       td {
@@ -25,6 +32,7 @@
       }
       tr {
         cursor: pointer;
+        transition: all 0.5s linear;
       }
     }
   }
