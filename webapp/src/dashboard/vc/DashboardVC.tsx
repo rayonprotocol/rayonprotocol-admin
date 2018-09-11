@@ -84,6 +84,7 @@ class DashboardVC extends Component<{}, DashboardVCState> {
           />
           <TokenHolderView holders={this.state.holders} onClickHolderAddress={this.onClickHolderAddress.bind(this)} />
           <TokenHolderHistoryView
+            selUserAccount={this.state.selUserAccount}
             tokenHistory={this.state.userTokenHistory[this.state.selUserAccount]}
             onClickSearchButton={this.onClickSearchButton.bind(this)}
           />

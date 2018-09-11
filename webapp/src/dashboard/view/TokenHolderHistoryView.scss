@@ -15,21 +15,27 @@
 
   .noTokenHistory {
     width: 100%;
-    margin: 30px auto;
+    padding: 30px;
     text-align: center;
+    background: white;
     p {
       font-size: 36px;
     }
   }
   table {
     width: 100%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    overflow: hidden;
     th {
-      border-top: 1px solid $rayon-gray;
-      border-bottom: 1px solid $rayon-gray;
-      background-color: $rayon-lightgray;
+      //   border-top: 1px solid $rayon-gray;
+      //   border-bottom: 1px solid $rayon-gray;
+      background-color: $rayon-lake;
+      color: white;
     }
     td {
-      border-bottom: 1px solid $rayon-lightgray;
+    //   border-bottom: 1px solid $rayon-lightgray;
+      background: white;
     }
     th,
     td {

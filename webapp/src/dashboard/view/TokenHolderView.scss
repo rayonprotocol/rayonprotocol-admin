@@ -13,16 +13,13 @@
     width: 70%;
     table {
       width: 100%;
-      transition: all 0.5s linear;
       th {
         border-top: 1px solid $rayon-gray;
         border-bottom: 1px solid $rayon-gray;
         background-color: $rayon-lightgray;
-        transition: all 0.5s linear;
       }
       td {
         border-bottom: 1px solid $rayon-lightgray;
-        transition: all 0.5s linear;
       }
       th,
       td {
@@ -32,7 +29,6 @@
       }
       tr {
         cursor: pointer;
-        transition: all 0.5s linear;
       }
     }
   }

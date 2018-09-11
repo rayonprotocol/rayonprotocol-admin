@@ -6,6 +6,7 @@ import { TokenHistory } from '../../../../shared/token/model/Token';
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import SearchBar from 'common/view/input/SearchBar';
+import TransferTokenCard from 'common/view/card/TransferTokenCard';
 
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
@@ -15,6 +16,7 @@ import styles from './TokenHolderHistoryView.scss';
 
 interface TokenHolderHistoryViewProps {
   tokenHistory: TokenHistory[];
+  selUserAccount: string;
   onClickSearchButton: (target: string) => void;
 }
 
@@ -52,14 +54,31 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
     );
   }
 
+  renderTonkenCards() {
+    const latest10TokenHistory = this.getLatest10TokenHistory();
+    return latest10TokenHistory.map((history, index) => {
+      return (
+        <TransferTokenCard
+          key={index}
+          selUserAccount={this.props.selUserAccount}
+          from={history.from}
+          to={history.to}
+          amount={history.amount}
+          balance={history.balance}
+        />
+      );
+    });
+  }
+
   render() {
     return (
-      <DashboardContainer className={styles.tokenHolderHistoryView} title={`Token History`}>
+      <DashboardContainer className={styles.tokenHolderHistoryView}>
         <div className={styles.topTitleBar}>
-            <p className={styles.title}>Token history</p>
+          <p className={styles.title}>Token history</p>
           <SearchBar className={styles.searchBar} onClickSearchButton={this.props.onClickSearchButton} />
         </div>
-        <table>
+        {!ArrayUtil.isEmpty(this.props.tokenHistory) && this.renderTonkenCards()}
+        {/* <table>
           <thead>
             <tr>
               <th>From</th>
@@ -69,7 +88,7 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
             </tr>
           </thead>
           {!ArrayUtil.isEmpty(this.props.tokenHistory) && this.renderTokenHistoryTable()}
-        </table>
+        </table> */}
         {ArrayUtil.isEmpty(this.props.tokenHistory) && this.renderNoTokenHistory()}
       </DashboardContainer>
     );
