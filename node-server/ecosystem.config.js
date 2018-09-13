@@ -30,7 +30,6 @@ module.exports = {
       ref: 'origin/master',
       repo: 'https://github.com/rayonprotocol/rayonprotocol-admin.git',
       path: '/var/www/rayonprotocol-admin/production',
-      'pre-setup': "apt-get install git ; ls -la",
       'post-deploy': 'cd node-server && npm install && pm2 reload ecosystem.config.js --env production'
     }
   }
