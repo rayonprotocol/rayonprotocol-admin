@@ -4,6 +4,7 @@ import React, { Component, Fragment } from 'react';
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import DoughnutChart from 'common/view/chart/DoughnutChart';
 import SearchBar from 'common/view/input/SearchBar';
+import TopHolderCard from 'common/view/card/TopHolderCard';
 
 // styles
 import styles from './TokenHolderView.scss';
@@ -37,7 +38,9 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
     const data = holdersList.map(address => this.props.holders[address]);
     return (
       <Fragment>
-        <div className={styles.title}>{'Token holder chart'}</div>
+        <div className={styles.topTitleBar}>
+          <p className={styles.title}>{'Token holder chart'}</p>
+        </div>
         <DoughnutChart
           data={data}
           labels={holdersList}
@@ -57,7 +60,17 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
           <SearchBar className={styles.searchBar} onClickSearchButton={this.props.onClickSearchButton} />
         </div>
 
-        <table>
+        {holdersList.map((address, index) => {
+          return (
+            <TopHolderCard
+              rank={index + 1}
+              userAddress={address}
+              onClickDetailHistory={this.props.onClickHolderAddress}
+            />
+          );
+        })}
+
+        {/* <table>
           <thead>
             <tr>
               <th>Rank</th>
@@ -76,7 +89,7 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
               );
             })}
           </tbody>
-        </table>
+        </table> */}
       </Fragment>
     );
   }

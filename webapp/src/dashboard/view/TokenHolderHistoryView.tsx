@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import Blockies from 'react-blockies-image';
 
 // model
 import { TokenHistory } from '../../../../shared/token/model/Token';
@@ -8,6 +9,7 @@ import DashboardContainer from 'common/view/container/DashboardContainer';
 
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
+import StringUtil from '../../../../shared/common/util/StringUtil';
 
 // styles
 import styles from './TokenHolderHistoryView.scss';
@@ -64,6 +66,12 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
       <DashboardContainer className={styles.tokenHolderHistoryView}>
         <div className={styles.topTitleBar}>
           <p className={styles.title}>Token history</p>
+          {!StringUtil.isEmpty(this.props.selUserAccount) && (
+            <div className={styles.selectedUserProfile}>
+              <Blockies className={styles.blockies} seed={this.props.selUserAccount} />
+              <p>{this.trimAddress(this.props.selUserAccount)}</p>
+            </div>
+          )}
         </div>
         <table>
           <thead>

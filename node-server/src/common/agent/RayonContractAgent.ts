@@ -97,6 +97,10 @@ abstract class RayonContractAgent {
   }
 
   protected handlePastEventFetched(eventType, error, events) {
+    if (error) {
+      console.error(error);
+      return;
+    }
     events.forEach(event => this.onEvent(eventType, error, event));
   }
 

@@ -3,9 +3,20 @@
   margin-top: 30px;
   @include clearfix();
   .topTitleBar {
+    display: flex;
+    justify-content: space-between;
     .title {
-      display: inline-block;
       @include set-font(24px, black, $fontweight-bold);
+    }
+    .selectedUserProfile {
+      display: flex;
+      canvas {
+        border-radius: 20px;
+        margin-right: 20px;
+      }
+      p {
+        padding-top: 3px;
+      }
     }
   }
 
