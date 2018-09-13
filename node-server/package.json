@@ -9,10 +9,12 @@
   "scripts": {
     "copy-build:dev": "rm -rf ./build && cp -r ../../rayonprotocol-ico/build/contracts/RayonToken.json ../shared/build/dev/",
     "copy-build:ropsten": "rm -rf ./build && cp -r ../../rayonprotocol-ico/build/contracts/RayonToken.json ../shared/build/ropsten/",
-    "build": "tsc -p tsconfig.release.json",
-    "watch": "tsc -w -p tsconfig.release.json",
+    "copy-build-to-dist": "copyfiles ../shared/build/**/* lib/shared/",
+    "build": "tsc -p tsconfig.json && npm run copy-build-to-dist",
+    "watch": "tsc -w -p tsconfig.json",
     "start:dev": "ENV_BLOCKCHAIN=local nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts",
-    "start:ropsten": "ENV_BLOCKCHAIN=ropsten nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts"
+    "start:ropsten": "ENV_BLOCKCHAIN=ropsten nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts",
+    "start:prod:ropsten": "ENV_BLOCKCHAIN=ropsten node lib/node-server/src/main/controller/RayonNodeServerApp.js"
   },
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "APLv2",
@@ -26,9 +28,11 @@
     "@types/jest": "~22.2.3",
     "@types/node": "~8.10.18",
     "bignumber.js": "^7.2.1",
+    "copyfiles": "^2.1.0",
     "dotenv": "^6.0.0",
     "jest": "~23.1.0",
     "nodemon": "^1.18.3",
+    "pm2": "^3.1.2",
     "rimraf": "~2.6.2",
     "ts-jest": "~22.4.6",
     "ts-node": "^7.0.0",

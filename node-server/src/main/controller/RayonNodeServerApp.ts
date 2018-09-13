@@ -8,6 +8,7 @@ const app = express();
 
 // for use .env variables
 require('dotenv').config();
+const port = process.env.APP_PORT;
 
 // defined use middle ware
 app.use(cors({ origin: true, credentials: true }));
@@ -17,4 +18,4 @@ TokenDC.configure(app);
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.listen(3000, () => console.log('server start on port 3000!'));
+app.listen(port, () => console.log(`server start on port ${port}!`));
