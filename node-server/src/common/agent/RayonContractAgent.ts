@@ -43,7 +43,7 @@ abstract class RayonContractAgent {
 
   private setWeb3() {
     const Web3 = require('web3');
-    web3 = new Web3(ContractUtil.getProvider());
+    web3 = new Web3(ContractUtil.getHttpProvider());
   }
 
   private setTimer() {

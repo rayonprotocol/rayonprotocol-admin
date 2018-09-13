@@ -8,6 +8,7 @@ class ContractConfigure {
   public static ENV_MAIN: string = 'main';
   public static NETWORK_PORT: number = 8545;
 
+  // TODO: 블록체인에서 얻어와야함
   public static CONTRACTBLOCK_LOCAL: number = 0;
   public static CONTRACTBLOCK_TESTNET: number = 3936470;
   public static CONTRACTBLOCK_MAINNET: number = 3936470;
@@ -16,7 +17,7 @@ class ContractConfigure {
   public static PROVIDER_INFURA: string = 'infura';
   public static PROVIDER_LOCALHOST: string = 'localhost';
 
-  public static AUTOMAITC_REQUEST_TIME_INTERVAL: number = 20000;
+  public static AUTOMAITC_REQUEST_TIME_INTERVAL: number = 2000;
 
   private static websocketUrl = {
     development: 'http://localhost:8545',

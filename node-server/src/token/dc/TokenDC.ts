@@ -183,7 +183,7 @@ class TokenDC extends RayonDC {
       (prev, post) => this._tokenHolders[post] - this._tokenHolders[prev]
     );
 
-    sortedTokenHolderKeys = sortedTokenHolderKeys.length > 10 ? sortedTokenHolderKeys.slice(10) : sortedTokenHolderKeys;
+    // sortedTokenHolderKeys = sortedTokenHolderKeys.length > 10 ? sortedTokenHolderKeys.slice(10) : sortedTokenHolderKeys;
     sortedTokenHolderKeys.forEach(
       addr =>
         addr !== '0x0000000000000000000000000000000000000000' && (top10TokenHolders[addr] = this._tokenHolders[addr])

@@ -9,11 +9,10 @@ class ContractUtil {
     return JSON.parse(fs.readFileSync(path.join(__dirname, contractPath), 'utf8'));
   }
 
-  public getProvider() {
+  public getHttpProvider() {
     const Web3 = require('web3');
-    const nodeUrl: Object = ContractConfigure.getWebsocketUrl(process.env.ENV_BLOCKCHAIN);
-    console.log(nodeUrl);
-    return new Web3.providers.WebsocketProvider(nodeUrl);
+    const url: Object = ContractConfigure.getHttpUrl(process.env.ENV_BLOCKCHAIN) + ``;
+    return new Web3.providers.HttpProvider(url);
   }
 
   public getContractDeployedBlock(): number {
