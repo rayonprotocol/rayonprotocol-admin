@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_SSH_OPTIONS } = process.env;
+
 module.exports = {
   apps: [{
     name: 'API',
