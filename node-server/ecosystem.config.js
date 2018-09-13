@@ -1,13 +1,4 @@
 require('dotenv').config();
-const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_SSH_OPTIONS } = process.env;
-if ([DEPLOY_USER, DEPLOY_HOST, DEPLOY_SSH_OPTIONS].some(val => typeof val === 'undefined')) {
-  throw new Error([
-    'Enviroments variable(s) not set - Please make sure enviroment variables following are set',
-    '`DEPLOY_USER`, `DEPLOY_HOST`, `DEPLOY_SSH_OPTIONS` '
-  ].join('\n'))
-}
-
-console.log({ DEPLOY_USER, DEPLOY_HOST, DEPLOY_SSH_OPTIONS })
 
 module.exports = {
   apps: [{
