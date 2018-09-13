@@ -2,9 +2,15 @@
   display: inline-block;
   width: 100%;
   margin-top: 30px;
-  .title {
-    margin-bottom: 30px;
-    @include set-font(24px, black, $fontweight-bold);
+  .topTitleBar {
+    .title {
+      display: inline-block;
+      @include set-font(24px, black, $fontweight-bold);
+    }
+    .searchBar {
+      float: right;
+      margin-bottom: 20px;
+    }
   }
   .topHolderTable {
     display: inline-block;

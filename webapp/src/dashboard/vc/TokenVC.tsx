@@ -16,7 +16,7 @@ import TokenHolderHistoryView from 'dashboard/view/TokenHolderHistoryView';
 import TopDashboardStatusView from 'dashboard/view/TopDashboardStatusView';
 
 // styles
-import styles from './DashboardVC.scss';
+import styles from './TokenVC.scss';
 
 interface DashboardVCState {
   holders: object;
@@ -28,7 +28,7 @@ interface DashboardVCState {
   tokenCap: number;
 }
 
-class DashboardVC extends Component<{}, DashboardVCState> {
+class TokenVC extends Component<{}, DashboardVCState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -82,11 +82,14 @@ class DashboardVC extends Component<{}, DashboardVCState> {
             // percentage={(this.state.totalSupply / this.state.tokenCap) * 100}
             percentage={13}
           />
-          <TokenHolderView holders={this.state.holders} onClickHolderAddress={this.onClickHolderAddress.bind(this)} />
+          <TokenHolderView
+            holders={this.state.holders}
+            onClickHolderAddress={this.onClickHolderAddress.bind(this)}
+            onClickSearchButton={this.onClickSearchButton.bind(this)}
+          />
           <TokenHolderHistoryView
             selUserAccount={this.state.selUserAccount}
             tokenHistory={this.state.userTokenHistory[this.state.selUserAccount]}
-            onClickSearchButton={this.onClickSearchButton.bind(this)}
           />
         </Container>
       </div>
@@ -94,4 +97,4 @@ class DashboardVC extends Component<{}, DashboardVCState> {
   }
 }
 
-export default DashboardVC;
+export default TokenVC;

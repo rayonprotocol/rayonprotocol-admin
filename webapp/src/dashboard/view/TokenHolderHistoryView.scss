@@ -7,10 +7,6 @@
       display: inline-block;
       @include set-font(24px, black, $fontweight-bold);
     }
-    .searchBar {
-      float: right;
-      margin-bottom: 20px;
-    }
   }
 
   .noTokenHistory {
@@ -24,17 +20,15 @@
   }
   table {
     width: 100%;
+    margin-top: 30px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     overflow: hidden;
     th {
-      //   border-top: 1px solid $rayon-gray;
-      //   border-bottom: 1px solid $rayon-gray;
       background-color: $rayon-lake;
       color: white;
     }
     td {
-    //   border-bottom: 1px solid $rayon-lightgray;
       background: white;
     }
     th,

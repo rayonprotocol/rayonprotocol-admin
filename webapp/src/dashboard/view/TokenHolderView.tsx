@@ -3,13 +3,14 @@ import React, { Component, Fragment } from 'react';
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
 import DoughnutChart from 'common/view/chart/DoughnutChart';
-import DashboardCardTitleView from 'dashboard/view/DashboardCardTitleView';
+import SearchBar from 'common/view/input/SearchBar';
 
 // styles
 import styles from './TokenHolderView.scss';
 
 interface TokenHolderProps {
   onClickHolderAddress: (holderAddress: string) => void;
+  onClickSearchButton: (target: string) => void;
   holders: object;
 }
 
@@ -51,7 +52,11 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
   renderTopHolderTable(holdersList: string[]) {
     return (
       <Fragment>
-        <div className={styles.title}>{'Holders'}</div>
+        <div className={styles.topTitleBar}>
+          <p className={styles.title}>{'Holders'}</p>
+          <SearchBar className={styles.searchBar} onClickSearchButton={this.props.onClickSearchButton} />
+        </div>
+
         <table>
           <thead>
             <tr>

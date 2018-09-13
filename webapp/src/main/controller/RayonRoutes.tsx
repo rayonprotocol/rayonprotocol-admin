@@ -4,7 +4,7 @@ import Web3 from 'web3';
 
 // view
 import Navigation from 'common/view/nav/Navigation';
-import DashboardVC from 'dashboard/vc/DashboardVC';
+import TokenVC from 'dashboard/vc/TokenVC';
 import ContractVC from 'contract/vc/ContractVC';
 import KycVC from 'kyc/vc/KycVC';
 
@@ -16,7 +16,7 @@ class Router extends Component<{}, RouterState> {
   route = [
     {
       path: '/',
-      component: DashboardVC,
+      component: TokenVC,
       exact: true,
     },
     {

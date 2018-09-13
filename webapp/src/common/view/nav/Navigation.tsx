@@ -62,7 +62,7 @@ class Navigation extends Component<{}, NavigationState> {
           <img src={require('../../../common/asset/img/rayon-white-logo.png')} />
         </Link>
         <div className={styles.navList}>
-          <Link to={'/'}>Dashbard</Link>
+          <Link to={'/'}>Token</Link>
           <Link to={'/kyc'}>KYC</Link>
           <Link to={'/contract'}>Contract</Link>
         </div>

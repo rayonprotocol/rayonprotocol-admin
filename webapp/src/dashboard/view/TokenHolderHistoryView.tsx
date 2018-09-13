@@ -5,8 +5,6 @@ import { TokenHistory } from '../../../../shared/token/model/Token';
 
 // view
 import DashboardContainer from 'common/view/container/DashboardContainer';
-import SearchBar from 'common/view/input/SearchBar';
-import TransferTokenCard from 'common/view/card/TransferTokenCard';
 
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
@@ -17,10 +15,13 @@ import styles from './TokenHolderHistoryView.scss';
 interface TokenHolderHistoryViewProps {
   tokenHistory: TokenHistory[];
   selUserAccount: string;
-  onClickSearchButton: (target: string) => void;
 }
 
 class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> {
+  trimAddress(addr: string) {
+    return addr.slice(0, 5) + '...' + addr.slice(-5);
+  }
+
   getLatest10TokenHistory(): TokenHistory[] {
     if (ArrayUtil.isEmpty(this.props.tokenHistory)) return [];
     return this.props.tokenHistory.length > 10 ? this.props.tokenHistory.slice(-10) : this.props.tokenHistory;
@@ -34,6 +35,10 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
     );
   }
 
+  isUserSender(history: TokenHistory) {
+    return this.props.selUserAccount === history.from;
+  }
+
   renderTokenHistoryTable() {
     const latest10TokenHistory = this.getLatest10TokenHistory();
     return (
@@ -42,8 +47,8 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
           {latest10TokenHistory.map((history, index) => {
             return (
               <tr key={index}>
-                <td>{history.from}</td>
-                <td>{history.to}</td>
+                <td>{this.isUserSender(history) ? 'Send' : 'Recieve'}</td>
+                <td>{this.trimAddress(this.isUserSender(history) ? history.to : history.from)}</td>
                 <td>{history.amount} RYN</td>
                 <td>{history.balance} RYN</td>
               </tr>
@@ -54,41 +59,23 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
     );
   }
 
-  renderTonkenCards() {
-    const latest10TokenHistory = this.getLatest10TokenHistory();
-    return latest10TokenHistory.map((history, index) => {
-      return (
-        <TransferTokenCard
-          key={index}
-          selUserAccount={this.props.selUserAccount}
-          from={history.from}
-          to={history.to}
-          amount={history.amount}
-          balance={history.balance}
-        />
-      );
-    });
-  }
-
   render() {
     return (
       <DashboardContainer className={styles.tokenHolderHistoryView}>
         <div className={styles.topTitleBar}>
           <p className={styles.title}>Token history</p>
-          <SearchBar className={styles.searchBar} onClickSearchButton={this.props.onClickSearchButton} />
         </div>
-        {!ArrayUtil.isEmpty(this.props.tokenHistory) && this.renderTonkenCards()}
-        {/* <table>
+        <table>
           <thead>
             <tr>
-              <th>From</th>
-              <th>To</th>
+              <th>Type</th>
+              <th>Detail</th>
               <th>Amount</th>
               <th>Balance</th>
             </tr>
           </thead>
           {!ArrayUtil.isEmpty(this.props.tokenHistory) && this.renderTokenHistoryTable()}
-        </table> */}
+        </table>
         {ArrayUtil.isEmpty(this.props.tokenHistory) && this.renderNoTokenHistory()}
       </DashboardContainer>
     );
