@@ -19,6 +19,7 @@ module.exports = {
     env_production: {
       NODE_ENV: 'production',
       ENV_BLOCKCHAIN: 'ropsten',
+      APP_PORT: 80,
     }
   }],
 
@@ -30,7 +31,7 @@ module.exports = {
       ref: 'origin/master',
       repo: 'https://github.com/rayonprotocol/rayonprotocol-admin.git',
       path: '/var/www/rayonprotocol-admin/production',
-      'post-deploy': 'cd node-server && npm install && pm2 reload ecosystem.config.js --env production'
+      'post-deploy': 'cd node-server && yarn && yarn pm2 reload ecosystem.config.js --env production'
     }
   }
 };

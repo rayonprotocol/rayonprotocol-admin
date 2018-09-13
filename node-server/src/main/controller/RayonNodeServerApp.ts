@@ -8,7 +8,7 @@ const app = express();
 
 // for use .env variables
 require('dotenv').config();
-const port = process.env.APP_PORT;
+const port = Number(process.env.APP_PORT) || 3000;
 
 // defined use middle ware
 app.use(cors({ origin: true, credentials: true }));
