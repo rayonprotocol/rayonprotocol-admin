@@ -31,7 +31,7 @@ module.exports = {
       ref: 'origin/master',
       repo: 'https://github.com/rayonprotocol/rayonprotocol-admin.git',
       path: '/var/www/rayonprotocol-admin/production',
-      'post-deploy': 'cd node-server && yarn && pm2 reload ecosystem.config.js --env production'
+      'post-deploy': 'cd node-server && yarn && yarn pm2:reload'
     }
   }
 };

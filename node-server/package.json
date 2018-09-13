@@ -14,7 +14,8 @@
     "watch": "tsc -w -p tsconfig.json",
     "start:dev": "ENV_BLOCKCHAIN=local nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts",
     "start:ropsten": "ENV_BLOCKCHAIN=ropsten nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts",
-    "start:prod:ropsten": "ENV_BLOCKCHAIN=ropsten node lib/node-server/src/main/controller/RayonNodeServerApp.js"
+    "start:prod:ropsten": "ENV_BLOCKCHAIN=ropsten node lib/node-server/src/main/controller/RayonNodeServerApp.js",
+    "pm2:reload": "yarn pm2 reload ecosystem.config.js --env production"
   },
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "APLv2",
