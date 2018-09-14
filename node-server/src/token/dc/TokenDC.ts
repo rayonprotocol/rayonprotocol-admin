@@ -150,6 +150,7 @@ class TokenDC extends RayonDC {
       month: newDate.getMonth() + 1,
       date: newDate.getDate(),
     };
+    console.log('event.returnValues.value', event.returnValues.value);
 
     const newEvent: TransferEvent = {
       txHash: event.transactionHash,
@@ -179,7 +180,7 @@ class TokenDC extends RayonDC {
     this._tokenHolders[newEvent.to] =
       this._tokenHolders[newEvent.to] === undefined
         ? newEvent.amount
-        : this._tokenHolders[newEvent.to].minus(newEvent.amount);
+        : this._tokenHolders[newEvent.to].plus(newEvent.amount);
   }
 
   private _addTokenHistory(transferEvent: TransferEvent) {

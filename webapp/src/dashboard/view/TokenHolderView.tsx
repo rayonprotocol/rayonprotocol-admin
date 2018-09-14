@@ -15,6 +15,7 @@ import styles from './TokenHolderView.scss';
 interface TokenHolderProps {
   onClickDetailButton: (holderAddress: string) => void;
   onClickSearchButton: (target: string) => void;
+  topHolders: string[];
   holders: object;
   selHolderAddress: string;
 }
@@ -38,8 +39,8 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
     'rgba(175,234,255,0.7)',
   ];
 
-  renderTopHolderGraph(holdersList: string[]) {
-    const data = holdersList.map(address => this.props.holders[address]);
+  renderTopHolderGraph() {
+    const data = this.props.topHolders.map(address => this.props.holders[address]);
     return (
       <Fragment>
         <div className={styles.topTitleBar}>
@@ -47,7 +48,7 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
         </div>
         <DoughnutChart
           data={data}
-          labels={holdersList}
+          labels={this.props.topHolders}
           backgroundColor={this.backgroundColor}
           borderColor={this.backgroundColor}
           height={300}
@@ -56,7 +57,7 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
     );
   }
 
-  renderTopHolderTable(holdersList: string[]) {
+  renderTopHolderTable() {
     return (
       <Fragment>
         <div className={styles.topTitleBar}>
@@ -64,7 +65,7 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
           <SearchBar className={styles.searchBar} onClickSearchButton={this.props.onClickSearchButton} />
         </div>
         {StringUtil.isEmpty(this.props.selHolderAddress) ? (
-          holdersList.map((address, index) => {
+          this.props.topHolders.map((address, index) => {
             return (
               <TopHolderCard
                 key={index}
@@ -88,8 +89,8 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
     const holdersList = Object.keys(this.props.holders);
     return (
       <DashboardContainer className={styles.tokenHolderView}>
-        <div className={styles.topHolderGraph}>{this.renderTopHolderGraph(holdersList)}</div>
-        <div className={styles.topHolderTable}>{this.renderTopHolderTable(holdersList)}</div>
+        <div className={styles.topHolderGraph}>{this.renderTopHolderGraph()}</div>
+        <div className={styles.topHolderTable}>{this.renderTopHolderTable()}</div>
       </DashboardContainer>
     );
   }

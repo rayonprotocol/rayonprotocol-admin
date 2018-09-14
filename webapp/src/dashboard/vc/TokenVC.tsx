@@ -16,18 +16,21 @@ import TokenHolderView from 'dashboard/view/TokenHolderView';
 import TokenHolderHistoryView from 'dashboard/view/TokenHolderHistoryView';
 import TopDashboardStatusView from 'dashboard/view/TopDashboardStatusView';
 
+// util
+import ObjectUtil from '../../../../shared/common/util/ObjectUtil';
+
 // styles
 import styles from './TokenVC.scss';
 
 interface DashboardVCState {
-  holders: object;
-  userTokenHistory: UserTokenHistory;
   selHolderAddress: string;
   selHistoryAddress: string;
-  intervalTimerId: number;
-  isStateLoading: boolean;
   totalSupply: BigNumber;
   tokenCap: BigNumber;
+  holders: object;
+  userTokenHistory: UserTokenHistory;
+  isStateLoading: boolean;
+  intervalTimerId: number;
 }
 
 class TokenVC extends Component<{}, DashboardVCState> {
@@ -35,17 +38,17 @@ class TokenVC extends Component<{}, DashboardVCState> {
     super(props);
     this.state = {
       ...this.state,
-      holders: {},
-      totalSupply: new BigNumber(0),
-      tokenCap: new BigNumber(0),
-      userTokenHistory: {},
       selHolderAddress: '',
       selHistoryAddress: '',
+      totalSupply: new BigNumber(0),
+      tokenCap: new BigNumber(0),
+      holders: {},
+      userTokenHistory: {},
+      isStateLoading: true,
       intervalTimerId: setInterval(
         this.setLoadingAndfetchDashboadState.bind(this),
         ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL
       ),
-      isStateLoading: true,
     };
   }
 
@@ -62,6 +65,9 @@ class TokenVC extends Component<{}, DashboardVCState> {
     const holders = await TokenDC.fetchTokenHolders();
     const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
     const tokenCap: BigNumber = await TokenDC.fetchTokenCap();
+
+    delete holders['0x0000000000000000000000000000000000000000'];
+
     this.setState({
       ...this.state,
       totalSupply,
@@ -70,6 +76,10 @@ class TokenVC extends Component<{}, DashboardVCState> {
       userTokenHistory,
       isStateLoading: false,
     });
+  }
+
+  getTopHolders(lastHolderIndex: number): string[] {
+    return ObjectUtil.sortObjectKeyByValue(this.state.holders).slice(0, lastHolderIndex);
   }
 
   onClickDetailButton(holderAddress: string) {
@@ -93,6 +103,7 @@ class TokenVC extends Component<{}, DashboardVCState> {
           />
           <TokenHolderView
             holders={this.state.holders}
+            topHolders={this.getTopHolders(5)}
             selHolderAddress={this.state.selHolderAddress}
             onClickDetailButton={this.onClickDetailButton.bind(this)}
             onClickSearchButton={this.onClickHolderSearchButton.bind(this)}
