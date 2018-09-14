@@ -63,6 +63,7 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
         {holdersList.map((address, index) => {
           return (
             <TopHolderCard
+              key={index}
               rank={index + 1}
               userAddress={address}
               onClickDetailHistory={this.props.onClickHolderAddress}

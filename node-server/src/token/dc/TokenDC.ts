@@ -1,4 +1,5 @@
 import { promisify } from 'util';
+import { BigNumber } from 'bignumber.js';
 import { Express, Request, Response } from 'express';
 
 // agent
@@ -30,9 +31,14 @@ import {
 
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
+import ContractUtil from '../../common/util/ContractUtil';
+
+type TokenHolders = {
+  [holders: string]: BigNumber;
+};
 
 class TokenDC extends RayonDC {
-  private _tokenHolders = new Object();
+  private _tokenHolders: TokenHolders = {};
   private _userTokenHistory: UserTokenHistory = {};
 
   constructor() {
@@ -97,18 +103,18 @@ class TokenDC extends RayonDC {
   }
 
   public async respondTotalSupply(req: Request, res: Response) {
-    const totalSupply: number = await TokenBlockchainAgent.getTokenTotalBalance();
-    const result: SendResult<number> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Total Supply', totalSupply)
+    const totalSupply: BigNumber = await TokenBlockchainAgent.getTokenTotalBalance();
+    const result: SendResult<BigNumber> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Total Supply', totalSupply.toString())
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Total Supply', null);
 
     res.send(result);
   }
 
   public async respondTokenCap(req: Request, res: Response) {
-    const tokenCap: number = await TokenBlockchainAgent.getTokenCap();
-    const result: SendResult<number> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Cap', tokenCap)
+    const tokenCap: BigNumber = await TokenBlockchainAgent.getTokenCap();
+    const result: SendResult<BigNumber> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Cap', tokenCap.toString())
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Cap', null);
 
     res.send(result);
@@ -162,7 +168,7 @@ class TokenDC extends RayonDC {
       blockTime: newBlockTime,
       from: event.returnValues.from,
       to: event.returnValues.to,
-      amount: parseInt(event.returnValues.value, 10),
+      amount: ContractUtil.weiToToken(event.returnValues.value),
     };
 
     ArrayUtil.isEmpty(this._events[RayonEvent.Transfer])
@@ -179,8 +185,8 @@ class TokenDC extends RayonDC {
   public _getTop10TokenHolders() {
     const top10TokenHolders = {};
 
-    let sortedTokenHolderKeys = Object.keys(this._tokenHolders).sort(
-      (prev, post) => this._tokenHolders[post] - this._tokenHolders[prev]
+    let sortedTokenHolderKeys = Object.keys(this._tokenHolders).sort((prev, post) =>
+      this._tokenHolders[post].minus(this._tokenHolders[prev]).toNumber()
     );
 
     // sortedTokenHolderKeys = sortedTokenHolderKeys.length > 10 ? sortedTokenHolderKeys.slice(10) : sortedTokenHolderKeys;
@@ -196,11 +202,11 @@ class TokenDC extends RayonDC {
     this._tokenHolders[newEvent.from] =
       this._tokenHolders[newEvent.from] === undefined
         ? newEvent.amount
-        : this._tokenHolders[newEvent.from] - newEvent.amount;
+        : this._tokenHolders[newEvent.from].minus(newEvent.amount);
     this._tokenHolders[newEvent.to] =
       this._tokenHolders[newEvent.to] === undefined
         ? newEvent.amount
-        : this._tokenHolders[newEvent.to] + newEvent.amount;
+        : this._tokenHolders[newEvent.to].minus(newEvent.amount);
   }
 
   private _addTokenHistory(transferEvent: TransferEvent) {
@@ -216,7 +222,7 @@ class TokenDC extends RayonDC {
     this._userTokenHistory[transferEvent.to].push(toHistory);
   }
 
-  private _makeNewTokenHistory(transferEvent: TransferEvent, balance: number) {
+  private _makeNewTokenHistory(transferEvent: TransferEvent, balance: BigNumber) {
     return {
       from: transferEvent.from,
       to: transferEvent.to,

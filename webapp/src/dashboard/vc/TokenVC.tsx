@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BigNumber } from 'bignumber.js';
 
 // model
 import { UserTokenHistory } from '../../../../shared/token/model/Token';
@@ -15,17 +16,20 @@ import TokenHolderView from 'dashboard/view/TokenHolderView';
 import TokenHolderHistoryView from 'dashboard/view/TokenHolderHistoryView';
 import TopDashboardStatusView from 'dashboard/view/TopDashboardStatusView';
 
+// util
+import NumberUtil from '../../../../shared/common/util/NumberUtil';
+
 // styles
 import styles from './TokenVC.scss';
 
 interface DashboardVCState {
   holders: object;
-  totalSupply: number;
+  totalSupply: BigNumber;
   userTokenHistory: UserTokenHistory;
   selUserAccount: string;
   intervalTimerId: number;
   isStateLoading: boolean;
-  tokenCap: number;
+  tokenCap: BigNumber;
 }
 
 class TokenVC extends Component<{}, DashboardVCState> {
@@ -34,8 +38,8 @@ class TokenVC extends Component<{}, DashboardVCState> {
     this.state = {
       ...this.state,
       holders: {},
-      totalSupply: 0,
-      tokenCap: 0,
+      totalSupply: new BigNumber(0),
+      tokenCap: new BigNumber(0),
       userTokenHistory: {},
       selUserAccount: '',
       intervalTimerId: setInterval(
@@ -55,10 +59,10 @@ class TokenVC extends Component<{}, DashboardVCState> {
   }
 
   async fetchDashboardStates() {
-    const totalSupply = await TokenDC.fetchTokenTotalBalance();
+    const totalSupply: BigNumber = await TokenDC.fetchTokenTotalBalance();
     const holders = await TokenDC.fetchDashboardTokenHolders();
     const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
-    const tokenCap = await TokenDC.fetchTokenCap();
+    const tokenCap: BigNumber = await TokenDC.fetchTokenCap();
     this.setState({ ...this.state, totalSupply, holders, userTokenHistory, tokenCap, isStateLoading: false });
   }
 
@@ -76,11 +80,10 @@ class TokenVC extends Component<{}, DashboardVCState> {
       <div className={styles.dashboard}>
         <Container>
           <TopDashboardStatusView isLoading={this.state.isStateLoading} />
-          <TotalSupplyView totalSupply={this.state.totalSupply} />
+          <TotalSupplyView totalSupply={NumberUtil.RoundNumberWithPrecision(this.state.totalSupply.toNumber(), 2)} />
           <TokenInfoView
-            tokenCap={this.state.tokenCap}
-            // percentage={(this.state.totalSupply / this.state.tokenCap) * 100}
-            percentage={13}
+            tokenCap={NumberUtil.RoundNumberWithPrecision(this.state.tokenCap.toNumber(), 2)}
+            percentage={(this.state.totalSupply.toNumber() / this.state.tokenCap.toNumber()) * 100}
           />
           <TokenHolderView
             holders={this.state.holders}

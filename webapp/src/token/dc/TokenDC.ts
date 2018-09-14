@@ -1,3 +1,5 @@
+import { BigNumber } from 'bignumber.js';
+
 // agent
 import TokenServerAgent from 'token/agent/TokenServerAgent';
 
@@ -8,10 +10,10 @@ class TokenDC {
   public async fetchTransferEvents(): Promise<TransferEvent[]> {
     return await TokenServerAgent.fetchTransferEvents();
   }
-  public async fetchTokenTotalBalance(): Promise<number> {
+  public async fetchTokenTotalBalance(): Promise<BigNumber> {
     return await TokenServerAgent.fetchTokenTotalBalance();
   }
-  public async fetchTokenCap(): Promise<number> {
+  public async fetchTokenCap(): Promise<BigNumber> {
     return await TokenServerAgent.fetchTokenCap();
   }
   public async fetchTokenHolders(): Promise<object> {

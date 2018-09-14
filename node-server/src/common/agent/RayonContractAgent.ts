@@ -1,5 +1,6 @@
 import Web3 from 'web3';
 import { promisify } from 'util';
+import { BigNumber } from 'bignumber.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -25,8 +26,8 @@ abstract class RayonContractAgent {
 
   private _lastReadedBlockNumber: number = ContractUtil.getContractDeployedBlock();
   private _latestBlockNumber: number;
-  private _totalTokenSupply: number;
-  private _tokenCap: number;
+  private _totalTokenSupply: BigNumber;
+  private _tokenCap: BigNumber;
 
   private _contract: JSON;
   private _watchEvents: Set<RayonEvent>;
@@ -133,20 +134,20 @@ abstract class RayonContractAgent {
     return { fromBlock: this._lastReadedBlockNumber + 1, toBlock: this._latestBlockNumber };
   }
 
-  public getTokenTotalBalance(): number {
+  public getTokenTotalBalance(): BigNumber {
     return this._totalTokenSupply;
   }
 
-  public getTokenCap(): number {
+  public getTokenCap(): BigNumber {
     return this._tokenCap;
   }
 
   public async setTokenTotalBalance(): Promise<void> {
-    this._totalTokenSupply = parseInt(await this._contractInstance.methods.totalSupply().call(), 10);
+    this._totalTokenSupply = ContractUtil.weiToToken(await this._contractInstance.methods.totalSupply().call());
   }
 
   public async setTokenCap(): Promise<void> {
-    this._tokenCap = parseInt(await this._contractInstance.methods.cap().call(), 10) / 1000000000000000000;
+    this._tokenCap = ContractUtil.weiToToken(await this._contractInstance.methods.cap().call());
   }
 }
 

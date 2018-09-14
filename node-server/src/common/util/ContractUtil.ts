@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { BigNumber } from 'bignumber.js';
 
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
@@ -24,6 +25,10 @@ class ContractUtil {
       console.error('undefined blockchain evironment, please chech evironment value');
       return;
     }
+  }
+
+  public weiToToken(wei) {
+    return new BigNumber(wei).dividedBy(new BigNumber(10).pow(18));
   }
 }
 export default new ContractUtil();

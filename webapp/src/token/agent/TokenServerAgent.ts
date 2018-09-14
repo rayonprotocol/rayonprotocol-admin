@@ -1,3 +1,5 @@
+import { BigNumber } from 'bignumber.js';
+
 // agent
 import RayonContractAgent from 'common/agent/RayonContractAgent';
 
@@ -37,10 +39,6 @@ class TokenServerAgent extends RayonContractAgent {
     return await this.getRequest<object>(URLForGetDashboardTokenHolders);
   }
 
-  async fetchTokenTotalBalance(): Promise<number> {
-    return await this.getRequest<number>(URLForGetTokenTotalSupply);
-  }
-
   async fetchTokenHolders(): Promise<object> {
     return await this.getRequest<object>(URLForGetTokenHolders);
   }
@@ -49,8 +47,12 @@ class TokenServerAgent extends RayonContractAgent {
     return await this.getRequest<UserTokenHistory>(URLForGetTokenHistory);
   }
 
-  async fetchTokenCap(): Promise<number> {
-    return await this.getRequest<number>(URLForGetTokenCap);
+  async fetchTokenTotalBalance(): Promise<BigNumber> {
+    return new BigNumber(await this.getRequest<string>(URLForGetTokenTotalSupply));
+  }
+
+  async fetchTokenCap(): Promise<BigNumber> {
+    return new BigNumber(await this.getRequest<string>(URLForGetTokenCap));
   }
 }
 

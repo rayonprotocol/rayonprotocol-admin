@@ -65,7 +65,7 @@ export interface TransferEvent {
   blockTime: BlockTime;
   from: string;
   to: string;
-  amount: number;
+  amount: BigNumber;
 }
 
 /*
@@ -78,8 +78,8 @@ export type UserTokenHistory = {
 export interface TokenHistory {
   from: string;
   to: string;
-  amount: number;
-  balance: number;
+  amount: BigNumber;
+  balance: BigNumber;
 }
 
 export interface BlockTime {
