@@ -17,5 +17,6 @@ app.use(cors({ origin: true, credentials: true }));
 TokenDC.configure(app);
 
 app.get('/', (req, res) => res.send('Hello World!'));
+app.get('/health', (req, res) => res.status(200).send('OK'));
 
 app.listen(port, () => console.log(`server start on port ${port}!`));
