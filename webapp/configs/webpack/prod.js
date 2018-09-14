@@ -6,12 +6,13 @@ const {
 
 const commonConfig = require('./common');
 
+console.log()
+
 module.exports = merge(commonConfig, {
-  entry: './index.tsx',
+  entry: resolve(__dirname,'../../src/main/vc/RayonAdminApp.tsx'),
   output: {
     filename: 'js/bundle.[chunkhash].min.js',
     path: resolve(__dirname, '../../dist'),
-    publicPath: '/',
   },
   plugins: [],
 });

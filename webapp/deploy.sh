@@ -13,7 +13,7 @@ check_var AWS_SECRET_ACCESS_KEY
 check_var AWS_DEFAULT_REGION
 
 # 정적 서버로써 사용할 s3 버킷 이름
-S3_BUCKET=march-web-resource
+S3_BUCKET=rayonprotocol-admin-web-resource
 BUILD_OUT_DIR=dist
 STATIC_DIR=static
 # Install packages

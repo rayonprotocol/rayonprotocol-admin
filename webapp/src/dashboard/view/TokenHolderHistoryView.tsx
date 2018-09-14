@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import Blockies from 'react-blockies-image';
+// import Blockies from 'react-blockies-image';
 
 // model
 import { TokenHistory } from '../../../../shared/token/model/Token';
@@ -68,7 +68,7 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
           <p className={styles.title}>Token history</p>
           {!StringUtil.isEmpty(this.props.selUserAccount) && (
             <div className={styles.selectedUserProfile}>
-              <Blockies className={styles.blockies} seed={this.props.selUserAccount} />
+              {/* <Blockies className={styles.blockies} seed={this.props.selUserAccount} /> */}
               <p>{this.trimAddress(this.props.selUserAccount)}</p>
             </div>
           )}

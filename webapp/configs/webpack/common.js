@@ -33,7 +33,57 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        use: ['babel-loader', 'awesome-typescript-loader'],
+        use: [
+          {
+            loader: 'babel-loader',
+            // Use require.resolve to let files outside of this module (ex. files in shared/interface)
+            // know where the plugins is.
+            options: {
+              // https://github.com/babel/babel-loader#options
+              cacheDirectory: isDev,
+
+              // https://babeljs.io/docs/usage/options/
+              babelrc: false,
+              presets: [
+                // JSX, Flow
+                // https://github.com/babel/babel/tree/master/packages/babel-preset-react
+                require.resolve('babel-preset-react'),
+                // Latest stable ECMAScript features
+                // https://github.com/babel/babel/tree/master/packages/babel-preset-latest
+                require.resolve('babel-preset-latest'),
+                // Experimental ECMAScript proposals
+                // https://github.com/babel/babel/tree/master/packages/babel-preset-stage-0
+                require.resolve('babel-preset-stage-0'),
+              ],
+              plugins: [
+                // Externalise references to helpers and builtins,
+                // automatically polyfilling your code without polluting globals.
+                // https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-runtime
+                ...(isDev
+                  ? [
+                      // Adds component stack to warning messages
+                      // https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-jsx-source
+                      require.resolve('babel-plugin-transform-react-jsx-source'),
+                      // Adds __self attribute to JSX which React will use for some warnings
+                      // https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-jsx-self
+                      require.resolve('babel-plugin-transform-react-jsx-self'),
+                    ]
+                  : [
+                      // TODO: This plugin has some issue. Should re-enable someday.
+                      // https://github.com/facebookincubator/create-react-app/issues/553
+                      // require.resolve('babel-plugin-transform-react-constant-elements'),
+
+                      require.resolve('babel-plugin-transform-react-inline-elements'),
+                      require.resolve('babel-plugin-transform-react-pure-class-to-function'),
+                      require.resolve('babel-plugin-transform-react-remove-prop-types'),
+                    ]),
+              ],
+            },
+          },
+          {
+            loader: 'awesome-typescript-loader',
+          },
+        ],
       },
       {
         test: /\.css$/,
@@ -110,8 +160,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.BROWSER': true,
       BUILD_ENV: JSON.stringify(isDev ? 'development' : 'production'),
-      EMAIL_SUB_API_ROOT: JSON.stringify(isDev ? `http://localhost:3000` : `https://api.march.eco`),
-      URL_APIBASE: JSON.stringify(isDev ? `http://${localIp}:3000` : 'https://api.rayonprotocol.io'),
+      URL_APIBASE: JSON.stringify(isDev ? `http://${localIp}:3000` : 'https://api-admin.rayonprotocol.io'),
       ENV_BLOCKCHAIN: JSON.stringify(process.env.ENV_BLOCKCHAIN),
       INFURA_API_KEY: JSON.stringify(process.env.INFURA_API_KEY),
     }),

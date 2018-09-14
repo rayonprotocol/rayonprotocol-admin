@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Blockies from 'react-blockies-image';
+// import Blockies from 'react-blockies-image';
 import classNames from 'classnames';
 
 // styles
@@ -22,7 +22,7 @@ class TopHolderCard extends Component<TopHolderCardProps, {}> {
       <div className={classNames(this.props.className, styles.topHolderCard)}>
         <div className={styles.rank}>{`# ${this.props.rank}`}</div>
         <div className={styles.identicon}>
-          <Blockies className={styles.blockies} seed={this.props.userAddress} />
+          {/* <Blockies className={styles.blockies} seed={this.props.userAddress} /> */}
         </div>
         <div className={styles.userAddress}>{this.trimAddress(this.props.userAddress)}</div>
         <button onClick={() => this.props.onClickDetailHistory(this.props.userAddress)}>Detail</button>
