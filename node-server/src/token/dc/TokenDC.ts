@@ -14,7 +14,6 @@ import {
   URLForGetTokenHolders,
   URLForGetMintEvents,
   URLForGetTransferEvents,
-  URLForGetDashboardTokenHolders,
   URLForGetTokenCap,
   RayonEvent,
   RayonEventResponse,
@@ -50,7 +49,6 @@ class TokenDC extends RayonDC {
     app.get(URLForGetMintEvents, this.respondMintEvent.bind(this));
     app.get(URLForGetTokenHolders, this.respondTokenHolders.bind(this));
     app.get(URLForGetTransferEvents, this.respondTransferEvent.bind(this));
-    app.get(URLForGetDashboardTokenHolders, this.respondDashboardTokenHolders.bind(this));
     app.get(URLForGetTokenHistory, this.respondTokenHistory.bind(this));
     app.get(URLForGetTokenTotalSupply, this.respondTotalSupply.bind(this));
     app.get(URLForGetTokenCap, this.respondTokenCap.bind(this));
@@ -79,17 +77,8 @@ class TokenDC extends RayonDC {
 
   public async respondTokenHolders(req: Request, res: Response) {
     const result: SendResult<Object> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', this._tokenHolders)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
-
-    res.send(result);
-  }
-
-  public async respondDashboardTokenHolders(req: Request, res: Response) {
-    const sortedTokenHolder = this._getTop10TokenHolders();
-    const result: SendResult<Object> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Total Balance', sortedTokenHolder)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Total Balance', null);
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Holders', this._tokenHolders)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Holders', null);
 
     res.send(result);
   }
@@ -180,22 +169,6 @@ class TokenDC extends RayonDC {
 
     // console.log('==========================');
     // console.log('transferEvents\n', newEvent);
-  }
-
-  public _getTop10TokenHolders() {
-    const top10TokenHolders = {};
-
-    let sortedTokenHolderKeys = Object.keys(this._tokenHolders).sort((prev, post) =>
-      this._tokenHolders[post].minus(this._tokenHolders[prev]).toNumber()
-    );
-
-    // sortedTokenHolderKeys = sortedTokenHolderKeys.length > 10 ? sortedTokenHolderKeys.slice(10) : sortedTokenHolderKeys;
-    sortedTokenHolderKeys.forEach(
-      addr =>
-        addr !== '0x0000000000000000000000000000000000000000' && (top10TokenHolders[addr] = this._tokenHolders[addr])
-    );
-
-    return top10TokenHolders;
   }
 
   private _setHolderBalance(newEvent: TransferEvent) {

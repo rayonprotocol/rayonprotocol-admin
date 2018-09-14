@@ -9,7 +9,6 @@ import {
   URLForGetTokenHolders,
   URLForGetMintEvents,
   URLForGetTransferEvents,
-  URLForGetDashboardTokenHolders,
   URLForGetTokenTotalSupply,
   URLForGetTokenCap,
   MintEvent,
@@ -33,11 +32,7 @@ class TokenServerAgent extends RayonContractAgent {
 
   async fetchTransferEvents(): Promise<TransferEvent[]> {
     return await this.getRequest<TransferEvent[]>(URLForGetTransferEvents);
-  }
-
-  async fetchDashboardTokenHolders(): Promise<object> {
-    return await this.getRequest<object>(URLForGetDashboardTokenHolders);
-  }
+  }  
 
   async fetchTokenHolders(): Promise<object> {
     return await this.getRequest<object>(URLForGetTokenHolders);

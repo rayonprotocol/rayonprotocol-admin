@@ -1,5 +1,3 @@
- 
-
 .navigation {
   padding: 15px 50px;
   background-color: $rayon-lake;
@@ -17,6 +15,8 @@
     font-size: 24px;
     a {
       margin-right: 50px;
+      // 태그 disable 상태, 제거해야함
+      pointer-events: none;
     }
   }
   .sideNav {

@@ -6,7 +6,6 @@ export const URLForGetTokenHolders = `${parentUrl}/tokenholders`;
 export const URLForGetTokenHistory = `${parentUrl}/tokenhistory`;
 export const URLForGetTokenTotalSupply = `${parentUrl}/totaltokensupply`;
 export const URLForGetTokenCap = `${parentUrl}/tokencap`;
-export const URLForGetDashboardTokenHolders = `${parentUrl}/tokenholders/dashboard`;
 
 // Event URL
 export const URLForGetMintEvents = `${parentUrl}/mintEvents`;

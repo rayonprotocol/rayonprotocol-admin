@@ -59,7 +59,7 @@ class TokenVC extends Component<{}, DashboardVCState> {
 
   async fetchDashboardStates() {
     const totalSupply: BigNumber = await TokenDC.fetchTokenTotalBalance();
-    const holders = await TokenDC.fetchDashboardTokenHolders();
+    const holders = await TokenDC.fetchTokenHolders();
     const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
     const tokenCap: BigNumber = await TokenDC.fetchTokenCap();
     this.setState({
