@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
-// util
-import StringUtil from '../../../../../shared/common/util/StringUtil';
-
 // styles
 import styles from './SearchBar.scss';
 
@@ -29,7 +26,6 @@ class SearchBar extends Component<SearchBarProps, SearchBarState> {
   }
 
   onClickSearchButton() {
-    if (StringUtil.isEmpty(this.state.inputValue)) return;
     this.props.onClickSearchButton(this.state.inputValue);
   }
 

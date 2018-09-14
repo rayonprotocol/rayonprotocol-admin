@@ -16,7 +16,7 @@ import styles from './TokenHolderHistoryView.scss';
 
 interface TokenHolderHistoryViewProps {
   tokenHistory: TokenHistory[];
-  selUserAccount: string;
+  selHistoryAddress: string;
 }
 
 class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> {
@@ -38,7 +38,7 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
   }
 
   isUserSender(history: TokenHistory) {
-    return this.props.selUserAccount === history.from;
+    return this.props.selHistoryAddress === history.from;
   }
 
   renderTokenHistoryTable() {
@@ -51,8 +51,8 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
               <tr key={index}>
                 <td>{this.isUserSender(history) ? 'Send' : 'Recieve'}</td>
                 <td>{this.trimAddress(this.isUserSender(history) ? history.to : history.from)}</td>
-                <td>{history.amount} RYN</td>
-                <td>{history.balance} RYN</td>
+                <td>{StringUtil.removeLastZeroInFloatString(history.amount.toFixed(18))} RYN</td>
+                <td>{StringUtil.removeLastZeroInFloatString(history.balance.toFixed(18))} RYN</td>
               </tr>
             );
           })}
@@ -66,10 +66,10 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
       <DashboardContainer className={styles.tokenHolderHistoryView}>
         <div className={styles.topTitleBar}>
           <p className={styles.title}>Token history</p>
-          {!StringUtil.isEmpty(this.props.selUserAccount) && (
+          {!StringUtil.isEmpty(this.props.selHistoryAddress) && (
             <div className={styles.selectedUserProfile}>
               {/* <Blockies className={styles.blockies} seed={this.props.selUserAccount} /> */}
-              <p>{this.trimAddress(this.props.selUserAccount)}</p>
+              <p>{this.trimAddress(this.props.selHistoryAddress)}</p>
             </div>
           )}
         </div>

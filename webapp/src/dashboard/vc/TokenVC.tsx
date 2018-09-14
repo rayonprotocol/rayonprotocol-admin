@@ -16,19 +16,17 @@ import TokenHolderView from 'dashboard/view/TokenHolderView';
 import TokenHolderHistoryView from 'dashboard/view/TokenHolderHistoryView';
 import TopDashboardStatusView from 'dashboard/view/TopDashboardStatusView';
 
-// util
-import NumberUtil from '../../../../shared/common/util/NumberUtil';
-
 // styles
 import styles from './TokenVC.scss';
 
 interface DashboardVCState {
   holders: object;
-  totalSupply: BigNumber;
   userTokenHistory: UserTokenHistory;
-  selUserAccount: string;
+  selHolderAddress: string;
+  selHistoryAddress: string;
   intervalTimerId: number;
   isStateLoading: boolean;
+  totalSupply: BigNumber;
   tokenCap: BigNumber;
 }
 
@@ -41,7 +39,8 @@ class TokenVC extends Component<{}, DashboardVCState> {
       totalSupply: new BigNumber(0),
       tokenCap: new BigNumber(0),
       userTokenHistory: {},
-      selUserAccount: '',
+      selHolderAddress: '',
+      selHistoryAddress: '',
       intervalTimerId: setInterval(
         this.setLoadingAndfetchDashboadState.bind(this),
         ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL
@@ -63,16 +62,23 @@ class TokenVC extends Component<{}, DashboardVCState> {
     const holders = await TokenDC.fetchDashboardTokenHolders();
     const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
     const tokenCap: BigNumber = await TokenDC.fetchTokenCap();
-    this.setState({ ...this.state, totalSupply, holders, userTokenHistory, tokenCap, isStateLoading: false });
+    this.setState({
+      ...this.state,
+      totalSupply,
+      tokenCap,
+      holders,
+      userTokenHistory,
+      isStateLoading: false,
+    });
   }
 
-  onClickHolderAddress(holderAddress: string) {
-    this.setState({ ...this.state, selUserAccount: holderAddress });
+  onClickDetailButton(holderAddress: string) {
+    this.setState({ ...this.state, selHistoryAddress: holderAddress });
   }
 
-  onClickSearchButton(userName: string) {
-    const selUserAccount = this.state.userTokenHistory[userName] !== undefined ? userName : '';
-    this.setState({ ...this.state, selUserAccount });
+  onClickHolderSearchButton(userName: string) {
+    const selHolderAddress = this.state.userTokenHistory[userName] !== undefined ? userName : '';
+    this.setState({ ...this.state, selHolderAddress });
   }
 
   render() {
@@ -80,19 +86,20 @@ class TokenVC extends Component<{}, DashboardVCState> {
       <div className={styles.dashboard}>
         <Container>
           <TopDashboardStatusView isLoading={this.state.isStateLoading} />
-          <TotalSupplyView totalSupply={NumberUtil.RoundNumberWithPrecision(this.state.totalSupply.toNumber(), 2)} />
+          <TotalSupplyView totalSupply={this.state.totalSupply} />
           <TokenInfoView
-            tokenCap={NumberUtil.RoundNumberWithPrecision(this.state.tokenCap.toNumber(), 2)}
+            tokenCap={this.state.tokenCap}
             percentage={(this.state.totalSupply.toNumber() / this.state.tokenCap.toNumber()) * 100}
           />
           <TokenHolderView
             holders={this.state.holders}
-            onClickHolderAddress={this.onClickHolderAddress.bind(this)}
-            onClickSearchButton={this.onClickSearchButton.bind(this)}
+            selHolderAddress={this.state.selHolderAddress}
+            onClickDetailButton={this.onClickDetailButton.bind(this)}
+            onClickSearchButton={this.onClickHolderSearchButton.bind(this)}
           />
           <TokenHolderHistoryView
-            selUserAccount={this.state.selUserAccount}
-            tokenHistory={this.state.userTokenHistory[this.state.selUserAccount]}
+            selHistoryAddress={this.state.selHistoryAddress}
+            tokenHistory={this.state.userTokenHistory[this.state.selHistoryAddress]}
           />
         </Container>
       </div>

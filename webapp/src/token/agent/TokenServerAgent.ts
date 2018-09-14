@@ -44,7 +44,16 @@ class TokenServerAgent extends RayonContractAgent {
   }
 
   async fetchTokenHistory(): Promise<UserTokenHistory> {
-    return await this.getRequest<UserTokenHistory>(URLForGetTokenHistory);
+    const userTokenHistories = await this.getRequest<UserTokenHistory>(URLForGetTokenHistory);
+    for (const tokenHitories of Object.keys(userTokenHistories)) {
+      userTokenHistories[tokenHitories].forEach(history =>
+        Object.assign(history, {
+          amount: new BigNumber(history.amount),
+          balance: new BigNumber(history.balance),
+        })
+      );
+    }
+    return userTokenHistories;
   }
 
   async fetchTokenTotalBalance(): Promise<BigNumber> {

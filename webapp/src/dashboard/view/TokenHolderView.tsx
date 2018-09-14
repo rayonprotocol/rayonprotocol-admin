@@ -6,13 +6,17 @@ import DoughnutChart from 'common/view/chart/DoughnutChart';
 import SearchBar from 'common/view/input/SearchBar';
 import TopHolderCard from 'common/view/card/TopHolderCard';
 
+// util
+import StringUtil from '../../../../shared/common/util/StringUtil';
+
 // styles
 import styles from './TokenHolderView.scss';
 
 interface TokenHolderProps {
-  onClickHolderAddress: (holderAddress: string) => void;
+  onClickDetailButton: (holderAddress: string) => void;
   onClickSearchButton: (target: string) => void;
   holders: object;
+  selHolderAddress: string;
 }
 
 interface TokenHolderViewState {
@@ -59,38 +63,24 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
           <p className={styles.title}>{'Holders'}</p>
           <SearchBar className={styles.searchBar} onClickSearchButton={this.props.onClickSearchButton} />
         </div>
-
-        {holdersList.map((address, index) => {
-          return (
-            <TopHolderCard
-              key={index}
-              rank={index + 1}
-              userAddress={address}
-              onClickDetailHistory={this.props.onClickHolderAddress}
-            />
-          );
-        })}
-
-        {/* <table>
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Address</th>
-              <th>Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            {holdersList.map((address, index) => {
-              return (
-                <tr key={index} onClick={() => this.props.onClickHolderAddress(address)}>
-                  <td>{index + 1}</td>
-                  <td>{address}</td>
-                  <td>{this.props.holders[address]} RYN</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table> */}
+        {StringUtil.isEmpty(this.props.selHolderAddress) ? (
+          holdersList.map((address, index) => {
+            return (
+              <TopHolderCard
+                key={index}
+                rank={index + 1}
+                userAddress={address}
+                onClickDetailHistory={this.props.onClickDetailButton}
+              />
+            );
+          })
+        ) : (
+          <TopHolderCard
+            rank={1}
+            userAddress={this.props.selHolderAddress}
+            onClickDetailHistory={this.props.onClickDetailButton}
+          />
+        )}
       </Fragment>
     );
   }

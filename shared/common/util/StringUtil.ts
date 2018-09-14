@@ -3,8 +3,9 @@ class StringUtil {
     return str === '' || str === undefined || str === null;
   }
 
-  static ChangeToUrlFormat(str: string): string {
-    return str.toLowerCase().replace(/\s/g, '');
+  static removeLastZeroInFloatString(str: string) {
+    const trimedString = str.replace(/[0]+$/, '');
+    return trimedString.slice(-1) === '.' ? trimedString.slice(0, trimedString.length - 1) : trimedString;
   }
 }
 
