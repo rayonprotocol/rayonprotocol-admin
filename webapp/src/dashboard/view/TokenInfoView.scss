@@ -39,14 +39,15 @@
     }
 
     .tokenCap {
-      @include clearfix();
+      display: flex;
+      justify-content: space-between;
+      margin-top: 13px;
       .subTitle {
         font-size: 30px;
-        margin-top: 13px;
         display: inline-block;
       }
       .capValue {
-        float: right;
+        font-size: 30px;
       }
     }
   }

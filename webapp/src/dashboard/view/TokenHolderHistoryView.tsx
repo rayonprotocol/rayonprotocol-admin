@@ -29,16 +29,16 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
     return this.props.tokenHistory.length > 10 ? this.props.tokenHistory.slice(-10) : this.props.tokenHistory;
   }
 
+  isUserSender(history: TokenHistory) {
+    return this.props.selHistoryAddress === history.from;
+  }
+
   renderNoTokenHistory() {
     return (
       <div className={styles.noTokenHistory}>
-        <p> No Token hisotry, yet</p>
+        <p> No Token history, yet</p>
       </div>
     );
-  }
-
-  isUserSender(history: TokenHistory) {
-    return this.props.selHistoryAddress === history.from;
   }
 
   renderTokenHistoryTable() {

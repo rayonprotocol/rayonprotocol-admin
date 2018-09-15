@@ -41,7 +41,7 @@ class TokenInfoView extends Component<TokenInfoViewProps, {}> {
         <div className={styles.tokenCap}>
           <p className={styles.subTitle}>Cap</p>
           <p className={styles.capValue}>
-            <span>{StringUtil.removeLastZeroInFloatString(this.props.tokenCap.toFixed(18))}</span>
+            {StringUtil.removeLastZeroInFloatString(this.props.tokenCap.toFixed(18))}
             RYN
           </p>
         </div>

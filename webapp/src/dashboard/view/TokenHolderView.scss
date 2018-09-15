@@ -1,5 +1,5 @@
 .tokenHolderView {
-  display: inline-block;
+  display: flex;
   width: 100%;
   margin-top: 30px;
   .topTitleBar {
@@ -13,10 +13,8 @@
     }
   }
   .topHolderTable {
-    display: inline-block;
-    vertical-align: top;
+    flex: 7;
     padding: 0px 30px;
-    width: 70%;
     table {
       width: 100%;
       th {
@@ -39,9 +37,15 @@
     }
   }
   .topHolderGraph {
-    display: inline-block;
-    vertical-align: top;
-    width: 30%;
+    flex: 3;
     border-right: 2px solid $rayon-lightgray;
+  }
+  .tokenHolderResult {
+    display: flex;
+    width: 100%;
+    margin-top: 120px;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
   }
 }

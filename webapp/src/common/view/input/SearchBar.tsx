@@ -6,36 +6,14 @@ import styles from './SearchBar.scss';
 
 interface SearchBarProps {
   className?: string;
-  onClickSearchButton: (target: string) => void;
+  onChangeSearchInput: (holderAddress: string) => void;
 }
 
-interface SearchBarState {
-  inputValue: string;
-}
-
-class SearchBar extends Component<SearchBarProps, SearchBarState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      inputValue: undefined,
-    };
-  }
-
-  onChangeSearchBar(inputValue: string) {
-    this.setState({ inputValue });
-  }
-
-  onClickSearchButton() {
-    this.props.onClickSearchButton(this.state.inputValue);
-  }
-
+class SearchBar extends Component<SearchBarProps, {}> {
   render() {
     return (
       <div className={classNames(this.props.className, styles.searchBar)}>
-        <input type={'text'} onChange={event => this.onChangeSearchBar(event.target.value)} />
-        <button type={'submit'} className={styles.searchButton} onClick={this.onClickSearchButton.bind(this)}>
-          <i className={styles.icon} />
-        </button>
+        <input type={'text'} onChange={event => this.props.onChangeSearchInput(event.target.value)} />
       </div>
     );
   }

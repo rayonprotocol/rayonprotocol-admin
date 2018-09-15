@@ -34,6 +34,8 @@ interface DashboardVCState {
 }
 
 class TokenVC extends Component<{}, DashboardVCState> {
+  private NUMBER_OF_TOPHOLDER = 5;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -46,18 +48,14 @@ class TokenVC extends Component<{}, DashboardVCState> {
       userTokenHistory: {},
       isStateLoading: true,
       intervalTimerId: setInterval(
-        this.setLoadingAndfetchDashboadState.bind(this),
+        this._setLoadingAndfetchDashboadState.bind(this),
         ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL
       ),
     };
   }
 
   componentDidMount() {
-    this.setLoadingAndfetchDashboadState();
-  }
-
-  setLoadingAndfetchDashboadState() {
-    this.setState({ ...this.state, isStateLoading: true }, this.fetchDashboardStates.bind(this));
+    this._setLoadingAndfetchDashboadState();
   }
 
   async fetchDashboardStates() {
@@ -78,16 +76,23 @@ class TokenVC extends Component<{}, DashboardVCState> {
     });
   }
 
-  getTopHolders(lastHolderIndex: number): string[] {
+  private _setLoadingAndfetchDashboadState() {
+    this.setState({ ...this.state, isStateLoading: true }, this.fetchDashboardStates.bind(this));
+  }
+
+  private _getTopHolders(lastHolderIndex: number): string[] {
     return ObjectUtil.sortObjectKeyByValue(this.state.holders).slice(0, lastHolderIndex);
+  }
+
+  private _calculateSupplyAndCapPercentage() {
+    return (this.state.totalSupply.toNumber() / this.state.tokenCap.toNumber()) * 100;
   }
 
   onClickDetailButton(holderAddress: string) {
     this.setState({ ...this.state, selHistoryAddress: holderAddress });
   }
 
-  onClickHolderSearchButton(userName: string) {
-    const selHolderAddress = this.state.userTokenHistory[userName] !== undefined ? userName : '';
+  onChangeSearchInput(selHolderAddress: string) {
     this.setState({ ...this.state, selHolderAddress });
   }
 
@@ -97,16 +102,13 @@ class TokenVC extends Component<{}, DashboardVCState> {
         <Container>
           <TopDashboardStatusView isLoading={this.state.isStateLoading} />
           <TotalSupplyView totalSupply={this.state.totalSupply} />
-          <TokenInfoView
-            tokenCap={this.state.tokenCap}
-            percentage={(this.state.totalSupply.toNumber() / this.state.tokenCap.toNumber()) * 100}
-          />
+          <TokenInfoView tokenCap={this.state.tokenCap} percentage={this._calculateSupplyAndCapPercentage()} />
           <TokenHolderView
             holders={this.state.holders}
-            topHolders={this.getTopHolders(5)}
+            topHolders={this._getTopHolders(this.NUMBER_OF_TOPHOLDER)}
             selHolderAddress={this.state.selHolderAddress}
             onClickDetailButton={this.onClickDetailButton.bind(this)}
-            onClickSearchButton={this.onClickHolderSearchButton.bind(this)}
+            onChangeSearchInput={this.onChangeSearchInput.bind(this)}
           />
           <TokenHolderHistoryView
             selHistoryAddress={this.state.selHistoryAddress}

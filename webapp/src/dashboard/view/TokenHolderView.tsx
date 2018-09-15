@@ -13,11 +13,11 @@ import StringUtil from '../../../../shared/common/util/StringUtil';
 import styles from './TokenHolderView.scss';
 
 interface TokenHolderProps {
-  onClickDetailButton: (holderAddress: string) => void;
-  onClickSearchButton: (target: string) => void;
   topHolders: string[];
   holders: object;
   selHolderAddress: string;
+  onClickDetailButton: (holderAddress: string) => void;
+  onChangeSearchInput: (holderAddress: string) => void;
 }
 
 interface TokenHolderViewState {
@@ -38,6 +38,10 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
     'rgba(159,190,232,0.7)',
     'rgba(175,234,255,0.7)',
   ];
+
+  _isEveryComponentUndefined(components: any[]) {
+    return components.every(component => component === undefined);
+  }
 
   renderTopHolderGraph() {
     const data = this.props.topHolders.map(address => this.props.holders[address]);
@@ -62,31 +66,54 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
       <Fragment>
         <div className={styles.topTitleBar}>
           <p className={styles.title}>{'Holders'}</p>
-          <SearchBar className={styles.searchBar} onClickSearchButton={this.props.onClickSearchButton} />
+          <SearchBar className={styles.searchBar} onChangeSearchInput={this.props.onChangeSearchInput} />
         </div>
-        {StringUtil.isEmpty(this.props.selHolderAddress) ? (
-          this.props.topHolders.map((address, index) => {
-            return (
-              <TopHolderCard
-                key={index}
-                rank={index + 1}
-                userAddress={address}
-                onClickDetailHistory={this.props.onClickDetailButton}
-              />
-            );
-          })
-        ) : (
-          <TopHolderCard
-            rank={1}
-            userAddress={this.props.selHolderAddress}
-            onClickDetailHistory={this.props.onClickDetailButton}
-          />
-        )}
+        {StringUtil.isEmpty(this.props.selHolderAddress)
+          ? this.renderTopTokenHolders()
+          : this.renderSelectedTokenHolders()}
       </Fragment>
     );
   }
+
+  renderTopTokenHolders() {
+    return this.props.topHolders.map((address, index) => {
+      return (
+        <TopHolderCard
+          key={index}
+          rank={index + 1}
+          userAddress={address}
+          onClickDetailHistory={this.props.onClickDetailButton}
+        />
+      );
+    });
+  }
+
+  renderSelectedTokenHolders() {
+    const selectedTokenHolders = this.props.topHolders.map((address, index) => {
+      if (address.startsWith(this.props.selHolderAddress)) {
+        return (
+          <TopHolderCard
+            key={index}
+            rank={index + 1}
+            userAddress={address}
+            onClickDetailHistory={this.props.onClickDetailButton}
+          />
+        );
+      }
+    });
+    if (this._isEveryComponentUndefined(selectedTokenHolders)) return this.renderNoTokenHolderResult();
+    return selectedTokenHolders;
+  }
+
+  renderNoTokenHolderResult() {
+    return (
+      <div className={styles.tokenHolderResult}>
+        <p> Token holder not found</p>
+      </div>
+    );
+  }
+
   render() {
-    const holdersList = Object.keys(this.props.holders);
     return (
       <DashboardContainer className={styles.tokenHolderView}>
         <div className={styles.topHolderGraph}>{this.renderTopHolderGraph()}</div>
