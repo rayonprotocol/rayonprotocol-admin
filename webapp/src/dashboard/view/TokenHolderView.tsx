@@ -16,6 +16,7 @@ interface TokenHolderProps {
   topHolders: string[];
   holders: object;
   selHolderAddress: string;
+  selHistoryAddress: string;
   onClickDetailButton: (holderAddress: string) => void;
   onChangeSearchInput: (holderAddress: string) => void;
 }
@@ -41,6 +42,10 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
 
   _isEveryComponentUndefined(components: any[]) {
     return components.every(component => component === undefined);
+  }
+
+  _isStartWith(targetStr: string, compStr: string) {
+    return targetStr.toLowerCase().startsWith(compStr.toLowerCase());
   }
 
   renderTopHolderGraph() {
@@ -82,6 +87,7 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
           key={index}
           rank={index + 1}
           userAddress={address}
+          isSelected={address === this.props.selHistoryAddress}
           onClickDetailHistory={this.props.onClickDetailButton}
         />
       );
@@ -89,19 +95,23 @@ class TokenHolderView extends Component<TokenHolderProps, TokenHolderViewState> 
   }
 
   renderSelectedTokenHolders() {
-    const selectedTokenHolders = this.props.topHolders.map((address, index) => {
-      if (address.startsWith(this.props.selHolderAddress)) {
+    let selectedTokenHolders = Object.keys(this.props.holders).map((address, index) => {
+      if (this._isStartWith(address, this.props.selHolderAddress)) {
         return (
           <TopHolderCard
             key={index}
             rank={index + 1}
             userAddress={address}
+            isSelected={address === this.props.selHistoryAddress}
             onClickDetailHistory={this.props.onClickDetailButton}
           />
         );
       }
     });
     if (this._isEveryComponentUndefined(selectedTokenHolders)) return this.renderNoTokenHolderResult();
+    // if (selectedTokenHolders.length > 5) selectedTokenHolders = selectedTokenHolders.slice(0, 5);
+    // console.log(selectedTokenHolders);
+    console.log(selectedTokenHolders);
     return selectedTokenHolders;
   }
 

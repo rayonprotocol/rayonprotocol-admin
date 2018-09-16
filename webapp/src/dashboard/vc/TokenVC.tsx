@@ -107,6 +107,7 @@ class TokenVC extends Component<{}, DashboardVCState> {
             holders={this.state.holders}
             topHolders={this._getTopHolders(this.NUMBER_OF_TOPHOLDER)}
             selHolderAddress={this.state.selHolderAddress}
+            selHistoryAddress={this.state.selHistoryAddress}
             onClickDetailButton={this.onClickDetailButton.bind(this)}
             onChangeSearchInput={this.onChangeSearchInput.bind(this)}
           />

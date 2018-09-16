@@ -9,6 +9,7 @@ interface TopHolderCardProps {
   className?: string;
   rank: number;
   userAddress: string;
+  isSelected: boolean;
   onClickDetailHistory: (userAddress) => void;
 }
 
@@ -19,7 +20,11 @@ class TopHolderCard extends Component<TopHolderCardProps, {}> {
 
   render() {
     return (
-      <div className={classNames(this.props.className, styles.topHolderCard)}>
+      <div
+        className={classNames(this.props.className, styles.topHolderCard, {
+          [styles.isSelected]: this.props.isSelected,
+        })}
+      >
         <div className={styles.rank}>{`# ${this.props.rank}`}</div>
         <div className={styles.identicon}>
           {/* <Blockies className={styles.blockies} seed={this.props.userAddress} /> */}

@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-// import Blockies from 'react-blockies-image';
 
 // model
 import { TokenHistory } from '../../../../shared/token/model/Token';
@@ -26,7 +25,7 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
 
   getLatest10TokenHistory(): TokenHistory[] {
     if (ArrayUtil.isEmpty(this.props.tokenHistory)) return [];
-    return this.props.tokenHistory.length > 10 ? this.props.tokenHistory.slice(-10) : this.props.tokenHistory;
+    return this.props.tokenHistory.length > 5 ? this.props.tokenHistory.slice(-5) : this.props.tokenHistory;
   }
 
   isUserSender(history: TokenHistory) {
@@ -41,6 +40,14 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
     );
   }
 
+  adjustBalanceForDemo(str: string) {
+    if (str.indexOf('.') !== 0) {
+      return str.slice(0, str.indexOf('.'));
+    } else {
+      return str;
+    }
+  }
+
   renderTokenHistoryTable() {
     const latest10TokenHistory = this.getLatest10TokenHistory();
     return (
@@ -52,7 +59,8 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
                 <td>{this.isUserSender(history) ? 'Send' : 'Recieve'}</td>
                 <td>{this.trimAddress(this.isUserSender(history) ? history.to : history.from)}</td>
                 <td>{StringUtil.removeLastZeroInFloatString(history.amount.toFixed(18))} RYN</td>
-                <td>{StringUtil.removeLastZeroInFloatString(history.balance.toFixed(18))} RYN</td>
+                {/* <td>{StringUtil.removeLastZeroInFloatString(history.balance.toFixed(18))} RYN</td> */}
+                <td>{this.adjustBalanceForDemo(history.balance.toFixed(18))} RYN</td>
               </tr>
             );
           })}
@@ -68,8 +76,7 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
           <p className={styles.title}>Token history</p>
           {!StringUtil.isEmpty(this.props.selHistoryAddress) && (
             <div className={styles.selectedUserProfile}>
-              {/* <Blockies className={styles.blockies} seed={this.props.selUserAccount} /> */}
-              <p>{this.trimAddress(this.props.selHistoryAddress)}</p>
+              <p>{this.props.selHistoryAddress}</p>
             </div>
           )}
         </div>
