@@ -24,7 +24,7 @@ type RayonEventListener = ((eventType: RayonEvent, event: any) => void);
 abstract class RayonContractAgent {
   public FROM_BLOCK = ContractUtil.getContractDeployedBlock();
 
-  private _lastReadedBlockNumber: number = ContractUtil.getContractDeployedBlock();
+  private _lastReadBlockNumber: number = ContractUtil.getContractDeployedBlock();
   private _latestBlockNumber: number;
   private _totalTokenSupply: BigNumber;
   private _tokenCap: BigNumber;
@@ -74,7 +74,7 @@ abstract class RayonContractAgent {
 
   protected async getPastEvents(): Promise<void> {
     const latestBlock: Block = await this.getBlock('latest');
-    const isAlreadyReaded: boolean = latestBlock.number <= this._lastReadedBlockNumber;
+    const isAlreadyReaded: boolean = latestBlock.number <= this._lastReadBlockNumber;
 
     console.log('blockCheck... ', ++blockChcekFlag);
 
@@ -94,7 +94,7 @@ abstract class RayonContractAgent {
         this.handlePastEventFetched.bind(this, eventType)
       );
     });
-    this._lastReadedBlockNumber = latestBlock.number;
+    this._lastReadBlockNumber = latestBlock.number;
   }
 
   protected handlePastEventFetched(eventType, error, events) {
@@ -131,7 +131,7 @@ abstract class RayonContractAgent {
   }
 
   public getEventRange() {
-    return { fromBlock: this._lastReadedBlockNumber + 1, toBlock: this._latestBlockNumber };
+    return { fromBlock: this._lastReadBlockNumber + 1, toBlock: this._latestBlockNumber };
   }
 
   public getTokenTotalBalance(): BigNumber {

@@ -84,6 +84,7 @@ class TokenDC extends RayonDC {
   }
 
   public respondTokenHistory(req: Request, res: Response) {
+    // const sortedTokenHistory = this._getSortedTokenHistory();
     const result: SendResult<Object> = res.status(200)
       ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token History', this._userTokenHistory)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token History', null);
@@ -138,10 +139,10 @@ class TokenDC extends RayonDC {
   }
 
   // TODO: 메서드 분리하여 세분화 해야함
-  async onTransferEvent(event: RayonEventResponse<TransferArgs>) {
+  onTransferEvent(event: RayonEventResponse<TransferArgs>) {
     let newEventBlock;
 
-    newEventBlock = await TokenBlockchainAgent.getBlock(event.blockNumber);
+    newEventBlock = TokenBlockchainAgent.getBlock(event.blockNumber);
 
     const newDate = new Date(newEventBlock.timestamp * 1000);
     const newBlockTime: BlockTime = {
@@ -202,8 +203,18 @@ class TokenDC extends RayonDC {
       to: transferEvent.to,
       amount: transferEvent.amount,
       balance,
+      blockTime: transferEvent.blockTime,
     };
   }
+
+  // private _getSortedTokenHistory(): UserTokenHistory {
+  //   const sortedTokenHistory = {};
+  //   for (let userAddress in this._userTokenHistory) {
+  //     sortedTokenHistory[userAddress] = this._userTokenHistory[userAddress].sort(this._sortTokenHistory);
+  //   }
+
+  //   return sortedTokenHistory;
+  // }
 }
 
 export default new TokenDC();

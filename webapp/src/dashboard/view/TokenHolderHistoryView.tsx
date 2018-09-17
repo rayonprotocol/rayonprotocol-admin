@@ -9,6 +9,7 @@ import DashboardContainer from 'common/view/container/DashboardContainer';
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 import StringUtil from '../../../../shared/common/util/StringUtil';
+import DateUtil from '../../../../shared/common/util/DateUtil';
 
 // styles
 import styles from './TokenHolderHistoryView.scss';
@@ -25,7 +26,7 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
 
   getLatest10TokenHistory(): TokenHistory[] {
     if (ArrayUtil.isEmpty(this.props.tokenHistory)) return [];
-    return this.props.tokenHistory.length > 5 ? this.props.tokenHistory.slice(-5) : this.props.tokenHistory;
+    return this.props.tokenHistory.length > 5 ? this.props.tokenHistory.slice(-5) : this.props.tokenHistory; 
   }
 
   isUserSender(history: TokenHistory) {
@@ -56,6 +57,8 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
           {latest10TokenHistory.map((history, index) => {
             return (
               <tr key={index}>
+                {/* <td>{`${history.blockTime.year}/${history.blockTime.month}/${history.blockTime.date}`}</td> */}
+                <td>{DateUtil.transformTime(new Date(history.blockTime.timestamp))}</td>
                 <td>{this.isUserSender(history) ? 'Send' : 'Recieve'}</td>
                 <td>{this.trimAddress(this.isUserSender(history) ? history.to : history.from)}</td>
                 <td>{StringUtil.removeLastZeroInFloatString(history.amount.toFixed(18))} RYN</td>
@@ -83,6 +86,7 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
         <table>
           <thead>
             <tr>
+              <th>Date</th>
               <th>Type</th>
               <th>Detail</th>
               <th>Amount</th>

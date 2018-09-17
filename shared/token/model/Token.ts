@@ -78,7 +78,8 @@ export interface TokenHistory {
   from: string;
   to: string;
   amount: BigNumber;
-  balance: BigNumber;
+  balance?: BigNumber;
+  blockTime: BlockTime;
 }
 
 export interface BlockTime {
