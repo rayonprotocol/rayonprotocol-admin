@@ -26,7 +26,7 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
 
   getLatest10TokenHistory(): TokenHistory[] {
     if (ArrayUtil.isEmpty(this.props.tokenHistory)) return [];
-    return this.props.tokenHistory.length > 5 ? this.props.tokenHistory.slice(-5) : this.props.tokenHistory; 
+    return this.props.tokenHistory.length > 5 ? this.props.tokenHistory.slice(-5) : this.props.tokenHistory;
   }
 
   isUserSender(history: TokenHistory) {
@@ -58,7 +58,6 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
             return (
               <tr key={index}>
                 {/* <td>{`${history.blockTime.year}/${history.blockTime.month}/${history.blockTime.date}`}</td> */}
-                <td>{DateUtil.transformTime(new Date(history.blockTime.timestamp))}</td>
                 <td>{this.isUserSender(history) ? 'Send' : 'Recieve'}</td>
                 <td>{this.trimAddress(this.isUserSender(history) ? history.to : history.from)}</td>
                 <td>{StringUtil.removeLastZeroInFloatString(history.amount.toFixed(18))} RYN</td>
@@ -86,7 +85,7 @@ class TokenHolderHistoryView extends Component<TokenHolderHistoryViewProps, {}> 
         <table>
           <thead>
             <tr>
-              <th>Date</th>
+              {/* <th>Date</th> */}
               <th>Type</th>
               <th>Detail</th>
               <th>Amount</th>

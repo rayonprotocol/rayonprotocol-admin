@@ -206,15 +206,6 @@ class TokenDC extends RayonDC {
       blockTime: transferEvent.blockTime,
     };
   }
-
-  // private _getSortedTokenHistory(): UserTokenHistory {
-  //   const sortedTokenHistory = {};
-  //   for (let userAddress in this._userTokenHistory) {
-  //     sortedTokenHistory[userAddress] = this._userTokenHistory[userAddress].sort(this._sortTokenHistory);
-  //   }
-
-  //   return sortedTokenHistory;
-  // }
 }
 
 export default new TokenDC();
