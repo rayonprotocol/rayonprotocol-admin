@@ -2,6 +2,7 @@ import * as cors from 'cors';
 
 // dc
 import TokenDC from '../../token/dc/TokenDC';
+import ContractDC from '../../contract/dc/ContractDC';
 
 const express = require('express');
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors({ origin: true, credentials: true }));
 
 // datacontroller configure(router)
 TokenDC.configure(app);
+ContractDC.configure(app);
 
 app.get('/', (req, res) => res.send('Hello World!'));
 app.get('/health', (req, res) => res.status(200).send('OK'));
