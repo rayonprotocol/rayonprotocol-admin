@@ -8,6 +8,8 @@ class ContractConfigure {
   public static ENV_MAIN: string = 'main';
   public static NETWORK_PORT: number = 8545;
 
+  public static ROPSTEN_NETWORK_ID = 3;
+
   // TODO: 블록체인에서 얻어와야함
   public static CONTRACTBLOCK_LOCAL: number = 0;
   public static CONTRACTBLOCK_TESTNET: number = 3936470;
