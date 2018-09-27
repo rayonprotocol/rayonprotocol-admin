@@ -7,7 +7,7 @@ type artifactNetworks = {
   };
 };
 
-interface artifactAbi {
+export interface artifactAbi {
   constant: boolean;
   inputs: any[];
   name: string;
