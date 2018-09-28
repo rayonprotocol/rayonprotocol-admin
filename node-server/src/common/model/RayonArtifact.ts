@@ -1,11 +1,8 @@
-type artifactNetworks = {
-  [networkNumber: string]: {
-    events: object;
-    links: object;
-    address: string;
-    transactionHash: string;
-  };
-};
+export default interface RayonArtifact {
+  contractName: string;
+  abi: artifactAbi[];
+  networks: artifactNetworks;
+}
 
 export interface artifactAbi {
   constant: boolean;
@@ -17,8 +14,20 @@ export interface artifactAbi {
   type: string;
 }
 
-export default interface RayonArtifact {
-  contractName: string;
-  abi: artifactAbi[];
-  networks: artifactNetworks;
+type artifactNetworks = {
+  [networkNumber: string]: {
+    events: object;
+    links: object;
+    address: string;
+    transactionHash: string;
+  };
+};
+
+export type ConvertedAbiFunctions = {
+  [functionName: string]: ConvertedAbiFunction;
+};
+
+interface ConvertedAbiFunction {
+  fullNames: string;
+  inputs: object;
 }

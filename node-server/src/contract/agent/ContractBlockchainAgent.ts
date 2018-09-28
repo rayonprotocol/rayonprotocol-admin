@@ -1,5 +1,3 @@
-import RayonBlockchainAgent from '../../common/agent/RayonBlockchainAgent';
-
 class ContractBlockchainAgent {
   constructor() {
       
