@@ -24,10 +24,21 @@ type artifactNetworks = {
 };
 
 export type ConvertedAbiFunctions = {
-  [functionName: string]: ConvertedAbiFunction;
+  [functionSignature: string]: ConvertedAbiFunction;
 };
 
 interface ConvertedAbiFunction {
   fullNames: string;
   inputs: object;
 }
+
+export type ConvertedAbiEvents = {
+  [eventName: string]: string;
+};
+
+export type ConvertedAbi = {
+  [contractAddress: string]: {
+    convertedAbiFunctions: ConvertedAbiFunctions;
+    convertedAbiEvents: ConvertedAbiEvents;
+  };
+};

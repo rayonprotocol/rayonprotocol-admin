@@ -19,7 +19,7 @@ class ContractConfigure {
   public static PROVIDER_INFURA: string = 'infura';
   public static PROVIDER_LOCALHOST: string = 'localhost';
 
-  public static AUTOMAITC_REQUEST_TIME_INTERVAL: number = 2000;
+  public static AUTOMAITC_REQUEST_TIME_INTERVAL: number = 20;
 
   private static websocketUrl = {
     development: 'http://localhost:8545',

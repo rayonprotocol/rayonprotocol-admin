@@ -13,7 +13,6 @@ import TokenDC from '../../token/dc/TokenDC';
 
 // util
 import ContractUtil from '../util/ContractUtil';
-import { Block } from 'web3/types';
 
 let web3: Web3;
 
@@ -73,7 +72,7 @@ abstract class RayonContractAgent {
   }
 
   protected async getPastEvents(): Promise<void> {
-    const latestBlock: Block = await this.getBlock('latest');
+    const latestBlock = await this.getBlock('latest');
     const isAlreadyReaded: boolean = latestBlock.number <= this._lastReadBlockNumber;
 
     console.log('blockCheck... ', ++blockChcekFlag);
@@ -126,7 +125,7 @@ abstract class RayonContractAgent {
     return this._contractInstance;
   }
 
-  public async getBlock(blockNumber: any): Promise<Block> {
+  public async getBlock(blockNumber: any): Promise<any> {
     return await web3.eth.getBlock(blockNumber);
   }
 

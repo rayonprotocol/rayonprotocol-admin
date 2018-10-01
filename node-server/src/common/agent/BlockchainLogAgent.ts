@@ -5,17 +5,19 @@ import RayonArtifactAgent from './RayonArtifactAgent';
 
 // model
 import { RayonEvent } from '../../../../shared/token/model/Token';
-import { PastLog, PastEvent, FunctionHistory, EventHistory } from '../model/History';
+import { Block, Transaction, PastLog, PastEvent } from '../model/Web3Type';
+import { FunctionHistory, EventHistory } from '../model/History';
 
 // util
 import ContractUtil from '../util/ContractUtil';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
+if (Symbol['asyncIterator'] === undefined) (Symbol as any)['asyncIterator'] = Symbol.for('asyncIterator');
+
 class RayonBlockchainAgent {
   private _web3: Web3;
 
-  private _readLastEventBlockNumber: number = 3936470;
-  private _readLastFunctionBlockNumber: number = 3936470;
+  private _readLastBlockNumber: number = 4076310;
 
   private _contracts: Map<string, Set<RayonEvent>>; // key: address value: watched event
   private _artifactAgent: RayonArtifactAgent;
@@ -23,7 +25,7 @@ class RayonBlockchainAgent {
   public startBlockchainHistoryLogStore() {
     this._setWeb3();
     this._setContracts();
-    // this._collectHistory();
+    this._collectHistory();
   }
 
   private _setContracts() {
@@ -37,57 +39,85 @@ class RayonBlockchainAgent {
     this._web3 = new Web3(ContractUtil.getHttpProvider());
   }
 
-  private _collectHistory() {
-    this._contracts.forEach((events, address) => {
-      this._getPastLogs(address);
-      this._getPastEvents(address, events);
-    });
+  private async _collectHistory() {
+    // console.log('readLastBlock.number', readLastBlock.number);
+    for await (const functionHistories of this._getFunctionHistories()) {
+      console.log('functionHistories', functionHistories);
+      // const eventHistories = await this._getEventHistories(readLastBlock);
+    }
+
+    //
+
+    // TODO: save functionHistories, eventHistories
+
+    // this._readLastBlockNumber++;
+    // this._collectHistory();
   }
 
-  private async _getPastLogs(contractAddress: string): Promise<void> {
-    const latestBlock = await this._web3.eth.getBlock('latest');
-    if (this._readLastFunctionBlockNumber === latestBlock.blockNumber) return;
-    this._web3.eth.getPastLogs(
-      {
-        fromBlock: this._readLastFunctionBlockNumber + 1,
-        toBlock: latestBlock.blockNumber,
-        address: contractAddress,
-      },
-      this._onFetchedPastLogs.bind(this)
-    );
-  }
-
-  private async _getPastEvents(contractAddress: string, watchEvents: Set<RayonEvent>): Promise<void> {
-    const latestBlock = await this._web3.eth.getBlock('latest');
-    const contractInstance = this._artifactAgent.getContractInstance(contractAddress);
-
-    if (this._readLastFunctionBlockNumber === latestBlock.blockNumber) return;
-
-    watchEvents.forEach(eventType => {
-      contractInstance.getPastEvents(
-        RayonEvent.getRayonEventName(eventType),
-        { fromBlock: this._readLastEventBlockNumber + 1, toBlock: latestBlock.blockNumber },
-        this._onFetchedPastEvents.bind(this)
+  private async *_getFunctionHistories() {
+    while (true) {
+      let latestBlockNumber = (await this._web3.eth.getBlock('latest')).number;
+      let readLastBlock: Block = await this._web3.eth.getBlock(this._readLastBlockNumber);
+      if (readLastBlock.number === latestBlockNumber) break;
+      console.log(readLastBlock.number);
+      // 요청
+      const functionHistoryies = await Promise.all(
+        readLastBlock.transactions.map(async transactionHash => {
+          const transaction: Transaction = await this._web3.eth.getTransaction(transactionHash);
+          return this._makeTransactionHistory(transaction, readLastBlock);
+        })
       );
+      const contractFunctionHistoryies = functionHistoryies.filter(
+        functionHistory => typeof functionHistory !== 'undefined'
+      );
+      if (contractFunctionHistoryies.length) {
+        yield contractFunctionHistoryies;
+      }
+      this._readLastBlockNumber++;
+    }
+  }
+
+  private async _getEventHistories(currentBlock: Block): Promise<void> {
+    this._contracts.forEach((events, address) => {
+      const contractInstance = this._artifactAgent.getContractInstance(address);
+      events.forEach(eventType => {
+        contractInstance.getPastEvents(
+          RayonEvent.getRayonEventName(eventType),
+          { fromBlock: this._readLastBlockNumber + 1, toBlock: this._readLastBlockNumber + 1 },
+          this._makeEventHistory.bind(this, currentBlock)
+        );
+      });
     });
   }
 
-  private _onFetchedPastLogs(error, result: PastLog[]) {
-    result.map(async pastLog => {
-      const block = await this._web3.eth.getBlock(pastLog.blockNumber);
-      const parameters = pastLog.topics.length > 1 ? pastLog.topics.slice(1) : [];
-      // const functionHistory: FunctionHistory = {
-      //   calledTime: block.timestamp,
-      //   txHash: pastLog.transactionHash,
-      //   contractAddress: pastLog.address,
-      //   // functionName: this._artifactAgent.getFunctionFullName(pastLog.topics[0]),
-      //   // inputData: JSON.stringify(this._artifactAgent.getFunctionParameters(pastLog.topics[0], parameters)),
-      // };
-    });
+  private _makeTransactionHistory(transaction: Transaction, transactionBlock: Block): FunctionHistory {
+    const contractAddress = transaction.to !== null && transaction.to.toLowerCase();
+    if (this._contracts.get(contractAddress) === undefined) return;
+
+    const functionSignature = transaction.input.slice(0, 10);
+    return {
+      calledTime: transactionBlock.timestamp,
+      txHash: transaction.hash,
+      contractAddress,
+      functionName: this._artifactAgent.getFunctionFullName(contractAddress, functionSignature.toLowerCase()),
+      inputData: JSON.stringify(
+        this._artifactAgent.getFunctionInputs(contractAddress, functionSignature.toLowerCase())
+      ),
+    };
   }
 
-  private _onFetchedPastEvents(error, pastEvent: PastEvent[]) {
-    console.log('event result', pastEvent);
+  private _makeEventHistory(error, pastEvents: PastEvent[], currentBlock: Block): EventHistory[] {
+    const eventHistories: EventHistory[] = [];
+    pastEvents.forEach(event => {
+      const eventHistory: EventHistory = {
+        txHash: event.transactionHash,
+        calledTime: currentBlock.timestamp,
+        contractAddress: event.address,
+        eventName: this._artifactAgent.getEventFullName(event.address, event.event),
+      };
+      eventHistories.push(eventHistory);
+    });
+    return eventHistories;
   }
 }
 
