@@ -28,12 +28,12 @@ export type ConvertedAbiFunctions = {
 };
 
 interface ConvertedAbiFunction {
-  fullNames: string;
+  fullName: string;
   inputs: object;
 }
 
 export type ConvertedAbiEvents = {
-  [eventName: string]: string;
+  [eventName: string]: ConvertedAbiFunction;
 };
 
 export type ConvertedAbi = {

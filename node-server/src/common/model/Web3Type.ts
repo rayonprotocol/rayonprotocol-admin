@@ -13,8 +13,8 @@ export interface Block {
   size: number;
   extraData: string;
   gasLimit: number;
-  gasUsed: 21662;
-  timestamp: 21662;
+  gasUsed: number;
+  timestamp: number;
   transactions: string[];
   uncles: string[];
 }
@@ -33,7 +33,7 @@ export interface Transaction {
   input: string;
 }
 
-export interface TransactionReceipt {
+export interface TxReceipt {
   status: boolean;
   transactionHash: string;
   transactionIndex: number;
