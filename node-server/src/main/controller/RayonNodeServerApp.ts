@@ -1,7 +1,7 @@
 import * as cors from 'cors';
 
 // agent
-import BlockchainLogAgent from '../../common/agent/BlockchainLogAgent';
+import RayonLogCollectAgent from '../../log/agent/RayonLogCollectAgent';
 
 // dc
 import TokenDC from '../../token/dc/TokenDC';
@@ -18,7 +18,7 @@ const port = Number(process.env.APP_PORT) || 3000;
 app.use(cors({ origin: true, credentials: true }));
 
 // start history log store
-BlockchainLogAgent.startBlockchainHistoryLogStore();
+RayonLogCollectAgent.collectionStart();
 
 // datacontroller configure(router)
 // TokenDC.configure(app);

@@ -1,22 +1,21 @@
 import Web3 from 'web3';
+import { resolve } from 'dns';
 import 'core-js/modules/es7.symbol.async-iterator'; // for async iterator
 
 // agent
 import RayonArtifactAgent from './RayonArtifactAgent';
 
 // model
-import { Block, Transaction, TxReceipt } from '../model/Web3Type';
+import { Block, Transaction, TxReceipt } from '../../common/model/Web3Type';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import { RayonEvent } from '../../../../shared/token/model/Token';
-import TxHistory, { FunctionHistory, EventHistory } from '../model/TxHistory';
+import TxHistory, { FunctionHistory, EventHistory } from '../../common/model/TxHistory';
 
 // util
-import ContractUtil from '../util/ContractUtil';
+import ContractUtil from '../../common/util/ContractUtil';
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 
-import { resolve } from 'dns';
-
-class RayonBlockchainAgent {
+class RayonLogCollectAgent {
   private SIGNITURE_INDEX = 0;
 
   private _web3: Web3;
@@ -24,24 +23,20 @@ class RayonBlockchainAgent {
   private _readLastBlockNumber: number = 4076312;
 
   constructor() {
+    this._setWeb3();
     this._contracts = ContractConfigure.getRayonContractAddresses();
   }
 
-  public startBlockchainHistoryLogStore() {
-    this._setWeb3();
-    this._startCollectAndStoreRayonTxHistory();
+  public async collectionStart() {
+    for await (const rayonContractTxHistories of this._getRayonTxHistoriesInBlocks()) {
+      // TODO: save rayonContractTxHistories to database
+      console.log('rayonContractTxHistories', rayonContractTxHistories);
+    }
   }
 
   private _setWeb3(): void {
     const Web3 = require('web3');
     this._web3 = new Web3(ContractUtil.getHttpProvider());
-  }
-
-  private async _startCollectAndStoreRayonTxHistory() {
-    for await (const rayonContractTxHistories of this._getRayonTxHistoriesInBlocks()) {
-      // TODO: save rayonContractTxHistories to database
-      console.log('rayonContractTxHistories', rayonContractTxHistories);
-    }
   }
 
   private async *_getRayonTxHistoriesInBlocks(): AsyncIterableIterator<TxHistory[]> {
@@ -86,6 +81,7 @@ class RayonBlockchainAgent {
     const functionParameter = transaction.input.slice(10, -1).toLowerCase();
 
     const functionHistory = {
+      blockNumber: transaction.blockNumber,
       txHash: transaction.hash,
       calledTime: currentBlock.timestamp,
       status: txReceipt.status,
@@ -112,6 +108,7 @@ class RayonBlockchainAgent {
   }
 
   private _getEventParameter(topics: string[], data: string) {
+    if (topics.length === 0) return;
     return (
       topics.map((topic, index) => (index === this.SIGNITURE_INDEX ? undefined : topic.slice(2))).join('') +
       data.slice(2)
@@ -125,4 +122,4 @@ class RayonBlockchainAgent {
   }
 }
 
-export default new RayonBlockchainAgent();
+export default new RayonLogCollectAgent();

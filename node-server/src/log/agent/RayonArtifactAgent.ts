@@ -2,10 +2,10 @@ import Web3 from 'web3';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import ContractUtil from '../util/ContractUtil';
+import ContractUtil from '../../common/util/ContractUtil';
 
 // model
-import { artifactAbi, ConvertedAbi } from '../../common/model/RayonArtifact';
+import { artifactAbi, ConvertedAbi } from '../model/RayonArtifact';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import { RayonEvent } from '../../../../shared/token/model/Token';
 
