@@ -9,7 +9,7 @@ import RayonArtifactAgent from './RayonArtifactAgent';
 import { Block, Transaction, TxReceipt } from '../../common/model/Web3Type';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import { RayonEvent } from '../../../../shared/token/model/Token';
-import TxHistory, { FunctionHistory, EventHistory } from '../../common/model/TxHistory';
+import TxLog, { FunctionLog, EventLog } from '../../common/model/TxLog';
 
 // util
 import ContractUtil from '../../common/util/ContractUtil';
@@ -28,9 +28,9 @@ class RayonLogCollectAgent {
   }
 
   public async collectionStart() {
-    for await (const rayonContractTxHistories of this._getRayonTxHistoriesInBlocks()) {
-      // TODO: save rayonContractTxHistories to database
-      console.log('rayonContractTxHistories', rayonContractTxHistories);
+    for await (const rayonContractTxLogs of this._getRayonTxLogsInBlocks()) {
+      // TODO: save rayonContractTxLogs to database
+      console.log('rayonContractTxLogs', rayonContractTxLogs);
     }
   }
 
@@ -39,7 +39,7 @@ class RayonLogCollectAgent {
     this._web3 = new Web3(ContractUtil.getHttpProvider());
   }
 
-  private async *_getRayonTxHistoriesInBlocks(): AsyncIterableIterator<TxHistory[]> {
+  private async *_getRayonTxLogsInBlocks(): AsyncIterableIterator<TxLog[]> {
     while (true) {
       const latestBlock = await this._web3.eth.getBlock('latest');
       const readLastBlock: Block = await this._web3.eth.getBlock(this._readLastBlockNumber);
@@ -49,25 +49,25 @@ class RayonLogCollectAgent {
         continue;
       }
 
-      const rayonContractTxHistories = await this._getRayonContractTxHistories(readLastBlock);
+      const rayonContractTxLogs = await this._getRayonContractTxLogs(readLastBlock);
 
-      if (rayonContractTxHistories.length) yield rayonContractTxHistories;
+      if (rayonContractTxLogs.length) yield rayonContractTxLogs;
       this._readLastBlockNumber++;
     }
   }
 
-  private async _getRayonContractTxHistories(currentBlock: Block): Promise<TxHistory[]> {
-    const txHistory: TxHistory[] = await Promise.all(
+  private async _getRayonContractTxLogs(currentBlock: Block): Promise<TxLog[]> {
+    const txLog: TxLog[] = await Promise.all(
       currentBlock.transactions.map(async transactionHash => {
         const transaction: Transaction = await this._web3.eth.getTransaction(transactionHash);
         if (!this._isRayonContractTx(transaction.to)) return;
 
         const txReceipt: TxReceipt = await this._web3.eth.getTransactionReceipt(transaction.hash);
-        return this._makeTxHistory(transaction, txReceipt, currentBlock);
+        return this._makeTxLog(transaction, txReceipt, currentBlock);
       })
     );
 
-    return ArrayUtil.removeUndefinedElements(txHistory);
+    return ArrayUtil.removeUndefinedElements(txLog);
   }
 
   private _isRayonContractTx(txContractAddress: string) {
@@ -75,12 +75,12 @@ class RayonLogCollectAgent {
     return this._contracts.indexOf(contractAddress) > -1;
   }
 
-  private _makeTxHistory(transaction: Transaction, txReceipt: TxReceipt, currentBlock: Block): TxHistory {
+  private _makeTxLog(transaction: Transaction, txReceipt: TxReceipt, currentBlock: Block): TxLog {
     const contractAddress = transaction.to.toLowerCase();
     const functionSignature = transaction.input.slice(0, 10).toLowerCase();
     const functionParameter = transaction.input.slice(10, -1).toLowerCase();
 
-    const functionHistory = {
+    const functionLog = {
       blockNumber: transaction.blockNumber,
       txHash: transaction.hash,
       calledTime: currentBlock.timestamp,
@@ -91,10 +91,10 @@ class RayonLogCollectAgent {
         RayonArtifactAgent.getFunctionParameters(contractAddress, functionSignature, functionParameter)
       ),
     };
-    const eventHistories: EventHistory[] = txReceipt.logs.map(log => {
+    const eventLogs: EventLog[] = txReceipt.logs.map(log => {
       const eventSignature = log.topics[this.SIGNITURE_INDEX].toLowerCase();
       const eventParameter = this._getEventParameter(log.topics, log.data);
-      return Object.assign(functionHistory, {
+      return Object.assign(functionLog, {
         eventName: RayonArtifactAgent.getEventFullName(contractAddress, eventSignature),
         inputData: JSON.stringify(
           RayonArtifactAgent.getEventParameters(contractAddress, eventSignature, eventParameter)
@@ -102,8 +102,8 @@ class RayonLogCollectAgent {
       });
     });
     return {
-      functionHistory,
-      eventHistories,
+      functionLog,
+      eventLogs,
     };
   }
 

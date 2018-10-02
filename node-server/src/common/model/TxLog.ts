@@ -1,4 +1,4 @@
-export interface FunctionHistory {
+export interface FunctionLog {
   blockNumber: number;
   txHash: string;
   status: boolean;
@@ -8,7 +8,7 @@ export interface FunctionHistory {
   calledTime: number;
 }
 
-export interface EventHistory {
+export interface EventLog {
   blockNumber: number;
   txHash: string;
   status: boolean;
@@ -20,6 +20,6 @@ export interface EventHistory {
 }
 
 export default interface TxHistory {
-  functionHistory: FunctionHistory;
-  eventHistories: EventHistory[];
+  functionLog: FunctionLog;
+  eventLogs: EventLog[];
 }
