@@ -42,6 +42,10 @@ class ContractConfigure {
   public static getHttpUrl(blockchainEnv: string) {
     return ContractConfigure.httpUrl[blockchainEnv];
   }
+
+  public static getRayonContractAddresses(): string[] {
+    return [ContractConfigure.ADDR_RAYONTOKEN];
+  }
 }
 
 export default ContractConfigure;

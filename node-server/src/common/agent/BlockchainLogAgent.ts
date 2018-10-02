@@ -19,14 +19,16 @@ import { resolve } from 'dns';
 class RayonBlockchainAgent {
   private _web3: Web3;
 
-  private _readLastBlockNumber: number = 4076310;
+  private _readLastBlockNumber: number = 4076312;
 
-  private _contracts: Map<string, Set<RayonEvent>>; // key: address value: watched event
-  private _artifactAgent: RayonArtifactAgent;
+  private _contracts: string[];
+
+  constructor() {
+    this._contracts = ContractConfigure.getRayonContractAddresses();
+  }
 
   public startBlockchainHistoryLogStore() {
     this._setWeb3();
-    this._setContracts();
     this._startCollectAndStoreRayonTxHistory();
   }
 
@@ -34,12 +36,6 @@ class RayonBlockchainAgent {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
-  }
-
-  private _setContracts() {
-    this._contracts = new Map<string, Set<RayonEvent>>();
-    this._contracts.set(ContractConfigure.ADDR_RAYONTOKEN, new Set([RayonEvent.Mint, RayonEvent.Transfer]));
-    this._artifactAgent = new RayonArtifactAgent(this._contracts);
   }
 
   private _setWeb3(): void {
@@ -91,7 +87,7 @@ class RayonBlockchainAgent {
 
   private _isRayonContractTx(txContractAddress: string) {
     const contractAddress = txContractAddress !== null && txContractAddress.toLowerCase();
-    return this._contracts.get(contractAddress) !== undefined;
+    return this._contracts.indexOf(contractAddress) > -1;
   }
 
   private _makeTxHistory(transaction: Transaction, txReceipt: TxReceipt, currentBlock: Block): TxHistory {
@@ -104,16 +100,16 @@ class RayonBlockchainAgent {
       calledTime: currentBlock.timestamp,
       status: txReceipt.status,
       contractAddress,
-      functionName: this._artifactAgent.getFunctionFullName(contractAddress, functionSignature),
+      functionName: RayonArtifactAgent.getFunctionFullName(contractAddress, functionSignature),
       // inputData: JSON.stringify(this._artifactAgent.getFunctionInputs(contractAddress, functionSignature)),
       inputData: JSON.stringify(
-        this._artifactAgent.getFunctionParameters(contractAddress, functionSignature, functionParameter)
+        RayonArtifactAgent.getFunctionParameters(contractAddress, functionSignature, functionParameter)
       ),
     };
     const eventHistories: EventHistory[] = txReceipt.logs.map(log => {
       const eventSignature = log['topics'][0].toLowerCase();
       return Object.assign(functionHistory, {
-        eventName: this._artifactAgent.getEventFullName(contractAddress, eventSignature),
+        eventName: RayonArtifactAgent.getEventFullName(contractAddress, eventSignature),
       });
     });
     return {
