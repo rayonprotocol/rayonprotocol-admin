@@ -42,34 +42,18 @@ export interface TxReceipt {
   contractAddress: string;
   cumulativeGasUsed: number;
   gasUsed: number;
-  logs: string[];
+  logs: EventLog[];
 }
 
-export interface PastLog {
+interface EventLog {
+  address: string;
+  blockHash: string;
+  blockNumber: number;
   data: string;
-  topics: string[];
   logIndex: number;
-  transactionIndex: number;
-  transactionHash: string;
-  blockHash: string;
-  blockNumber: number;
-  address: string;
-}
-
-export interface PastEvent {
-  returnValues: object;
-  raw: EventRaw;
-  event: string;
-  signature: string;
-  logIndex: number;
-  transactionIndex: number;
-  transactionHash: string;
-  blockHash: string;
-  blockNumber: number;
-  address: string;
-}
-
-export interface EventRaw {
-  data: string | string[];
+  removed: boolean;
   topics: string[];
+  transactionHash: string[];
+  transactionIndex: number;
+  id: string;
 }

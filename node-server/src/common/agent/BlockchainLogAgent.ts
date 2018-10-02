@@ -5,7 +5,7 @@ import 'core-js/modules/es7.symbol.async-iterator'; // for async iterator
 import RayonArtifactAgent from './RayonArtifactAgent';
 
 // model
-import { Block, Transaction, PastLog, PastEvent, TxReceipt } from '../model/Web3Type';
+import { Block, Transaction, TxReceipt } from '../model/Web3Type';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import { RayonEvent } from '../../../../shared/token/model/Token';
 import TxHistory, { FunctionHistory, EventHistory } from '../model/TxHistory';
@@ -17,11 +17,11 @@ import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 import { resolve } from 'dns';
 
 class RayonBlockchainAgent {
+  private SIGNITURE_INDEX = 0;
+
   private _web3: Web3;
-
-  private _readLastBlockNumber: number = 4076312;
-
   private _contracts: string[];
+  private _readLastBlockNumber: number = 4076312;
 
   constructor() {
     this._contracts = ContractConfigure.getRayonContractAddresses();
@@ -32,12 +32,6 @@ class RayonBlockchainAgent {
     this._startCollectAndStoreRayonTxHistory();
   }
 
-  private _sleep(ms) {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
-  }
-
   private _setWeb3(): void {
     const Web3 = require('web3');
     this._web3 = new Web3(ContractUtil.getHttpProvider());
@@ -45,8 +39,8 @@ class RayonBlockchainAgent {
 
   private async _startCollectAndStoreRayonTxHistory() {
     for await (const rayonContractTxHistories of this._getRayonTxHistoriesInBlocks()) {
-      // console.log('txHistories :', rayonContractTxHistories);
-      console.log('eventHisoryies', rayonContractTxHistories[0].eventHistories);
+      // TODO: save rayonContractTxHistories to database
+      console.log('rayonContractTxHistories', rayonContractTxHistories);
     }
   }
 
@@ -54,19 +48,15 @@ class RayonBlockchainAgent {
     while (true) {
       const latestBlock = await this._web3.eth.getBlock('latest');
       const readLastBlock: Block = await this._web3.eth.getBlock(this._readLastBlockNumber);
+      console.log(readLastBlock.number);
       if (readLastBlock.number === latestBlock.number) {
         await this._sleep(ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL);
         continue;
       }
-      console.log(readLastBlock.number);
 
       const rayonContractTxHistories = await this._getRayonContractTxHistories(readLastBlock);
-      // const contract
 
-      if (rayonContractTxHistories.length) {
-        yield rayonContractTxHistories;
-      }
-
+      if (rayonContractTxHistories.length) yield rayonContractTxHistories;
       this._readLastBlockNumber++;
     }
   }
@@ -101,21 +91,37 @@ class RayonBlockchainAgent {
       status: txReceipt.status,
       contractAddress,
       functionName: RayonArtifactAgent.getFunctionFullName(contractAddress, functionSignature),
-      // inputData: JSON.stringify(this._artifactAgent.getFunctionInputs(contractAddress, functionSignature)),
       inputData: JSON.stringify(
         RayonArtifactAgent.getFunctionParameters(contractAddress, functionSignature, functionParameter)
       ),
     };
     const eventHistories: EventHistory[] = txReceipt.logs.map(log => {
-      const eventSignature = log['topics'][0].toLowerCase();
+      const eventSignature = log.topics[this.SIGNITURE_INDEX].toLowerCase();
+      const eventParameter = this._getEventParameter(log.topics, log.data);
       return Object.assign(functionHistory, {
         eventName: RayonArtifactAgent.getEventFullName(contractAddress, eventSignature),
+        inputData: JSON.stringify(
+          RayonArtifactAgent.getEventParameters(contractAddress, eventSignature, eventParameter)
+        ),
       });
     });
     return {
       functionHistory,
       eventHistories,
     };
+  }
+
+  private _getEventParameter(topics: string[], data: string) {
+    return (
+      topics.map((topic, index) => (index === this.SIGNITURE_INDEX ? undefined : topic.slice(2))).join('') +
+      data.slice(2)
+    );
+  }
+
+  private _sleep(ms) {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
   }
 }
 

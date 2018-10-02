@@ -5,7 +5,7 @@ import * as path from 'path';
 import ContractUtil from '../util/ContractUtil';
 
 // model
-import RayonArtifact, { artifactAbi, ConvertedAbi } from '../../common/model/RayonArtifact';
+import { artifactAbi, ConvertedAbi } from '../../common/model/RayonArtifact';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import { RayonEvent } from '../../../../shared/token/model/Token';
 
@@ -40,8 +40,6 @@ class RayonArtifactAgent {
         ? this._convertAbiFunction(contractAddress, abi)
         : this._convertAbiEvent(contractAddress, abi);
     });
-    console.log(this._convertedEventAbi);
-    console.log(this._convertedFunctionAbi);
   }
 
   private _convertAbiFunction(contractAddress: string, abi: artifactAbi): void {
@@ -57,13 +55,13 @@ class RayonArtifactAgent {
   }
 
   private _convertAbiEvent(contractAddress: string, abi: artifactAbi): void {
-    if (abi.name === undefined) return; // fallBack
+    if (abi.name === undefined) return; // skip fallBack
     const parameterTypes = ArrayUtil.isEmpty(abi.inputs) ? '' : abi.inputs.map(input => input.type).join(',');
     const eventSignature = this._web3.eth.abi.encodeEventSignature(abi);
 
     if (this._convertedEventAbi[contractAddress] === undefined) this._convertedEventAbi[contractAddress] = {};
 
-    this._convertedFunctionAbi[contractAddress][eventSignature] = {
+    this._convertedEventAbi[contractAddress][eventSignature] = {
       fullName: `${abi.name}(${parameterTypes})`,
       inputs: abi.inputs,
     };

@@ -1,9 +1,3 @@
-export default interface RayonArtifact {
-  contractName: string;
-  abi: artifactAbi[];
-  networks: artifactNetworks;
-}
-
 export interface artifactAbi {
   constant: boolean;
   inputs: any[];
@@ -13,15 +7,6 @@ export interface artifactAbi {
   stateMutability: string;
   type: string;
 }
-
-type artifactNetworks = {
-  [networkNumber: string]: {
-    events: object;
-    links: object;
-    address: string;
-    transactionHash: string;
-  };
-};
 
 interface ConvertedAbiData {
   fullName: string;
