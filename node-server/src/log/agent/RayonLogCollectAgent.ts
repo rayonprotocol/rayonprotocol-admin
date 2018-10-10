@@ -21,7 +21,7 @@ class RayonLogCollectAgent {
 
   private _web3: Web3;
   private _contracts: string[];
-  private _readLastBlockNumber: number = 4076312;
+  private _readLastBlockNumber: number = 4076314;
 
   constructor() {
     this._setWeb3();
