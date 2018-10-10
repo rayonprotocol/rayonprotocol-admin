@@ -9,6 +9,14 @@ class ContractDbAgent {
       `
     );
   }
+
+  public async getEventLogs() {
+    return await DbAgent.executeAsync(
+      `
+        SELECT * FROM rayon.eventq_log;
+      `
+    );
+  }
 }
 
 export default new ContractDbAgent();
