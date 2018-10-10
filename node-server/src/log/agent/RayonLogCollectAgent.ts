@@ -4,12 +4,13 @@ import 'core-js/modules/es7.symbol.async-iterator'; // for async iterator
 
 // agent
 import RayonArtifactAgent from './RayonArtifactAgent';
+import RayonLogStoreAgent from './RayonLogStoreAgent';
 
 // model
 import { Block, Transaction, TxReceipt } from '../../common/model/Web3Type';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import { RayonEvent } from '../../../../shared/token/model/Token';
-import TxLog, { FunctionLog, EventLog } from '../../common/model/TxLog';
+import TxLog, { FunctionLog, EventLog } from '../model/TxLog';
 
 // util
 import ContractUtil from '../../common/util/ContractUtil';
@@ -29,8 +30,8 @@ class RayonLogCollectAgent {
 
   public async collectionStart() {
     for await (const rayonContractTxLogs of this._getRayonTxLogsInBlocks()) {
-      // TODO: save rayonContractTxLogs to database
       console.log('rayonContractTxLogs', rayonContractTxLogs);
+      RayonLogStoreAgent.storeTxLogs(rayonContractTxLogs);
     }
   }
 
@@ -90,6 +91,7 @@ class RayonLogCollectAgent {
       inputData: JSON.stringify(
         RayonArtifactAgent.getFunctionParameters(contractAddress, functionSignature, functionParameter)
       ),
+      urlEtherscan: `https://etherscan.io/tx/${transaction.hash}`,
     };
     const eventLogs: EventLog[] = txReceipt.logs.map(log => {
       const eventSignature = log.topics[this.SIGNITURE_INDEX].toLowerCase();
