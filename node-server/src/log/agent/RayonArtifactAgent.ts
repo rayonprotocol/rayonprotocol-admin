@@ -23,14 +23,14 @@ class RayonArtifactAgent {
 
   constructor() {
     this._setWeb3();
-    this._contracts = ContractConfigure.getRayonContractAddresses();
+    this._contracts = Array.from(ContractConfigure.getRayonContractAddresses().values());
     this._contracts.forEach(this._classifyAndConvertAbi.bind(this));
   }
 
   private _setWeb3(): void {
     const Web3 = require('web3');
     this._web3 = new Web3(ContractUtil.getHttpProvider());
-  };
+  }
 
   private _classifyAndConvertAbi(contractAddress: string): void {
     const contractArtifactAbi = this._getContractArtifact(contractAddress).abi;

@@ -25,7 +25,7 @@ class RayonLogCollectAgent {
 
   constructor() {
     this._setWeb3();
-    this._contracts = ContractConfigure.getRayonContractAddresses();
+    this._contracts = Array.from(ContractConfigure.getRayonContractAddresses().values());
   }
 
   public async collectionStart() {

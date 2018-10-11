@@ -3,7 +3,7 @@ import RayonContractAgent from 'common/agent/RayonContractAgent';
 
 // model
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
-import { URLForGetEventLogs, URLForGetMethodLogs } from '../../../../shared/contract/model/Contract';
+import { URLForGetEventLogs, URLForGetFunctionLogs } from '../../../../shared/contract/model/Contract';
 import { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 
 // util
@@ -19,8 +19,8 @@ class ContractAgent extends RayonContractAgent {
     return await this.getRequest<EventLog[]>(URLForGetEventLogs);
   }
 
-  public async fetchMethodLogs() {
-    return await this.getRequest<FunctionLog[]>(URLForGetMethodLogs);
+  public async fetchFunctionLogs() {
+    return await this.getRequest<FunctionLog[]>(URLForGetFunctionLogs);
   }
 }
 

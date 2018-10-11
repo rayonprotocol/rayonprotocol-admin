@@ -43,8 +43,10 @@ class ContractConfigure {
     return ContractConfigure.httpUrl[blockchainEnv];
   }
 
-  public static getRayonContractAddresses(): string[] {
-    return [ContractConfigure.ADDR_RAYONTOKEN];
+  public static getRayonContractAddresses(): Map<string, string> {
+    const RayonContractAddresses = new Map<string, string>();
+    RayonContractAddresses.set('RAYON TOKEN', ContractConfigure.ADDR_RAYONTOKEN);
+    return RayonContractAddresses;
   }
 }
 

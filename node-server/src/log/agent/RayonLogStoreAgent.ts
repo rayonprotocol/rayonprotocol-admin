@@ -24,14 +24,14 @@ class RayonLogStoreAgent {
   private async _storeTxFunctionLog(functionLog: FunctionLog) {
     const result = await DbAgent.executeAsync(
       `
-        INSERT INTO \`rayon\`.\`function_log\` (
-            \`block_number\`,
-            \`tx_hash\`,
-            \`contract_address\`,
-            \`function_name\`,
-            \`input_data\`,
-            \`called_time\`,
-            \`url_etherscan\`) VALUES (
+        INSERT INTO rayon.function_log (
+            block_number,
+            tx_hash,
+            contract_address,
+            function_name,
+            input_data,
+            called_time,
+            url_etherscan) VALUES (
                 ?,
                 ?,
                 ?,
@@ -57,15 +57,15 @@ class RayonLogStoreAgent {
   private async _storeTxEventLogs(eventLog: EventLog) {
     const result = await DbAgent.executeAsync(
       `
-        INSERT INTO \`rayon\`.\`event_log\` (
-            \`block_number\`,
-            \`tx_hash\`,
-            \`contract_address\`,
-            \`event_name\`,
-            \`function_name\`,
-            \`input_data\`,
-            \`called_time\`,
-            \`url_etherscan\`) VALUES (
+        INSERT INTO rayon.event_log (
+            block_number,
+            tx_hash,
+            contract_address,
+            event_name,
+            function_name,
+            input_data,
+            called_time,
+            url_etherscan) VALUES (
                 ?,
                 ?,
                 ?,

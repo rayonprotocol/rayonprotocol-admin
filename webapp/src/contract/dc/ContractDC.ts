@@ -13,8 +13,8 @@ class ContractDC {
     return await ContractAgent.fetchEventLogs();
   }
 
-  public async getMethodLogs() {
-    return await ContractAgent.fetchMethodLogs();
+  public async getFunctionLogs() {
+    return await ContractAgent.fetchFunctionLogs();
   }
 }
 
