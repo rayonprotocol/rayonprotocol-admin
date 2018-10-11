@@ -21,7 +21,7 @@ class RayonLogCollectAgent {
 
   private _web3: Web3;
   private _contracts: string[];
-  private _readLastBlockNumber: number = 4076314;
+  private _readLastBlockNumber: number;
 
   constructor() {
     this._setWeb3();
@@ -35,15 +35,22 @@ class RayonLogCollectAgent {
     }
   }
 
+  private async _getReadLastBlockNumber() {
+    const readLastBlockNumber = (await RayonLogStoreAgent.getLatestBlock())[0]['MAX(block_number)'];
+    return readLastBlockNumber === null ? ContractConfigure.CONTRACTBLOCK_TESTNET : readLastBlockNumber;
+  }
+
   private _setWeb3(): void {
     const Web3 = require('web3');
     this._web3 = new Web3(ContractUtil.getHttpProvider());
   }
 
   private async *_getRayonTxLogsInBlocks(): AsyncIterableIterator<TxLog[]> {
+    this._readLastBlockNumber = await this._getReadLastBlockNumber();
+
     while (true) {
       const latestBlock = await this._web3.eth.getBlock('latest');
-      const readLastBlock: Block = await this._web3.eth.getBlock(this._readLastBlockNumber);
+      const readLastBlock: Block = await this._web3.eth.getBlock(this._readLastBlockNumber + 1);
       console.log(readLastBlock.number);
       if (readLastBlock.number === latestBlock.number) {
         await this._sleep(ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL);

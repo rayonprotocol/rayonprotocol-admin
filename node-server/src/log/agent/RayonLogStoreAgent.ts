@@ -5,6 +5,13 @@ import DbAgent from '../../common/agent/DbAgent';
 import TxLog, { FunctionLog, EventLog } from '../model/TxLog';
 
 class RayonLogStoreAgent {
+  public async getLatestBlock() {
+    const readLastBlockNumber = await DbAgent.executeAsync(`
+      SELECT MAX(block_number) FROM \`rayon\`.\`event_log\`
+    `);
+    return readLastBlockNumber;
+  }
+
   public storeTxLogs(txLogs: TxLog[]) {
     txLogs.forEach(txLog => {
       this._storeTxFunctionLog(txLog.functionLog);
