@@ -7,10 +7,7 @@ import ContractDbAgent from '../agent/ContractDbAgent';
 import RayonDC from '../../common/dc/RayonDC';
 
 // model
-import {
-  URLForGetMethodLogs,
-  URLForGetEventLogs,
-} from '../../../../shared/contract/model/Contract';
+import { URLForGetMethodLogs, URLForGetEventLogs } from '../../../../shared/contract/model/Contract';
 
 class ContractDC extends RayonDC {
   public configure(app: Express) {

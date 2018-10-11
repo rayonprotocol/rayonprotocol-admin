@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 // model
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+import TxLog, { EventLog, FunctionLog } from '../../../../shared/common/model/TxLog';
 import Metamask from 'common/model/metamask/Metamask';
 
 // dc
@@ -20,6 +21,8 @@ import styles from './ContractVC.scss';
 
 interface ContractVCState {
   userAccount: string;
+  methodLogs: FunctionLog[];
+  eventLogs: EventLog[];
 }
 
 class ContractVC extends Component<{}, ContractVCState> {
@@ -27,10 +30,18 @@ class ContractVC extends Component<{}, ContractVCState> {
     super(props);
     this.state = {
       userAccount: undefined,
+      methodLogs: new Array<FunctionLog>(),
+      eventLogs: new Array<EventLog>(),
     };
   }
 
   async componentDidMount() {
+    // const eventLogs = await ContractDC.fetchEventLogs();
+    // const methodLogs = await ContractDC.fetchMethodLogs();
+
+    const eventLogs = [];
+    const methodLogs = [];
+
     let userAccount = await ContractDC.getUserAccount();
     if (!StringUtil.isEmpty(this.state.userAccount) && this.isAdminUser()) {
       ContractDC.setWeb3();
@@ -38,7 +49,11 @@ class ContractVC extends Component<{}, ContractVCState> {
     } else {
       ContractDC.setMetamaskLoginListener(this.onMetamaskLogin.bind(this));
     }
-    this.setState({ ...this.state, userAccount });
+
+    console.log(methodLogs);
+    console.log(eventLogs);
+
+    this.setState({ ...this.state, userAccount, eventLogs, methodLogs });
   }
 
   onMetamaskLogin(loginResult: Metamask) {

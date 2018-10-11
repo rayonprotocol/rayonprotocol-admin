@@ -2,7 +2,7 @@
 import DbAgent from '../../common/agent/DbAgent';
 
 // model
-import TxLog, { FunctionLog, EventLog } from '../model/TxLog';
+import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 
 class RayonLogStoreAgent {
   public async getLatestBlock() {

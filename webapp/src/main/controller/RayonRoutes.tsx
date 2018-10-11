@@ -16,9 +16,14 @@ class Router extends Component<{}, RouterState> {
   route = [
     {
       path: '/',
-      component: TokenVC,
+      component: ContractVC,
       exact: true,
     },
+    // {
+    //   path: '/',
+    //   component: TokenVC,
+    //   exact: true,
+    // },
     {
       path: '/contract',
       component: ContractVC,

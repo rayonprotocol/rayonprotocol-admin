@@ -10,7 +10,7 @@ import RayonLogStoreAgent from './RayonLogStoreAgent';
 import { Block, Transaction, TxReceipt } from '../../common/model/Web3Type';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import { RayonEvent } from '../../../../shared/token/model/Token';
-import TxLog, { FunctionLog, EventLog } from '../model/TxLog';
+import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 
 // util
 import ContractUtil from '../../common/util/ContractUtil';
