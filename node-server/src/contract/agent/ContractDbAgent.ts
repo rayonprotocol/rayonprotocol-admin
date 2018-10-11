@@ -13,7 +13,7 @@ class ContractDbAgent {
   public async getEventLogs() {
     return await DbAgent.executeAsync(
       `
-        SELECT * FROM rayon.eventq_log ORDER BY block_number;
+        SELECT * FROM rayon.event_log ORDER BY block_number;
       `
     );
   }

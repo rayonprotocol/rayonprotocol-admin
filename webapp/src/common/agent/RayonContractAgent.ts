@@ -40,8 +40,10 @@ abstract class RayonContractAgent {
 
   public async getRequest<T>(url: string, params?: Object): Promise<T> {
     const { data } = await axios.get(`${URL_APIBASE}${url}`, { params: params });
-    if (this.isRequestFail(data)) return undefined;
-    else return data['data'];
+    if (this.isRequestFail(data)) {
+      console.error(data['result_message']);
+      return undefined;
+    } else return data['data'];
   }
 
   private isRequestFail(responsedData): boolean {

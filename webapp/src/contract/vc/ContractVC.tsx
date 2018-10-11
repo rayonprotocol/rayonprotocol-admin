@@ -31,11 +31,19 @@ class ContractVC extends Component<{}, ContractVCState> {
     };
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
+    UserDC.addUserLoginStatusChangeListeners(this.onUserLoginStatusChange.bind(this));
     const eventLogs = await ContractDC.getEventLogs();
     const methodLogs = await ContractDC.getMethodLogs();
 
+    console.log('asdfasdf');
+    console.log(eventLogs, methodLogs);
+
     this.setState({ ...this.state, eventLogs, methodLogs });
+  }
+
+  onUserLoginStatusChange(userAccount: string) {
+    this.setState({ ...this.state, userAccount });
   }
 
   renderNoUser() {
