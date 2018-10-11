@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 
 // model
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
-import TxLog, { EventLog, FunctionLog } from '../../../../shared/common/model/TxLog';
-import Metamask from 'common/model/metamask/Metamask';
+import { EventLog, FunctionLog } from '../../../../shared/common/model/TxLog';
 
 // dc
 import ContractDC from 'contract/dc/ContractDC';
+import UserDC from 'user/dc/UserDC';
 
 // view
 import Container from 'common/view/container/Container';
@@ -15,9 +14,6 @@ import NoMetamaskView from 'common/view/view/NoMetamaskView';
 
 // util
 import StringUtil from '../../../../shared/common/util/StringUtil';
-
-// styles
-import styles from './ContractVC.scss';
 
 interface ContractVCState {
   userAccount: string;
@@ -29,39 +25,17 @@ class ContractVC extends Component<{}, ContractVCState> {
   constructor(props) {
     super(props);
     this.state = {
-      userAccount: undefined,
+      userAccount: UserDC.getUserAcount(),
       methodLogs: new Array<FunctionLog>(),
       eventLogs: new Array<EventLog>(),
     };
   }
 
   async componentDidMount() {
-    // const eventLogs = await ContractDC.fetchEventLogs();
-    // const methodLogs = await ContractDC.fetchMethodLogs();
+    const eventLogs = await ContractDC.getEventLogs();
+    const methodLogs = await ContractDC.getMethodLogs();
 
-    const eventLogs = [];
-    const methodLogs = [];
-
-    let userAccount = await ContractDC.getUserAccount();
-    if (!StringUtil.isEmpty(this.state.userAccount) && this.isAdminUser()) {
-      ContractDC.setWeb3();
-      userAccount = await ContractDC.getUserAccount();
-    } else {
-      ContractDC.setMetamaskLoginListener(this.onMetamaskLogin.bind(this));
-    }
-
-    console.log(methodLogs);
-    console.log(eventLogs);
-
-    this.setState({ ...this.state, userAccount, eventLogs, methodLogs });
-  }
-
-  onMetamaskLogin(loginResult: Metamask) {
-    this.setState({ ...this.state, userAccount: loginResult.selectedAddress });
-  }
-
-  isAdminUser() {
-    return this.state.userAccount.toLowerCase() === ContractConfigure.ADDR_CONTRACT_ADMIN.toLowerCase();
+    this.setState({ ...this.state, eventLogs, methodLogs });
   }
 
   renderNoUser() {
@@ -90,7 +64,7 @@ class ContractVC extends Component<{}, ContractVCState> {
 
   render() {
     if (StringUtil.isEmpty(this.state.userAccount)) return this.renderNoUser();
-    else if (!this.isAdminUser()) return this.renderAdminOnly();
+    else if (!UserDC.isAdminUser(this.state.userAccount)) return this.renderAdminOnly();
     else return this.renderContractAdmin();
   }
 }

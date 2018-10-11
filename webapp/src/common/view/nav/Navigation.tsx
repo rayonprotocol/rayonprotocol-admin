@@ -1,12 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-// model
-import Metamask from 'common/model/metamask/Metamask';
-
 // dc
-import TokenDC from 'token/dc/TokenDC';
-import KycDC from 'kyc/dc/KycDC';
+import UserDC from 'user/dc/UserDC';
+
+// util
+import StringUtil from '../../../../../shared/common/util/StringUtil';
 
 // styles
 import styles from './Navigation.scss';
@@ -20,20 +19,16 @@ class Navigation extends Component<{}, NavigationState> {
   constructor(props) {
     super(props);
     this.state = {
-      userAccount: undefined,
-      networkName: '',
+      ...this.state,
     };
   }
 
   async componentWillMount() {
-    const userAccount = await TokenDC.getUserAccount();
-    const networkName = await TokenDC.getNetworkName();
-    KycDC.setMetamaskLoginListener(this.onMetamaskLogin.bind(this));
-    this.setState({ ...this.state, userAccount, networkName });
+    UserDC.addUserLoginStatusChangeListeners(this.onUserLoginStatusChange.bind(this));
   }
 
-  onMetamaskLogin(loginResult: Metamask) {
-    this.setState({ ...this.state, userAccount: loginResult.selectedAddress });
+  onUserLoginStatusChange(userAccount: string, networkName: string) {
+    this.setState({ ...this.state, userAccount, networkName });
   }
 
   renderNoUserInfoSideNav() {
@@ -62,15 +57,12 @@ class Navigation extends Component<{}, NavigationState> {
           <img src={require('../../../common/asset/img/rayon-white-logo.png')} />
         </Link>
         <div className={styles.navList}>
-          {/* <a href={''}>Token</a>
-          <a href={''}>KYC</a>
-          <a href={''}>Contract</a> */}
           <Link to={'/'}>Token</Link>
           <Link to={'/kyc'}>KYC</Link>
           <Link to={'/contract'}>Contract</Link>
         </div>
         <div className={styles.sideNav}>
-          {this.state.userAccount === undefined ? this.renderNoUserInfoSideNav() : this.renderUserInfoSideNav()}
+          {StringUtil.isEmpty(this.state.userAccount) ? this.renderNoUserInfoSideNav() : this.renderUserInfoSideNav()}
         </div>
       </nav>
     );

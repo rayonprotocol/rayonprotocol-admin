@@ -4,9 +4,9 @@ import Web3 from 'web3';
 
 // view
 import Navigation from 'common/view/nav/Navigation';
-import TokenVC from 'dashboard/vc/TokenVC';
+// import TokenVC from 'dashboard/vc/TokenVC';
 import ContractVC from 'contract/vc/ContractVC';
-import KycVC from 'kyc/vc/KycVC';
+// import KycVC from 'kyc/vc/KycVC';
 
 interface RouterState {
   web3: Web3;
@@ -29,11 +29,11 @@ class Router extends Component<{}, RouterState> {
       component: ContractVC,
       exact: true,
     },
-    {
-      path: '/kyc',
-      component: KycVC,
-      exact: true,
-    },
+    // {
+    //   path: '/kyc',
+    //   component: KycVC,
+    //   exact: true,
+    // },
   ];
 
   render() {

@@ -1,25 +1,20 @@
 // agent
 import ContractAgent from 'contract/agent/ContractAgent';
 
+// contoller
+import Web3Controller from 'common/dc/Web3Controller';
+
 class ContractDC {
   public setMetamaskLoginListener(listener: (obj) => void) {
-    ContractAgent.getWeb3().currentProvider['publicConfigStore'].on('update', listener);
+    Web3Controller.getWeb3().currentProvider['publicConfigStore'].on('update', listener);
   }
 
-  public async setWeb3(): Promise<void> {
-    ContractAgent.setWeb3();
+  public async getEventLogs() {
+    return await ContractAgent.fetchEventLogs();
   }
 
-  public async getUserAccount(): Promise<string> {
-    return ContractAgent.getUserAccount();
-  }
-
-  public async fetchEventLogs() {
-    return await this.fetchEventLogs();
-  }
-
-  public async fetchMethodLogs() {
-    return await this.fetchMethodLogs();
+  public async getMethodLogs() {
+    return await ContractAgent.fetchMethodLogs();
   }
 }
 

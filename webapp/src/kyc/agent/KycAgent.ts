@@ -1,17 +1,17 @@
-// agent
-import RayonContractAgent from 'common/agent/RayonContractAgent';
+// // agent
+// import RayonContractAgent from 'common/agent/RayonContractAgent';
 
-// model
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+// // model
+// import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
-// util
-import ContractUtil from 'common/util/ContractUtil';
+// // util
+// import ContractUtil from 'common/util/ContractUtil';
 
-class KycAgent extends RayonContractAgent {
-  constructor() {
-    const contract = ContractUtil.getContractArtifact(ContractConfigure.ADDR_RAYONTOKEN);
-    super(contract);
-  }
-}
+// class KycAgent extends RayonContractAgent {
+//   constructor() {
+//     const contract = ContractUtil.getContractArtifact(ContractConfigure.ADDR_RAYONTOKEN);
+//     super(contract);
+//   }
+// }
 
-export default new KycAgent();
+// export default new KycAgent();

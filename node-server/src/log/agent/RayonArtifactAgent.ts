@@ -30,8 +30,7 @@ class RayonArtifactAgent {
   private _setWeb3(): void {
     const Web3 = require('web3');
     this._web3 = new Web3(ContractUtil.getHttpProvider());
-  }
-  blo;
+  };
 
   private _classifyAndConvertAbi(contractAddress: string): void {
     const contractArtifactAbi = this._getContractArtifact(contractAddress).abi;

@@ -16,11 +16,11 @@ class ContractAgent extends RayonContractAgent {
   }
 
   public async fetchEventLogs() {
-    return await this.getRequest<FunctionLog[]>(URLForGetEventLogs);
+    return await this.getRequest<EventLog[]>(URLForGetEventLogs);
   }
 
   public async fetchMethodLogs() {
-    return await this.getRequest<EventLog[]>(URLForGetMethodLogs);
+    return await this.getRequest<FunctionLog[]>(URLForGetMethodLogs);
   }
 }
 
