@@ -38,6 +38,7 @@ class RayonLogCollectAgent {
   private async _getReadLastBlockNumber() {
     const readLastBlockNumber = (await RayonLogStoreAgent.getLatestBlock())[0]['MAX(block_number)'];
     return readLastBlockNumber === null ? ContractConfigure.CONTRACTBLOCK_TESTNET : readLastBlockNumber;
+    // return readLastBlockNumber === null ? 4050019 : readLastBlockNumber;
   }
 
   private _setWeb3(): void {
@@ -103,12 +104,13 @@ class RayonLogCollectAgent {
     const eventLogs: EventLog[] = txReceipt.logs.map(log => {
       const eventSignature = log.topics[this.SIGNITURE_INDEX].toLowerCase();
       const eventParameter = this._getEventParameter(log.topics, log.data);
-      return Object.assign(functionLog, {
+      return {
+        ...functionLog,
         eventName: RayonArtifactAgent.getEventFullName(contractAddress, eventSignature),
         inputData: JSON.stringify(
           RayonArtifactAgent.getEventParameters(contractAddress, eventSignature, eventParameter)
         ),
-      });
+      };
     });
     return {
       functionLog,

@@ -11,12 +11,6 @@ interface ContractMethodLogViewProps {
 }
 
 class ContractMethodLogView extends Component<ContractMethodLogViewProps, {}> {
-  getInputData(inputData: string) {
-    const mintParameter: MintParameter = JSON.parse(inputData);
-    return JSON.stringify(mintParameter);
-    // return '';
-  }
-
   render() {
     return (
       <div>
@@ -36,7 +30,7 @@ class ContractMethodLogView extends Component<ContractMethodLogViewProps, {}> {
                 <tr key={index}>
                   <td>{'status'}</td>
                   <td>{functionLog.functionName}</td>
-                  <td>{this.getInputData(functionLog.inputData)}</td>
+                  <td>{functionLog.inputData}</td>
                   <td>{DateUtil.timstampCommonFormConverter(functionLog.calledTime)}</td>
                   <td>
                     <a href={functionLog.urlEtherscan}>></a>

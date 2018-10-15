@@ -10,7 +10,7 @@ export interface artifactAbi {
 
 interface ConvertedAbiData {
   fullName: string;
-  inputs: object;
+  inputs: object[];
 }
 
 export type ConvertedAbi = {

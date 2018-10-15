@@ -103,7 +103,12 @@ class RayonArtifactAgent {
   public getEventParameters(contractAddress: string, eventSignature: string, parameters: string): object {
     const eventInputs = this.getEventInputs(contractAddress, eventSignature);
     if (eventInputs === undefined) return;
-    return this._web3.eth.abi.decodeParameters(this.getEventInputs(contractAddress, eventSignature), `0x${parameters}`);
+    const decodeParameters = this._web3.eth.abi.decodeParameters(eventInputs, `0x${parameters}`);
+    const resultInput = {};
+    eventInputs.forEach(inputName => {
+      resultInput[inputName['name']] = decodeParameters[inputName['name']];
+    });
+    return resultInput;
   }
 
   public getFunctionFullName(contractAddress: string, functionSignature: string): string {
@@ -111,7 +116,7 @@ class RayonArtifactAgent {
     return this._convertedFunctionAbi[contractAddress][functionSignature].fullName;
   }
 
-  public getFunctionInputs(contractAddress: string, functionSignature: string): object {
+  public getFunctionInputs(contractAddress: string, functionSignature: string): object[] {
     if (this._isConvertedAbiFunctionEmpty(contractAddress, functionSignature)) return;
     return this._convertedFunctionAbi[contractAddress][functionSignature].inputs;
   }
@@ -119,10 +124,12 @@ class RayonArtifactAgent {
   public getFunctionParameters(contractAddress: string, functionSignature: string, parameters: string): object {
     const functionInputs = this.getFunctionInputs(contractAddress, functionSignature);
     if (functionInputs === undefined) return;
-    return this._web3.eth.abi.decodeParameters(
-      this.getFunctionInputs(contractAddress, functionSignature),
-      `0x${parameters}`
-    );
+    const decodeParameters = this._web3.eth.abi.decodeParameters(functionInputs, `0x${parameters}`);
+    const resultInput = {};
+    functionInputs.forEach(inputName => {
+      resultInput[inputName['name']] = decodeParameters[inputName['name']];
+    });
+    return resultInput;
   }
 }
 
