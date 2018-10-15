@@ -12,6 +12,7 @@ interface ContractMethodLogViewProps {
 
 class ContractMethodLogView extends Component<ContractMethodLogViewProps, {}> {
   render() {
+    console.log(this.props.functionLogs);
     return (
       <div>
         <table>
@@ -28,7 +29,7 @@ class ContractMethodLogView extends Component<ContractMethodLogViewProps, {}> {
             {this.props.functionLogs.map((functionLog, index) => {
               return (
                 <tr key={index}>
-                  <td>{'status'}</td>
+                  <td>{functionLog.status}</td>
                   <td>{functionLog.functionName}</td>
                   <td>{functionLog.inputData}</td>
                   <td>{DateUtil.timstampCommonFormConverter(functionLog.calledTime)}</td>

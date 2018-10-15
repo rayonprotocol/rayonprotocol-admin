@@ -89,7 +89,7 @@ class RayonLogCollectAgent {
     const functionSignature = transaction.input.slice(0, 10).toLowerCase();
     const functionParameter = transaction.input.slice(10, -1).toLowerCase();
 
-    const functionLog = {
+    const functionLog: FunctionLog = {
       blockNumber: transaction.blockNumber,
       txHash: transaction.hash,
       calledTime: currentBlock.timestamp,

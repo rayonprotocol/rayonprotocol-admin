@@ -8,6 +8,7 @@ class ContractDbAgent {
         SELECT
           block_number as blockNumber,
           tx_hash as txHash,
+          status as status,
           contract_address as contractAddress,
           function_name as functionName,
           input_data as inputData,
@@ -24,6 +25,7 @@ class ContractDbAgent {
         SELECT
           block_number as blockNumber,
           tx_hash as txHash,
+          status as status,
           contract_address as contractAddress,
           event_name as eventName,
           function_name as functionName,

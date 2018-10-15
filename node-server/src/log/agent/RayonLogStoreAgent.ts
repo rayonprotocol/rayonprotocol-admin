@@ -27,6 +27,7 @@ class RayonLogStoreAgent {
         INSERT INTO rayon.function_log (
             block_number,
             tx_hash,
+            status,
             contract_address,
             function_name,
             input_data,
@@ -38,11 +39,13 @@ class RayonLogStoreAgent {
                 ?,
                 ?,
                 ?,
+                ?,
                 ?
         )`,
       [
         functionLog.blockNumber,
         functionLog.txHash,
+        functionLog.status,
         functionLog.contractAddress,
         functionLog.functionName,
         functionLog.inputData,
@@ -51,7 +54,7 @@ class RayonLogStoreAgent {
       ]
     );
 
-    console.log(result);
+    console.log('storeResult', result);
   }
 
   private async _storeTxEventLogs(eventLog: EventLog) {
@@ -60,6 +63,7 @@ class RayonLogStoreAgent {
         INSERT INTO rayon.event_log (
             block_number,
             tx_hash,
+            status,
             contract_address,
             event_name,
             function_name,
@@ -73,11 +77,13 @@ class RayonLogStoreAgent {
                 ?,
                 ?,
                 ?,
+                ?,
                 ?
         )`,
       [
         eventLog.blockNumber,
         eventLog.txHash,
+        eventLog.status,
         eventLog.contractAddress,
         eventLog.eventName,
         eventLog.functionName,
@@ -87,7 +93,7 @@ class RayonLogStoreAgent {
       ]
     );
 
-    console.log(result);
+    console.log('storeResult', result);
   }
 }
 
