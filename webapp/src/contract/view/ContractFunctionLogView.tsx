@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
 
 // model
-import { EventLog, FunctionLog } from '../../../../shared/common/model/TxLog';
+import { EventLog, FunctionLog, MintParameter } from '../../../../shared/common/model/TxLog';
+
+// util
+import DateUtil from '../../../../shared/common/util/DateUtil';
 
 interface ContractMethodLogViewProps {
   functionLogs: FunctionLog[];
 }
 
 class ContractMethodLogView extends Component<ContractMethodLogViewProps, {}> {
+  getInputData(inputData: string) {
+    const mintParameter: MintParameter = JSON.parse(inputData);
+    return JSON.stringify(mintParameter);
+    // return '';
+  }
+
   render() {
     return (
       <div>
@@ -27,8 +36,8 @@ class ContractMethodLogView extends Component<ContractMethodLogViewProps, {}> {
                 <tr key={index}>
                   <td>{'status'}</td>
                   <td>{functionLog.functionName}</td>
-                  <td>{functionLog.inputData}</td>
-                  <td>{functionLog.calledTime}</td>
+                  <td>{this.getInputData(functionLog.inputData)}</td>
+                  <td>{DateUtil.timstampCommonFormConverter(functionLog.calledTime)}</td>
                   <td>
                     <a href={functionLog.urlEtherscan}>></a>
                   </td>

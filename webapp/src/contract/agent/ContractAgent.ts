@@ -20,7 +20,22 @@ class ContractAgent extends RayonContractAgent {
   }
 
   public async fetchFunctionLogs() {
-    return await this.getRequest<FunctionLog[]>(URLForGetFunctionLogs);
+    const functionLogs = await this.getRequest<FunctionLog[]>(URLForGetFunctionLogs);
+    const newFunctionLogs: FunctionLog[] = [];
+    functionLogs.forEach(functionLog => {
+      const newFunctionLog: FunctionLog = {
+        blockNumber: functionLog.blockNumber,
+        txHash: functionLog.txHash,
+        status: functionLog.status,
+        contractAddress: functionLog.contractAddress,
+        functionName: functionLog.functionName,
+        inputData: functionLog.inputData,
+        calledTime: functionLog.calledTime,
+        urlEtherscan: functionLog.urlEtherscan,
+      };
+      newFunctionLogs.push(newFunctionLog);
+    });
+    return newFunctionLogs;
   }
 }
 

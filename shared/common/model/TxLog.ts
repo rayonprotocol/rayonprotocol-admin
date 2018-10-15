@@ -8,6 +8,12 @@ export interface FunctionLog {
     calledTime: number;
     urlEtherscan: string;
   }
+
+  export interface MintParameter {
+    from: string;
+    to: string;
+    value: number;
+  }
   
   export interface EventLog {
     blockNumber: number;
