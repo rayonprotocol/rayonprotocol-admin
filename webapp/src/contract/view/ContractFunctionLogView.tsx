@@ -11,6 +11,18 @@ interface ContractMethodLogViewProps {
 }
 
 class ContractMethodLogView extends Component<ContractMethodLogViewProps, {}> {
+  renderInputs(inputData: string) {
+    const inputs = JSON.parse(inputData);
+    return Object.keys(inputs).map((inputKey, index) => {
+      return (
+        <p key={index}>
+          <span>{`${inputKey}: `}</span>
+          <span>{inputs[inputKey]}</span>
+        </p>
+      );
+    });
+  }
+
   render() {
     console.log(this.props.functionLogs);
     return (
@@ -31,7 +43,7 @@ class ContractMethodLogView extends Component<ContractMethodLogViewProps, {}> {
                 <tr key={index}>
                   <td>{functionLog.status}</td>
                   <td>{functionLog.functionName}</td>
-                  <td>{functionLog.inputData}</td>
+                  <td>{this.renderInputs(functionLog.inputData)}</td>
                   <td>{DateUtil.timstampCommonFormConverter(functionLog.calledTime)}</td>
                   <td>
                     <a href={functionLog.urlEtherscan}>></a>

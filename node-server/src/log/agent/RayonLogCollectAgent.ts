@@ -86,8 +86,12 @@ class RayonLogCollectAgent {
 
   private _makeTxLog(transaction: Transaction, txReceipt: TxReceipt, currentBlock: Block): TxLog {
     const contractAddress = transaction.to.toLowerCase();
+
     const functionSignature = transaction.input.slice(0, 10).toLowerCase();
-    const functionParameter = transaction.input.slice(10, -1).toLowerCase();
+    const functionParameter = transaction.input.slice(10).toLowerCase();
+
+    console.log('functionSignature', functionSignature);
+    console.log('functionParameter', functionParameter);
 
     const functionLog: FunctionLog = {
       blockNumber: transaction.blockNumber,
