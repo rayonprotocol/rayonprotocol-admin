@@ -124,8 +124,6 @@ class RayonArtifactAgent {
   public getFunctionParameters(contractAddress: string, functionSignature: string, parameters: string): object {
     const functionInputs = this.getFunctionInputs(contractAddress, functionSignature);
     if (functionInputs === undefined) return;
-    console.log('functionInputs', functionInputs);
-    console.log('parameters', parameters);
     const decodeParameters = this._web3.eth.abi.decodeParameters(functionInputs, `0x${parameters}`);
     const resultInput = {};
     functionInputs.forEach(inputName => {

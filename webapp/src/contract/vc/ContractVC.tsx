@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 // model
 import { EventLog, FunctionLog } from '../../../../shared/common/model/TxLog';
+import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 // dc
 import ContractDC from 'contract/dc/ContractDC';
@@ -13,18 +14,28 @@ import OnlyAdminView from 'common/view/view/OnlyAdminView';
 import NoMetamaskView from 'common/view/view/NoMetamaskView';
 import ContractTopView from 'contract/view/ContractTopView';
 import ContractFunctionLogView from 'contract/view/ContractFunctionLogView';
+import ContractEventLogView from 'contract/view/ContractEventLogView';
+import RayonTab from 'common/view/tab/RayonTab';
 
 // util
 import StringUtil from '../../../../shared/common/util/StringUtil';
+
+import styles from './ContractVC.scss';
 
 interface ContractVCState {
   userAccount: string;
   functionLogs: FunctionLog[];
   eventLogs: EventLog[];
   currentContractAddress: string;
+  currentTab: string;
 }
 
 class ContractVC extends Component<{}, ContractVCState> {
+  public TAB_FUNCTION = 'Function';
+  public TAB_EVENT = 'Event';
+
+  private _tabs = [this.TAB_FUNCTION, this.TAB_EVENT];
+
   constructor(props) {
     super(props);
     this.state = {
@@ -32,6 +43,8 @@ class ContractVC extends Component<{}, ContractVCState> {
       userAccount: UserDC.getUserAcount(),
       functionLogs: new Array<FunctionLog>(),
       eventLogs: new Array<EventLog>(),
+      currentTab: this.TAB_FUNCTION,
+      currentContractAddress: ContractConfigure.ADDR_RAYONTOKEN,
     };
   }
 
@@ -45,6 +58,15 @@ class ContractVC extends Component<{}, ContractVCState> {
 
   onUserLoginStatusChange(userAccount: string) {
     this.setState({ ...this.state, userAccount });
+  }
+
+  onClickTab(tab: string) {
+    this.setState({ ...this.state, currentTab: tab });
+  }
+
+  onSelectOption(selectedContractAddress: string) {
+    console.log('selectedContractAddress', selectedContractAddress);
+    this.setState({ ...this.state, currentContractAddress: selectedContractAddress });
   }
 
   renderNoUser() {
@@ -66,10 +88,31 @@ class ContractVC extends Component<{}, ContractVCState> {
   renderContractAdmin() {
     return (
       <Container>
-        <ContractTopView />
-        <ContractFunctionLogView functionLogs={this.state.functionLogs} />
+        <ContractTopView
+          currentContractAddress={this.state.currentContractAddress}
+          onSelectOption={this.onSelectOption.bind(this)}
+        />
+        <RayonTab
+          className={styles.logTab}
+          tabs={this._tabs}
+          selectedTab={this.state.currentTab}
+          onClickTab={this.onClickTab.bind(this)}
+        >
+          {this.renderLogTabView()}
+        </RayonTab>
       </Container>
     );
+  }
+
+  renderLogTabView() {
+    switch (this.state.currentTab) {
+      case this.TAB_EVENT:
+        return <ContractEventLogView eventLogs={this.state.eventLogs} />;
+      case this.TAB_FUNCTION:
+        return <ContractFunctionLogView functionLogs={this.state.functionLogs} />;
+      default:
+        return <ContractFunctionLogView functionLogs={this.state.functionLogs} />;
+    }
   }
 
   render() {

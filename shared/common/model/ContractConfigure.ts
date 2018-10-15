@@ -2,6 +2,7 @@ class ContractConfigure {
   public static ADDR_CONTRACT_ADMIN: string = '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290';
 
   public static ADDR_RAYONTOKEN: string = '0xf9a8a966d310cb240c4edc98ca43eb7ff1c5d491';
+  public static ADDR_TEST: string = '0xf9a8a966d310cb240c4edc98ca43eb7ff1c5d492';
 
   public static ENV_LOCAL: string = 'local';
   public static ENV_TESTNET: string = 'ropsten';
@@ -43,9 +44,19 @@ class ContractConfigure {
     return ContractConfigure.httpUrl[blockchainEnv];
   }
 
+  public static getContractName(constractAddress: string) {}
+
+  public static getOwnerAddresses(): Map<string, string> {
+    const ownerAddresses = new Map<string, string>();
+    ownerAddresses.set(ContractConfigure.ADDR_RAYONTOKEN, ContractConfigure.ADDR_CONTRACT_ADMIN);
+    ownerAddresses.set(ContractConfigure.ADDR_TEST, 'TEST');
+    return ownerAddresses;
+  }
+
   public static getRayonContractAddresses(): Map<string, string> {
     const RayonContractAddresses = new Map<string, string>();
-    RayonContractAddresses.set('RAYON TOKEN', ContractConfigure.ADDR_RAYONTOKEN);
+    RayonContractAddresses.set(ContractConfigure.ADDR_RAYONTOKEN, 'RAYON TOKEN');
+    RayonContractAddresses.set(ContractConfigure.ADDR_TEST, 'TEST');
     return RayonContractAddresses;
   }
 }

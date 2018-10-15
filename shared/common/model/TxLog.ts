@@ -9,12 +9,6 @@ export interface FunctionLog {
   urlEtherscan: string;
 }
 
-export interface MintParameter {
-  from: string;
-  to: string;
-  value: number;
-}
-
 export interface EventLog {
   blockNumber: number;
   txHash: string;

@@ -44,9 +44,9 @@ class RayonLogStoreAgent {
         )`,
       [
         functionLog.blockNumber,
-        functionLog.txHash,
+        functionLog.txHash.toLowerCase(),
         functionLog.status,
-        functionLog.contractAddress,
+        functionLog.contractAddress.toLowerCase(),
         functionLog.functionName,
         functionLog.inputData,
         functionLog.calledTime,
@@ -82,9 +82,9 @@ class RayonLogStoreAgent {
         )`,
       [
         eventLog.blockNumber,
-        eventLog.txHash,
+        eventLog.txHash.toLowerCase(),
         eventLog.status,
-        eventLog.contractAddress,
+        eventLog.contractAddress.toLowerCase(),
         eventLog.eventName,
         eventLog.functionName,
         eventLog.inputData,

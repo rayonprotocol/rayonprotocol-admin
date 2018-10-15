@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 
 // model
-import { FunctionLog } from '../../../../shared/common/model/TxLog';
+import { EventLog } from '../../../../shared/common/model/TxLog';
 
 // util
 import DateUtil from '../../../../shared/common/util/DateUtil';
 
-// style
-import styles from './ContractFunctionLogView.scss';
+// styles
+import styles from './ContractEventLogView.scss';
 
-interface ContractFunctionLogViewProps {
-  functionLogs: FunctionLog[];
+interface ContractEventLogViewProps {
+  eventLogs: EventLog[];
 }
 
-class ContractFunctionLogView extends Component<ContractFunctionLogViewProps, {}> {
+class ContractEventLogView extends Component<ContractEventLogViewProps, {}> {
   renderInputs(inputData: string) {
     const inputs = JSON.parse(inputData);
     return Object.keys(inputs).map((inputKey, index) => {
@@ -28,23 +28,25 @@ class ContractFunctionLogView extends Component<ContractFunctionLogViewProps, {}
 
   render() {
     return (
-      <div className={styles.functionLogView}>
+      <div className={styles.eventLogView}>
         <table>
           <thead>
             <tr>
               <th>Status</th>
               <th>Method</th>
+              <th>Event</th>
               <th>Parameter</th>
               <th>Age</th>
               <th>Eterscan</th>
             </tr>
           </thead>
           <tbody>
-            {this.props.functionLogs.map((functionLog, index) => {
+            {this.props.eventLogs.map((functionLog, index) => {
               return (
                 <tr key={index}>
                   <td>{functionLog.status}</td>
                   <td>{functionLog.functionName}</td>
+                  <td>{functionLog.eventName}</td>
                   <td>{this.renderInputs(functionLog.inputData)}</td>
                   <td>{DateUtil.timstampCommonFormConverter(functionLog.calledTime)}</td>
                   <td>
@@ -60,4 +62,4 @@ class ContractFunctionLogView extends Component<ContractFunctionLogViewProps, {}
   }
 }
 
-export default ContractFunctionLogView;
+export default ContractEventLogView;
