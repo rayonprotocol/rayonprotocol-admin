@@ -13,8 +13,7 @@ import Container from 'common/view/container/Container';
 import OnlyAdminView from 'common/view/view/OnlyAdminView';
 import NoMetamaskView from 'common/view/view/NoMetamaskView';
 import ContractTopView from 'contract/view/ContractTopView';
-import ContractFunctionLogView from 'contract/view/ContractFunctionLogView';
-import ContractEventLogView from 'contract/view/ContractEventLogView';
+import ContractTabLogView from 'contract/view/ContractTabLogView';
 import RayonTab from 'common/view/tab/RayonTab';
 
 // util
@@ -31,10 +30,10 @@ interface ContractVCState {
 }
 
 class ContractVC extends Component<{}, ContractVCState> {
-  public TAB_FUNCTION = 'Function';
-  public TAB_EVENT = 'Event';
+  public static TAB_FUNCTION = 'Function';
+  public static TAB_EVENT = 'Event';
 
-  private _tabs = [this.TAB_FUNCTION, this.TAB_EVENT];
+  private _tabs = [ContractVC.TAB_FUNCTION, ContractVC.TAB_EVENT];
 
   constructor(props) {
     super(props);
@@ -43,7 +42,7 @@ class ContractVC extends Component<{}, ContractVCState> {
       userAccount: UserDC.getUserAcount(),
       functionLogs: new Array<FunctionLog>(),
       eventLogs: new Array<EventLog>(),
-      currentTab: this.TAB_FUNCTION,
+      currentTab: ContractVC.TAB_FUNCTION,
       currentContractAddress: ContractConfigure.ADDR_RAYONTOKEN,
     };
   }
@@ -98,21 +97,14 @@ class ContractVC extends Component<{}, ContractVCState> {
           selectedTab={this.state.currentTab}
           onClickTab={this.onClickTab.bind(this)}
         >
-          {this.renderLogTabView()}
+          <ContractTabLogView
+            functionLogs={this.state.functionLogs}
+            eventLogs={this.state.eventLogs}
+            currentTab={this.state.currentTab}
+          />
         </RayonTab>
       </Container>
     );
-  }
-
-  renderLogTabView() {
-    switch (this.state.currentTab) {
-      case this.TAB_EVENT:
-        return <ContractEventLogView eventLogs={this.state.eventLogs} />;
-      case this.TAB_FUNCTION:
-        return <ContractFunctionLogView functionLogs={this.state.functionLogs} />;
-      default:
-        return <ContractFunctionLogView functionLogs={this.state.functionLogs} />;
-    }
   }
 
   render() {
