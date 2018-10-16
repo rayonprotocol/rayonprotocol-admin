@@ -45,16 +45,16 @@ class ContractTabLogView extends Component<ContractTabLogViewProps, {}> {
           </tr>
         </thead>
         <tbody>
-          {this.props.eventLogs.map((functionLog, index) => {
+          {this.props.eventLogs.map((eventLog, index) => {
             return (
               <tr key={index}>
-                <td>{functionLog.status}</td>
-                <td>{functionLog.functionName}</td>
-                <td>{functionLog.eventName}</td>
-                <td>{this.renderInputs(functionLog.inputData)}</td>
-                <td>{DateUtil.timstampCommonFormConverter(functionLog.calledTime)}</td>
+                <td>{eventLog.status}</td>
+                <td>{eventLog.functionName}</td>
+                <td>{eventLog.eventName}</td>
+                <td>{this.renderInputs(eventLog.inputData)}</td>
+                <td>{DateUtil.timstampCommonFormConverter(eventLog.calledTime)}</td>
                 <td>
-                  <a href={functionLog.urlEtherscan}>></a>
+                  <a href={eventLog.urlEtherscan}>></a>
                 </td>
               </tr>
             );
@@ -94,6 +94,7 @@ class ContractTabLogView extends Component<ContractTabLogViewProps, {}> {
       </Fragment>
     );
   }
+
   render() {
     return (
       <div className={styles.logView}>

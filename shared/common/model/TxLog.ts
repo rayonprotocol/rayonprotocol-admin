@@ -7,6 +7,7 @@ export interface FunctionLog {
   inputData: string;
   calledTime: number;
   urlEtherscan: string;
+  environment: string;
 }
 
 export interface EventLog {
@@ -19,6 +20,7 @@ export interface EventLog {
   inputData: string;
   calledTime: number;
   urlEtherscan: string;
+  environment: string;
 }
 
 export default interface TxHistory {

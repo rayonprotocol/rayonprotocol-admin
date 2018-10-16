@@ -17,7 +17,7 @@ class ContractDC extends RayonDC {
 
   public async respondMethodLogs(req: Request, res: Response) {
     const methodLogs = await ContractDbAgent.getMethodLogs();
-
+    console.log(req.params.contract);
     const result = res.status(200)
       ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Method Logs', methodLogs)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Method Logs', null);

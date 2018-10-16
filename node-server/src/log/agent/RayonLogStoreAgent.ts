@@ -32,7 +32,9 @@ class RayonLogStoreAgent {
             function_name,
             input_data,
             called_time,
-            url_etherscan) VALUES (
+            url_etherscan,
+            environment) VALUES (
+                ?,
                 ?,
                 ?,
                 ?,
@@ -51,6 +53,7 @@ class RayonLogStoreAgent {
         functionLog.inputData,
         functionLog.calledTime,
         functionLog.urlEtherscan,
+        functionLog.environment,
       ]
     );
 
@@ -69,7 +72,9 @@ class RayonLogStoreAgent {
             function_name,
             input_data,
             called_time,
-            url_etherscan) VALUES (
+            url_etherscan,
+            environment) VALUES (
+                ?,
                 ?,
                 ?,
                 ?,
@@ -90,6 +95,7 @@ class RayonLogStoreAgent {
         eventLog.inputData,
         eventLog.calledTime,
         eventLog.urlEtherscan,
+        eventLog.environment,
       ]
     );
 

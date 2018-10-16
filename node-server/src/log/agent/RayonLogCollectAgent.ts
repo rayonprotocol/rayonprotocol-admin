@@ -100,7 +100,8 @@ class RayonLogCollectAgent {
       inputData: JSON.stringify(
         RayonArtifactAgent.getFunctionParameters(contractAddress, functionSignature, functionParameter)
       ),
-      urlEtherscan: `https://etherscan.io/tx/${transaction.hash}`,
+      urlEtherscan: this._getEtherscanUrl(transaction.hash),
+      environment: process.env.ENV_BLOCKCHAIN,
     };
     const eventLogs: EventLog[] = txReceipt.logs.map(log => {
       const eventSignature = log.topics[this.SIGNITURE_INDEX].toLowerCase();
@@ -117,6 +118,12 @@ class RayonLogCollectAgent {
       functionLog,
       eventLogs,
     };
+  }
+
+  private _getEtherscanUrl(txHash: string) {
+    if (process.env.ENV_BLOCKCHAIN === ContractConfigure.ENV_LOCAL) return '';
+    if (process.env.ENV_BLOCKCHAIN === ContractConfigure.ENV_MAIN) return `https://etherscan.io/tx/${txHash}`;
+    else return `https://${process.env.ENV_BLOCKCHAIN}.etherscan.io/tx/${txHash}`;
   }
 
   private _getEventParameter(topics: string[], data: string) {

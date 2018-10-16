@@ -14,9 +14,8 @@ interface ContractTopViewProps {
 class ContractTopView extends Component<ContractTopViewProps, {}> {
   render() {
     const rayonContractAddresses: Map<string, string> = ContractConfigure.getRayonContractAddresses();
-    const ownerAddresses: Map<string, string> = ContractConfigure.getOwnerAddresses();
     return (
-      <div>
+      <div className={styles.contractTopView}>
         <select onChange={event => this.props.onSelectOption(event.target.value)}>
           {Array.from(rayonContractAddresses.keys()).map((contractAddress, index) => {
             return (
@@ -31,7 +30,7 @@ class ContractTopView extends Component<ContractTopViewProps, {}> {
           <div>
             <p>
               <span>{'Contract Owner'}</span>
-              <span>{ownerAddresses.get(this.props.currentContractAddress)}</span>
+              <span>{}</span>
             </p>
             <p>
               <span>{'Contract Address'}</span>
