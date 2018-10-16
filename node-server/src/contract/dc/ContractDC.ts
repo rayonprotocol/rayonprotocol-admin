@@ -2,6 +2,7 @@ import { Express, Request, Response } from 'express';
 
 // agent
 import ContractDbAgent from '../agent/ContractDbAgent';
+import RayonArtifactAgent from '../../log/agent/RayonArtifactAgent';
 
 // dc
 import RayonDC from '../../common/dc/RayonDC';

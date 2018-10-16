@@ -7,6 +7,9 @@ import RayonLogCollectAgent from '../../log/agent/RayonLogCollectAgent';
 import TokenDC from '../../token/dc/TokenDC';
 import ContractDC from '../../contract/dc/ContractDC';
 
+// model
+import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+
 const express = require('express');
 const app = express();
 
