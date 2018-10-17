@@ -19,18 +19,39 @@ export interface Block {
   uncles: string[];
 }
 
-export interface Transaction {
+export interface TxBlock {
+  number: number;
   hash: string;
-  nonce: number;
+  parentHash: string;
+  nonce: string;
+  sha3Uncles: string;
+  logsBloom: string;
+  transactionsRoot: string;
+  stateRoot: string;
+  miner: string;
+  difficulty: string;
+  totalDifficulty: string;
+  size: number;
+  extraData: string;
+  gasLimit: number;
+  gasUsed: number;
+  timestamp: number;
+  transactions: Transaction[];
+  uncles: string[];
+}
+
+export interface Transaction {
   blockHash: string;
   blockNumber: number;
-  transactionIndex: number;
   from: string;
-  to: string;
-  value: string;
   gas: number;
   gasPrice: string;
+  hash: string;
   input: string;
+  nonce: number;
+  transactionIndex: number;
+  to: string;
+  value: string;
 }
 
 export interface TxReceipt {

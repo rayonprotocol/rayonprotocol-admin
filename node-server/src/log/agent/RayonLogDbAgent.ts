@@ -7,6 +7,7 @@ import Web3Controller from '../../common/controller/Web3Controller';
 // model
 import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 import Contract, { ContractAbi, ABI_TYPE_FUNCTION, ABI_TYPE_EVENT } from '../../../../shared/contract/model/Contract';
+import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 class RayonLogDbAgent {
   // etc
@@ -25,11 +26,13 @@ class RayonLogDbAgent {
 
   // getter
 
-  public async getReadLastBlock() {
-    const readLastBlockNumber = await DbAgent.executeAsync(`
-      SELECT MAX(block_number) FROM rayon.event_log
+  public async getNextBlockToRead() {
+    let queryResult;
+    queryResult = await DbAgent.executeAsync(`
+      SELECT MAX(block_number) readLastBlock FROM rayon.event_log
     `);
-    return readLastBlockNumber;
+    queryResult = queryResult && queryResult.pop();
+    return queryResult.readLastBlock === null ? ContractConfigure.CONTRACTBLOCK_TESTNET : queryResult.readLastBlock + 1;
   }
 
   public async getFullName(contractAddress: string, signature: string, type: string) {
@@ -123,7 +126,7 @@ class RayonLogDbAgent {
       ]
     );
 
-    console.log('storeResult', result);
+    // console.log('storeResult', result);
   }
 
   private async _storeTxEventLogs(eventLog: EventLog) {
@@ -165,7 +168,7 @@ class RayonLogDbAgent {
       ]
     );
 
-    console.log('storeResult', result);
+    // console.log('storeResult', result);
   }
 
   public async storeContract(contract: Contract) {
