@@ -10,14 +10,14 @@ import RayonLogDbAgent from './RayonLogDbAgent';
 import Web3Controller from '../../common/controller/Web3Controller';
 
 // model
-import { artifactAbi, ConvertedAbi } from '../model/RayonArtifact';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import { RayonEvent } from '../../../../shared/token/model/Token';
 import Contract, {
   ContractAbi,
+  artifactAbi,
+  ConvertedAbi,
   ABI_TYPE_FUNCTION,
   ABI_TYPE_EVENT,
-  getRayonContracts,
 } from '../../../../shared/contract/model/Contract';
 
 // util
@@ -25,22 +25,17 @@ import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 import ContractUtil from '../../common/util/ContractUtil';
 
 class RayonArtifactAgent {
-  private _convertedFunctionAbi: ConvertedAbi = {};
-  private _convertedEventAbi: ConvertedAbi = {};
+  private _contract: Contract = new Contract();
+  private _convertedAbi: ConvertedAbi = {};
 
-  constructor() {
-    getRayonContracts().forEach(this._verifyAndConvertContract.bind(this));
+  public startArtifactConvert(): void {
+    this._contract.getContractAddressList().forEach(this._verifyAndConvertContract.bind(this));
   }
 
-  private async _verifyAndConvertContract(contract: Contract): Promise<void> {
-    const isContractResistered = await RayonLogDbAgent.isRayonContract(contract.address);
-    if (isContractResistered) return;
-
-    await RayonLogDbAgent.storeContract(contract);
-
-    const contractArtifactAbi = this._getContractArtifact(contract.address).abi;
+  private async _verifyAndConvertContract(contractAddress: string): Promise<void> {
+    const contractArtifactAbi = this._getContractArtifact(contractAddress).abi;
     contractArtifactAbi.forEach(abi => {
-      this._convertAndStoreAbi(contract.address, abi);
+      this._convertAndStoreAbi(contractAddress, abi);
     });
   }
 
@@ -61,20 +56,58 @@ class RayonArtifactAgent {
         ? Web3Controller.getWeb3().eth.abi.encodeEventSignature(abi)
         : Web3Controller.getWeb3().eth.abi.encodeFunctionSignature(abi);
 
-    const contractAbi: ContractAbi = {
-      contractAddress,
-      inputs: JSON.stringify(abi.inputs),
-      name: `${abi.name}(${parameterTypes})`,
-      type: abi.type,
-      signature,
+    this._convertedAbi[contractAddress] = {
+      ...this._convertedAbi[contractAddress],
+      [signature]: {
+        inputs: abi.inputs,
+        name: `${abi.name}(${parameterTypes})`,
+        type: abi.type,
+      },
     };
+  }
 
-    RayonLogDbAgent.storeContractAbi(contractAbi);
+  public isRayonContract(contractAddress: string) {
+    if (contractAddress === null) return;
+    return this._contract.getContractAddressList().indexOf(contractAddress.toLowerCase()) > -1;
+  }
+
+  public isUndefinedAbiData(contractAddress: string, signature: string) {
+    if (this._convertedAbi[contractAddress] === undefined) {
+      console.log('Waring: this is unsaved contract address');
+      return true;
+    } else if (this._convertedAbi[contractAddress][signature] === undefined) {
+      console.log('Waring: this is unsaved signatrue');
+      return true;
+    }
+    return false;
   }
 
   public getContractInstance(contractAddress: string) {
     const contractArtifact = this._getContractArtifact(contractAddress);
     return Web3Controller.getWeb3().eth.Contract(contractArtifact.abi, contractAddress);
+  }
+
+  public getFullName(contractAddress: string, signature: string) {
+    if (this.isUndefinedAbiData(contractAddress, signature)) return;
+    return this._convertedAbi[contractAddress][signature].name;
+  }
+
+  public getInputs(contractAddress: string, signature: string) {
+    if (this.isUndefinedAbiData(contractAddress, signature)) return;
+    return this._convertedAbi[contractAddress][signature].inputs;
+  }
+
+  public getParameters(contractAddress: string, signature: string, parameters: string) {
+    const inputs = this.getInputs(contractAddress, signature);
+    if (ArrayUtil.isEmpty(inputs)) return;
+
+    const decodeParameters = Web3Controller.getWeb3().eth.abi.decodeParameters(inputs, parameters);
+    const resultInput = {};
+
+    inputs.forEach(inputName => {
+      resultInput[inputName['name']] = decodeParameters[inputName['name']];
+    });
+    return JSON.stringify(resultInput);
   }
 }
 

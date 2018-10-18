@@ -9,6 +9,7 @@ import ContractDC from '../../contract/dc/ContractDC';
 
 // model
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+import RayonArtifactAgent from '../../log/agent/RayonArtifactAgent';
 
 const express = require('express');
 const app = express();
@@ -21,6 +22,7 @@ const port = Number(process.env.APP_PORT) || 3000;
 app.use(cors({ origin: true, credentials: true }));
 
 // start history log store
+RayonArtifactAgent.startArtifactConvert();
 RayonLogCollectAgent.collectionStart();
 
 // datacontroller configure(router)

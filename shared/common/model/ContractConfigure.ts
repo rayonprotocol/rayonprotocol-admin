@@ -11,7 +11,7 @@ class ContractConfigure {
 
   // TODO: 블록체인에서 얻어와야함
   public static CONTRACTBLOCK_LOCAL: number = 0;
-  public static CONTRACTBLOCK_TESTNET: number = 3936470;
+  public static CONTRACTBLOCK_TESTNET: number = 3936488;
   public static CONTRACTBLOCK_MAINNET: number = 3936470;
 
   public static PROVIDER_METAMASK: string = 'metamask';
