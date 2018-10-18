@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 // model
 import { EventLog, FunctionLog } from '../../../../shared/common/model/TxLog';
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+import Contract, { ContractOverview } from '../../../../shared/contract/model/Contract';
 
 // dc
 import ContractDC from 'contract/dc/ContractDC';
@@ -25,8 +25,9 @@ interface ContractVCState {
   userAccount: string;
   functionLogs: FunctionLog[];
   eventLogs: EventLog[];
-  currentContractAddress: string;
   currentTab: string;
+  contractOverviews: ContractOverview;
+  selContractAddr: string;
 }
 
 class ContractVC extends Component<{}, ContractVCState> {
@@ -37,35 +38,39 @@ class ContractVC extends Component<{}, ContractVCState> {
 
   constructor(props) {
     super(props);
+    const contract = new Contract();
     this.state = {
       ...this.state,
       userAccount: UserDC.getUserAcount(),
       functionLogs: new Array<FunctionLog>(),
       eventLogs: new Array<EventLog>(),
       currentTab: ContractVC.TAB_FUNCTION,
-      currentContractAddress: ContractConfigure.ADDR_RAYONTOKEN,
+      contractOverviews: contract.getAllContractOverview(),
+      selContractAddr: contract.getContractAddressList()[0],
     };
   }
 
   async componentWillMount() {
-    UserDC.addUserLoginStatusChangeListeners(this.onUserLoginStatusChange.bind(this));
-    const eventLogs = await ContractDC.getEventLogs();
-    const functionLogs = await ContractDC.getFunctionLogs();
+    UserDC.addUserLoginStatusChangeListeners(this._onUserLoginStatusChange.bind(this));
 
+    const eventLogs = await ContractDC.getEventLogs(this.state.selContractAddr);
+    const functionLogs = await ContractDC.getFunctionLogs(this.state.selContractAddr);
     this.setState({ ...this.state, eventLogs, functionLogs });
   }
 
-  onUserLoginStatusChange(userAccount: string) {
+  private _onUserLoginStatusChange(userAccount: string): void {
     this.setState({ ...this.state, userAccount });
   }
+  private async _onSelectOption(selContractAddr: string): Promise<void> {
+    if (this.state.selContractAddr === selContractAddr) return;
 
-  onClickTab(tab: string) {
-    this.setState({ ...this.state, currentTab: tab });
+    const eventLogs = await ContractDC.getEventLogs(selContractAddr);
+    const functionLogs = await ContractDC.getFunctionLogs(selContractAddr);
+    this.setState({ ...this.state, eventLogs, functionLogs, selContractAddr });
   }
 
-  onSelectOption(selectedContractAddress: string) {
-    console.log('selectedContractAddress', selectedContractAddress);
-    this.setState({ ...this.state, currentContractAddress: selectedContractAddress });
+  private _onClickTab(tab: string): void {
+    this.setState({ ...this.state, currentTab: tab });
   }
 
   renderNoUser() {
@@ -88,14 +93,15 @@ class ContractVC extends Component<{}, ContractVCState> {
     return (
       <Container>
         <ContractTopView
-          currentContractAddress={this.state.currentContractAddress}
-          onSelectOption={this.onSelectOption.bind(this)}
+          contractOverviews={this.state.contractOverviews}
+          selContractAddr={this.state.selContractAddr}
+          onSelectOption={this._onSelectOption.bind(this)}
         />
         <RayonTab
           className={styles.logTab}
           tabs={this._tabs}
           selectedTab={this.state.currentTab}
-          onClickTab={this.onClickTab.bind(this)}
+          onClickTab={this._onClickTab.bind(this)}
         >
           <ContractTabLogView
             functionLogs={this.state.functionLogs}

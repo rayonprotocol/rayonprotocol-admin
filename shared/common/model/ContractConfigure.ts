@@ -41,13 +41,6 @@ class ContractConfigure {
   public static getHttpUrl(blockchainEnv: string) {
     return ContractConfigure.httpUrl[blockchainEnv];
   }
-
-  public static getRayonContractAddresses(): Map<string, string> {
-    const RayonContractAddresses = new Map<string, string>();
-    RayonContractAddresses.set('RAYON TOKEN', ContractConfigure.ADDR_RAYONTOKEN);
-    RayonContractAddresses.set('TEST', ContractConfigure.ADDR_RAYONTOKEN);
-    return RayonContractAddresses;
-  }
 }
 
 export default ContractConfigure;

@@ -1,26 +1,27 @@
 import React, { Component } from 'react';
 
 // model
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+import { ContractOverview } from '../../../../shared/contract/model/Contract';
 
 // styles
 import styles from './ContractTopView.scss';
 
 interface ContractTopViewProps {
-  currentContractAddress: string;
+  contractOverviews: ContractOverview;
+  selContractAddr: string;
   onSelectOption: (option: string) => void;
 }
 
 class ContractTopView extends Component<ContractTopViewProps, {}> {
   render() {
-    const rayonContractAddresses: Map<string, string> = ContractConfigure.getRayonContractAddresses();
+    const { contractOverviews, selContractAddr } = this.props;
     return (
       <div className={styles.contractTopView}>
         <select onChange={event => this.props.onSelectOption(event.target.value)}>
-          {Array.from(rayonContractAddresses.keys()).map((contractAddress, index) => {
+          {Object.keys(contractOverviews).map((contractAddr, index) => {
             return (
-              <option key={index} value={contractAddress}>
-                {rayonContractAddresses.get(contractAddress)}
+              <option key={index} value={contractAddr}>
+                {contractOverviews[contractAddr].name}
               </option>
             );
           })}
@@ -30,11 +31,11 @@ class ContractTopView extends Component<ContractTopViewProps, {}> {
           <div>
             <p>
               <span>{'Contract Owner'}</span>
-              <span>{}</span>
+              <span>{contractOverviews[selContractAddr].owner}</span>
             </p>
             <p>
               <span>{'Contract Address'}</span>
-              <span>{this.props.currentContractAddress}</span>
+              <span>{selContractAddr}</span>
             </p>
           </div>
         </section>

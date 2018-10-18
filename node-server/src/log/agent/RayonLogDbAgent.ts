@@ -1,9 +1,6 @@
 // agent
 import DbAgent from '../../common/agent/DbAgent';
 
-// controller
-import Web3Controller from '../../common/controller/Web3Controller';
-
 // model
 import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';

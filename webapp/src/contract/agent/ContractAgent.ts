@@ -3,7 +3,7 @@ import RayonContractAgent from 'common/agent/RayonContractAgent';
 
 // model
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
-import { URLForGetEventLogs, URLForGetFunctionLogs } from '../../../../shared/contract/model/Contract';
+import Contract, { URLForGetContractLogs, URLForGetContractOverview } from '../../../../shared/contract/model/Contract';
 import { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 
 // util
@@ -15,12 +15,19 @@ class ContractAgent extends RayonContractAgent {
     super(contract);
   }
 
-  public async fetchEventLogs() {
-    return await this.getRequest<EventLog[]>(URLForGetEventLogs);
+  public async fetchEventLogs(address: string) {
+    const params = { type: Contract.ABI_TYPE_EVENT, address };
+    return await this.getRequest<EventLog[]>(URLForGetContractLogs, params);
   }
 
-  public async fetchFunctionLogs() {
-    return await this.getRequest<FunctionLog[]>(URLForGetFunctionLogs);
+  public async fetchFunctionLogs(address: string) {
+    const params = { type: Contract.ABI_TYPE_FUNCTION, address };
+    return await this.getRequest<FunctionLog[]>(URLForGetContractLogs, params);
+  }
+
+  public async fetchContractOverview(address: string) {
+    const params = { address };
+    return await this.getRequest(URLForGetContractOverview, params);
   }
 }
 

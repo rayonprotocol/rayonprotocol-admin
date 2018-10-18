@@ -9,12 +9,16 @@ class ContractDC {
     Web3Controller.getWeb3().currentProvider['publicConfigStore'].on('update', listener);
   }
 
-  public async getEventLogs() {
-    return await ContractAgent.fetchEventLogs();
+  public async getEventLogs(address: string) {
+    return await ContractAgent.fetchEventLogs(address);
   }
 
-  public async getFunctionLogs() {
-    return await ContractAgent.fetchFunctionLogs();
+  public async getFunctionLogs(address: string) {
+    return await ContractAgent.fetchFunctionLogs(address);
+  }
+
+  public async getContractOverview(address: string) {
+    return await ContractAgent.fetchContractOverview(address);
   }
 }
 

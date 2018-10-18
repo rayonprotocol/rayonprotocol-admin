@@ -13,7 +13,6 @@ import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/Tx
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 import Web3Controller from '../../common/controller/Web3Controller';
-import { ABI_TYPE_EVENT, ABI_TYPE_FUNCTION } from '../../../../shared/contract/model/Contract';
 import RayonArtifactAgent from './RayonArtifactAgent';
 
 class RayonLogCollectAgent {

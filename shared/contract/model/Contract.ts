@@ -2,13 +2,11 @@ import { BigNumber } from 'bignumber.js';
 import { relativeUrl as parentUrl } from '../../interface/Ajax';
 import ContractConfigure from '../../common/model/ContractConfigure';
 
-export const URLForGetFunctionLogs = `${parentUrl}/log/function`;
-export const URLForGetEventLogs = `${parentUrl}/log/event`;
+export const URLForGetAllLogs = `${parentUrl}/contract/logs/all`;
+export const URLForGetContractLogs = `${parentUrl}/contract/logs`;
+export const URLForGetContractOverview = `${parentUrl}/contract/overview`;
 
-export const ABI_TYPE_FUNCTION = 'function';
-export const ABI_TYPE_EVENT = 'event';
-
-export type ContractInfo = {
+export type ContractOverview = {
   [contractAddress: string]: {
     name: string;
     owner: string;
@@ -35,7 +33,7 @@ interface ConvertedAbiData {
   type: string;
 }
 
-export interface artifactAbi {
+export interface AbiElement {
   constant: boolean;
   inputs: any[];
   name: string;
@@ -46,22 +44,29 @@ export interface artifactAbi {
 }
 
 export default class Contract {
-  _contracts: ContractInfo;
+  public static ABI_TYPE_FUNCTION = 'function';
+  public static ABI_TYPE_EVENT = 'event';
+
+  _contractOverviews: ContractOverview;
 
   constructor() {
-    this._contracts = {
+    this._contractOverviews = {
       [ContractConfigure.ADDR_RAYONTOKEN]: {
         name: 'Rayon Token',
         owner: ContractConfigure.ADMIN_RAYONTOKEN,
       },
+      // ['asdfasdfasdf']: {
+      //   name: 'Rayon Test',
+      //   owner: 'asdf123123',
+      // },
     };
   }
 
-  public getAllContractInfo() {
-    return this._contracts;
+  public getAllContractOverview() {
+    return this._contractOverviews;
   }
 
   public getContractAddressList(): string[] {
-    return Object.keys(this._contracts);
+    return Object.keys(this._contractOverviews);
   }
 }

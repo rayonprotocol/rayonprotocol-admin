@@ -59,7 +59,7 @@ class UserDC {
 
   public isAdminUser(userAddress: string) {
     if (userAddress === undefined) return false;
-    return userAddress.toLowerCase() === ContractConfigure.ADDR_CONTRACT_ADMIN.toLowerCase();
+    return userAddress.toLowerCase() === ContractConfigure.ADMIN_RAYONTOKEN.toLowerCase();
   }
 
   public getUserAcount() {

@@ -4,38 +4,26 @@ import * as path from 'path';
 
 // agent
 import DbAgent from '../../common/agent/DbAgent';
-import RayonLogDbAgent from './RayonLogDbAgent';
 
 // controller
 import Web3Controller from '../../common/controller/Web3Controller';
 
 // model
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
-import { RayonEvent } from '../../../../shared/token/model/Token';
-import Contract, {
-  ContractAbi,
-  artifactAbi,
-  ConvertedAbi,
-  ABI_TYPE_FUNCTION,
-  ABI_TYPE_EVENT,
-} from '../../../../shared/contract/model/Contract';
+import Contract, { AbiElement, ConvertedAbi } from '../../../../shared/contract/model/Contract';
 
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
-import ContractUtil from '../../common/util/ContractUtil';
 
 class RayonArtifactAgent {
   private _contract: Contract = new Contract();
   private _convertedAbi: ConvertedAbi = {};
 
   public startArtifactConvert(): void {
-    this._contract.getContractAddressList().forEach(this._verifyAndConvertContract.bind(this));
-  }
-
-  private async _verifyAndConvertContract(contractAddress: string): Promise<void> {
-    const contractArtifactAbi = this._getContractArtifact(contractAddress).abi;
-    contractArtifactAbi.forEach(abi => {
-      this._convertAndStoreAbi(contractAddress, abi);
+    this._contract.getContractAddressList().forEach(contractAddress => {
+      const contractAbi = this._getContractArtifact(contractAddress).abi;
+      contractAbi.forEach(abiElement => {
+        this._convertAndStoreAbi(contractAddress, abiElement);
+      });
     });
   }
 
@@ -44,56 +32,56 @@ class RayonArtifactAgent {
     return JSON.parse(fs.readFileSync(path.join(__dirname, contractPath), 'utf8'));
   }
 
-  private _convertAndStoreAbi(contractAddress: string, abi: artifactAbi) {
-    const isNotFunctionOrEvent = !(abi.type === ABI_TYPE_EVENT || abi.type === ABI_TYPE_FUNCTION);
-    const isFallbackEvent = abi.type === ABI_TYPE_EVENT && abi.name === undefined;
+  private _convertAndStoreAbi(contractAddress: string, abiElement: AbiElement): void {
+    const isNotFunctionOrEvent = !(
+      abiElement.type === Contract.ABI_TYPE_EVENT || abiElement.type === Contract.ABI_TYPE_FUNCTION
+    );
+    const isFallbackEvent = abiElement.type === Contract.ABI_TYPE_EVENT && abiElement.name === undefined;
     if (isFallbackEvent || isNotFunctionOrEvent) return; // skip fallBack
 
-    const parameterTypes = ArrayUtil.isEmpty(abi.inputs) ? '' : abi.inputs.map(input => input.type).join(',');
+    const parameterTypes = ArrayUtil.isEmpty(abiElement.inputs)
+      ? ''
+      : abiElement.inputs.map(input => input.type).join(',');
 
     const signature =
-      abi.type === ABI_TYPE_EVENT
-        ? Web3Controller.getWeb3().eth.abi.encodeEventSignature(abi)
-        : Web3Controller.getWeb3().eth.abi.encodeFunctionSignature(abi);
+      abiElement.type === Contract.ABI_TYPE_EVENT
+        ? Web3Controller.getWeb3().eth.abi.encodeEventSignature(abiElement)
+        : Web3Controller.getWeb3().eth.abi.encodeFunctionSignature(abiElement);
 
     this._convertedAbi[contractAddress] = {
       ...this._convertedAbi[contractAddress],
       [signature]: {
-        inputs: abi.inputs,
-        name: `${abi.name}(${parameterTypes})`,
-        type: abi.type,
+        inputs: abiElement.inputs,
+        name: `${abiElement.name}(${parameterTypes})`,
+        type: abiElement.type,
       },
     };
   }
 
-  public isRayonContract(contractAddress: string) {
+  // verify function
+
+  public isRayonContract(contractAddress: string): boolean {
     if (contractAddress === null) return;
     return this._contract.getContractAddressList().indexOf(contractAddress.toLowerCase()) > -1;
   }
 
-  public isUndefinedAbiData(contractAddress: string, signature: string) {
-    if (this._convertedAbi[contractAddress] === undefined) {
-      console.log('Waring: this is unsaved contract address');
-      return true;
-    } else if (this._convertedAbi[contractAddress][signature] === undefined) {
-      console.log('Waring: this is unsaved signatrue');
-      return true;
-    }
-    return false;
+  public isAbiDataExist(address: string, signature: string): boolean {
+    return !(this._convertedAbi[address] === undefined || this._convertedAbi[address][signature] === undefined);
   }
 
-  public getContractInstance(contractAddress: string) {
-    const contractArtifact = this._getContractArtifact(contractAddress);
-    return Web3Controller.getWeb3().eth.Contract(contractArtifact.abi, contractAddress);
+  // getter
+
+  public getContractOverview(contractAddress: string) {
+    return this._contract.getAllContractOverview(contractAddress);
   }
 
   public getFullName(contractAddress: string, signature: string) {
-    if (this.isUndefinedAbiData(contractAddress, signature)) return;
+    if (!this.isAbiDataExist(contractAddress, signature)) return;
     return this._convertedAbi[contractAddress][signature].name;
   }
 
   public getInputs(contractAddress: string, signature: string) {
-    if (this.isUndefinedAbiData(contractAddress, signature)) return;
+    if (!this.isAbiDataExist(contractAddress, signature)) return;
     return this._convertedAbi[contractAddress][signature].inputs;
   }
 
