@@ -6,6 +6,7 @@ import ContractConfigure from '../../../../shared/common/model/ContractConfigure
 
 // util
 import StringUtil from '../../../../shared/common/util/StringUtil';
+import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 
 type UserLoginListener = (userAccount: string, networkName: string) => void;
 
@@ -21,7 +22,7 @@ class UserDC {
 
   private async _initialize() {
     const loginResult: Metamask = {
-      selectedAddress: await (await Web3Controller.getWeb3().eth.getAccounts())[0],
+      selectedAddress: (await Web3Controller.getWeb3().eth.getAccounts())[0],
       networkVersion: await Web3Controller.getWeb3().eth.net.getId(),
     };
 
@@ -39,9 +40,6 @@ class UserDC {
     Web3Controller.getWeb3().currentProvider['publicConfigStore'].on('update', listener);
   }
 
-  /*
-  Reverse Inquiries handler
-  */
   public addUserLoginStatusChangeListeners(listener: UserLoginListener): void {
     this._userLoginListeners.add(listener);
   }
@@ -53,13 +51,18 @@ class UserDC {
   private _onUserLoginStatusChanged(loginResult: Metamask): void {
     this._userAccount = loginResult.selectedAddress;
     this._networkId = loginResult.networkVersion;
+
+    if (!StringUtil.isEmpty(this._userAccount)) this._userAccount = this._userAccount.toLowerCase();
+
     this._userLoginListeners &&
       this._userLoginListeners.forEach(listener => listener(this._userAccount, this.getNetworkName()));
   }
 
   public isAdminUser(userAddress: string) {
     if (userAddress === undefined) return false;
-    return userAddress.toLowerCase() === ContractConfigure.ADMIN_RAYONTOKEN.toLowerCase();
+
+    const adminAddrList = ContractConfigure.getAdminAddrList();
+    return ArrayUtil.isContainElement(ArrayUtil.makeLowerCase(adminAddrList), userAddress.toLowerCase());
   }
 
   public getUserAcount() {

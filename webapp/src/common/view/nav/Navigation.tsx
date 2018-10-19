@@ -7,6 +7,9 @@ import UserDC from 'user/dc/UserDC';
 // util
 import StringUtil from '../../../../../shared/common/util/StringUtil';
 
+// view
+import Container from 'common/view/container/Container';
+
 // styles
 import styles from './Navigation.scss';
 
@@ -53,17 +56,19 @@ class Navigation extends Component<{}, NavigationState> {
   render() {
     return (
       <nav className={styles.navigation}>
-        <Link to={'/'}>
-          <img src={require('../../../common/asset/img/rayon-white-logo.png')} />
-        </Link>
-        <div className={styles.navList}>
-          <Link to={'/'}>Token</Link>
-          <Link to={'/kyc'}>KYC</Link>
-          <Link to={'/contract'}>Contract</Link>
-        </div>
-        <div className={styles.sideNav}>
-          {StringUtil.isEmpty(this.state.userAccount) ? this.renderNoUserInfoSideNav() : this.renderUserInfoSideNav()}
-        </div>
+        <Container>
+          <Link to={'/'}>
+            <img src={require('../../../common/asset/img/rayon-white-logo.png')} />
+          </Link>
+          <div className={styles.navList}>
+            <Link to={'/'}>Token</Link>
+            <Link to={'/kyc'}>KYC</Link>
+            <Link to={'/contract'}>Contract</Link>
+          </div>
+          <div className={styles.sideNav}>
+            {StringUtil.isEmpty(this.state.userAccount) ? this.renderNoUserInfoSideNav() : this.renderUserInfoSideNav()}
+          </div>
+        </Container>
       </nav>
     );
   }

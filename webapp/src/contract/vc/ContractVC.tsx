@@ -6,23 +6,16 @@ import Contract, { ContractOverview } from '../../../../shared/contract/model/Co
 
 // dc
 import ContractDC from 'contract/dc/ContractDC';
-import UserDC from 'user/dc/UserDC';
 
 // view
 import Container from 'common/view/container/Container';
-import OnlyAdminView from 'common/view/view/OnlyAdminView';
-import NoMetamaskView from 'common/view/view/NoMetamaskView';
 import ContractTopView from 'contract/view/ContractTopView';
 import ContractTabLogView from 'contract/view/ContractTabLogView';
 import RayonTab from 'common/view/tab/RayonTab';
 
-// util
-import StringUtil from '../../../../shared/common/util/StringUtil';
-
 import styles from './ContractVC.scss';
 
 interface ContractVCState {
-  userAccount: string;
   functionLogs: FunctionLog[];
   eventLogs: EventLog[];
   currentTab: string;
@@ -41,7 +34,6 @@ class ContractVC extends Component<{}, ContractVCState> {
     const contract = new Contract();
     this.state = {
       ...this.state,
-      userAccount: UserDC.getUserAcount(),
       functionLogs: new Array<FunctionLog>(),
       eventLogs: new Array<EventLog>(),
       currentTab: ContractVC.TAB_FUNCTION,
@@ -51,16 +43,11 @@ class ContractVC extends Component<{}, ContractVCState> {
   }
 
   async componentWillMount() {
-    UserDC.addUserLoginStatusChangeListeners(this._onUserLoginStatusChange.bind(this));
-
     const eventLogs = await ContractDC.getEventLogs(this.state.selContractAddr);
     const functionLogs = await ContractDC.getFunctionLogs(this.state.selContractAddr);
     this.setState({ ...this.state, eventLogs, functionLogs });
   }
 
-  private _onUserLoginStatusChange(userAccount: string): void {
-    this.setState({ ...this.state, userAccount });
-  }
   private async _onSelectOption(selContractAddr: string): Promise<void> {
     if (this.state.selContractAddr === selContractAddr) return;
 
@@ -73,23 +60,7 @@ class ContractVC extends Component<{}, ContractVCState> {
     this.setState({ ...this.state, currentTab: tab });
   }
 
-  renderNoUser() {
-    return (
-      <Container>
-        <NoMetamaskView />
-      </Container>
-    );
-  }
-
-  renderAdminOnly() {
-    return (
-      <Container>
-        <OnlyAdminView />
-      </Container>
-    );
-  }
-
-  renderContractAdmin() {
+  render() {
     return (
       <Container>
         <ContractTopView
@@ -111,12 +82,6 @@ class ContractVC extends Component<{}, ContractVCState> {
         </RayonTab>
       </Container>
     );
-  }
-
-  render() {
-    if (StringUtil.isEmpty(this.state.userAccount)) return this.renderNoUser();
-    else if (!UserDC.isAdminUser(this.state.userAccount)) return this.renderAdminOnly();
-    else return this.renderContractAdmin();
   }
 }
 

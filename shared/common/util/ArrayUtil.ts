@@ -3,6 +3,10 @@ class ArrayUtil {
     return targetArray === undefined || targetArray.length < 1;
   };
 
+  static isContainElement = (targetArray: Array<any>, elem: any) => {
+    return targetArray.indexOf(elem) > -1;
+  };
+
   static makeLowerCase = (targetArray: Array<any>): Array<any> => {
     return targetArray.map(element => element.toLowerCase());
   };
