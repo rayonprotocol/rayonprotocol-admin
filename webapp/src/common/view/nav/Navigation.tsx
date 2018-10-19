@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import Blockies from 'react-blockies';
 
@@ -87,7 +88,7 @@ class Navigation extends Component<NavigationProps, NavigationState> {
           return (
             <Link
               key={index}
-              className={this.state.selMenu === menu.name && styles.selMenu}
+              className={classNames({ [styles.selMenu]: this.state.selMenu === menu.name })}
               onClick={() => this.onClickMunu(menu.name)}
               to={menu.to}
             >
@@ -105,7 +106,7 @@ class Navigation extends Component<NavigationProps, NavigationState> {
         <Container className={styles.pageTitleInner}>
           <p className={styles.pageTitle}>{this.state.selMenu}</p>
         </Container>
-        <div className={styles.barUnderLine}></div>
+        <div className={styles.barUnderLine} />
       </div>
     );
   }

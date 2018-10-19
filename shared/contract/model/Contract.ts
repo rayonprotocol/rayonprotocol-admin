@@ -69,4 +69,10 @@ export default class Contract {
   public getContractAddressList(): string[] {
     return Object.keys(this._contractOverviews);
   }
+
+  public getContractAddrByName(contractName: string) {
+    const addrList = this.getContractAddressList();
+    const addr = Object.keys(addrList.filter(addr => this._contractOverviews[addr].name === contractName));
+    return addr.length ? addr.pop() : null;
+  }
 }

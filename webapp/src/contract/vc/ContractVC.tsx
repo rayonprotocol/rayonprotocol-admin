@@ -9,7 +9,7 @@ import ContractDC from 'contract/dc/ContractDC';
 
 // view
 import Container from 'common/view/container/Container';
-import ContractTopView from 'contract/view/ContractTopView';
+import ContractOverviewView from 'contract/view/ContractOverviewView';
 import ContractTabLogView from 'contract/view/ContractTabLogView';
 import RayonTab from 'common/view/tab/RayonTab';
 
@@ -63,7 +63,7 @@ class ContractVC extends Component<{}, ContractVCState> {
   render() {
     return (
       <Container>
-        <ContractTopView
+        <ContractOverviewView
           contractOverviews={this.state.contractOverviews}
           selContractAddr={this.state.selContractAddr}
           onSelectOption={this._onSelectOption.bind(this)}

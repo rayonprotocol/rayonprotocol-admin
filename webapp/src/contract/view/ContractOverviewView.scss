@@ -1,0 +1,64 @@
+.contractOverview {
+  margin-top: 40px;
+  .overviewTitleSection {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid gray;
+    .title {
+      font-size: 36px;
+      padding-bottom: 4px;
+    }
+    .contractCombobox {
+      display: flex;
+      align-items: flex-end;
+      .combobox {
+        position: relative;
+        select {
+          padding: 6px 15px;
+          margin-right: 15px;
+          border: none;
+          font-size: 16px;
+          color: #0084dd;
+          cursor: pointer;
+        }
+        &:after {
+          position: absolute;
+          content: '';
+          width: 0;
+          height: 0;
+          right: 10px;
+          top: 50%;
+          border-width: 6px 6px 0 6px;
+          border-style: solid;
+          border-color: #0084dd transparent;
+        }
+      }
+    }
+  }
+  .overview {
+    margin-top: 10px;
+    display: flex;
+    .owner {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+    }
+    .addr {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+    }
+    .owner,
+    .addr {
+      padding: 5px;
+      p {
+        &:first-child {
+          @include set-font(14px, $rayon-deepgray);
+        }
+        &:last-child {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
