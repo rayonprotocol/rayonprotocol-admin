@@ -11,6 +11,7 @@ import Navigation from 'common/view/nav/Navigation';
 interface RouterState {
   userAccount: string;
   isLoading: boolean;
+  networkName: string;
 }
 
 class Router extends Component<{}, RouterState> {
@@ -18,7 +19,6 @@ class Router extends Component<{}, RouterState> {
     super(props);
     this.state = {
       ...this.state,
-      userAccount: UserDC.getUserAcount(),
       isLoading: true,
     };
   }
@@ -27,8 +27,8 @@ class Router extends Component<{}, RouterState> {
     UserDC.addUserLoginStatusChangeListeners(this._onUserLoginStatusChange.bind(this));
   }
 
-  private _onUserLoginStatusChange(userAccount: string): void {
-    this.setState({ ...this.state, userAccount, isLoading: false });
+  private _onUserLoginStatusChange(userAccount: string, networkName: string): void {
+    this.setState({ ...this.state, userAccount, networkName, isLoading: false });
   }
 
   renderAdminPage() {
@@ -54,7 +54,7 @@ class Router extends Component<{}, RouterState> {
       <Fragment>
         <BrowserRouter>
           <Fragment>
-            <Navigation />
+            <Navigation userAccount={this.state.userAccount} networkName={this.state.networkName} />
             {this.state.isLoading ? this.renderLoading() : this.renderAdminPage()}
           </Fragment>
         </BrowserRouter>

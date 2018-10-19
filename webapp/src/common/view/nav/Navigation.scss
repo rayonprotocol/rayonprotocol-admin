@@ -1,46 +1,79 @@
-.navigation {
-  background-color: $nav-black;
-  @include clearfix();
-  img {
-    width: 120px;
-    padding-top: 8px;
-  }
-  .navList {
-    display: inline-block;
-    vertical-align: top;
-    margin-left: 45px;
-    padding-top: 2px;
+.networkStatusBarOuter {
+  background-color: $nav-pink;
+  .networkStatusBarInner {
     color: white;
-    font-size: 24px;
-    a {
-      margin-right: 50px;
-      // 태그 disable 상태, 제거해야함
-      pointer-events: none;
+    padding: 10px 20px;
+    font-size: 12px;
+    text-align: right;
+  }
+}
+.pageTitleOuter {
+  background-color: $nav-black;
+  .pageTitleInner {
+    .pageTitle {
+      margin-top: 40px;
+      letter-spacing: 5px;
+      @include set-font(48px, white, $fontweight-thin);
     }
   }
-  .sideNav {
-    float: right;
-    padding-top: 10px;
+  .barUnderLine {
+    height: 3px;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 140% 140%;
+    animation: moveBackgroundImage 5s ease infinite;
   }
+}
 
-  .noMetamaskDesc {
-    @include set-font(4px, white);
-  }
-  .userInfo {
-    display: inline-block;
-    vertical-align: bottom;
-    p {
-      max-width: 150px;
-      display: inline-block;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      @include set-font(14px, white);
-      &:first-child {
-        margin-right: 10px;
+.navOuter {
+  background-color: $nav-black;
+
+  .navInner {
+    display: flex;
+    justify-content: space-between;
+
+    .navLeftSide {
+      display: flex;
+
+      a {
+        display: flex;
+        align-items: center;
+        margin-right: 70px;
+        @include set-font(18px, $nav-gray, $fontweight-thin);
+        // 태그 disable 상태, 제거해야함
+        // pointer-events: none;
+        &.selMenu {
+          color: white;
+        }
+        &:hover {
+          color: white;
+        }
+        img {
+          width: 120px;
+          padding-top: 8px;
+        }
       }
     }
-    &:first-child {
-      margin-right: 30px;
+
+    .navRightSide {
+      display: flex;
+      align-items: center;
+      .identicon {
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+        canvas {
+          border-radius: 16px;
+        }
+      }
+      .emptyBlockies {
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
+        background-color: white;
+      }
+      .userAddr {
+        @include set-font(16px, white);
+      }
     }
   }
 }

@@ -89,6 +89,7 @@
     "qs": "^6.5.1",
     "react-animated-number": "^0.4.4",
     "react-async-script": "^0.9.1",
+    "react-blockies": "^1.4.0",
     "react-blockies-image": "^0.0.2",
     "react-chartjs-2": "^2.7.2",
     "react-ga": "^2.4.1",

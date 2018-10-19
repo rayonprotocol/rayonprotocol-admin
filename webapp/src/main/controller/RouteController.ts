@@ -2,9 +2,7 @@
 import UserDC from 'user/dc/UserDC';
 
 // view
-// import TokenVC from 'dashboard/vc/TokenVC';
 import ContractVC from 'contract/vc/ContractVC';
-// import KycVC from 'kyc/vc/KycVC';
 import NoMetamaskView from 'main/view/NoMetamaskView';
 import OnlyAdminView from 'main/view/OnlyAdminView';
 
