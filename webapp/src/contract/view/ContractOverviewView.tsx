@@ -9,7 +9,7 @@ import styles from './ContractOverviewView.scss';
 interface ContractOverviewViewProps {
   contractOverviews: ContractOverview;
   selContractAddr: string;
-  onSelectOption: (option: string) => void;
+  onSelectContract: (option: string) => void;
 }
 
 class ContractOverviewView extends Component<ContractOverviewViewProps, {}> {
@@ -21,7 +21,7 @@ class ContractOverviewView extends Component<ContractOverviewViewProps, {}> {
         <div className={styles.contractCombobox}>
           <div className={styles.combobox}>
             <span className={styles.comboboxLabel}>{'Current contract : '}</span>
-            <select onChange={event => this.props.onSelectOption(event.target.value)}>
+            <select onChange={event => this.props.onSelectContract(event.target.value)}>
               {Object.keys(contractOverviews).map((contractAddr, index) => {
                 return (
                   <option key={index} value={contractAddr}>

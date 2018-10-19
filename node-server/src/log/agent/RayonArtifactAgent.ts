@@ -72,7 +72,7 @@ class RayonArtifactAgent {
   // getter
 
   public getContractOverview(contractAddress: string) {
-    return this._contract.getAllContractOverview(contractAddress);
+    return this._contract.getAllContractOverview();
   }
 
   public getFullName(contractAddress: string, signature: string) {

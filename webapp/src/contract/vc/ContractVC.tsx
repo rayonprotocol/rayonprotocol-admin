@@ -10,15 +10,18 @@ import ContractDC from 'contract/dc/ContractDC';
 // view
 import Container from 'common/view/container/Container';
 import ContractOverviewView from 'contract/view/ContractOverviewView';
-import ContractTabLogView from 'contract/view/ContractTabLogView';
-import RayonTab from 'common/view/tab/RayonTab';
+import ContractLogView from 'contract/view/ContractLogView';
 
+import FunctionLogTableView from 'contract/view/FunctionLogTableView';
+import EventLogTableView from 'contract/view/EventLogTableView';
+
+// styles
 import styles from './ContractVC.scss';
 
 interface ContractVCState {
   functionLogs: FunctionLog[];
   eventLogs: EventLog[];
-  currentTab: string;
+  selLogType: string;
   contractOverviews: ContractOverview;
   selContractAddr: string;
 }
@@ -27,8 +30,6 @@ class ContractVC extends Component<{}, ContractVCState> {
   public static TAB_FUNCTION = 'Function';
   public static TAB_EVENT = 'Event';
 
-  private _tabs = [ContractVC.TAB_FUNCTION, ContractVC.TAB_EVENT];
-
   constructor(props) {
     super(props);
     const contract = new Contract();
@@ -36,7 +37,7 @@ class ContractVC extends Component<{}, ContractVCState> {
       ...this.state,
       functionLogs: new Array<FunctionLog>(),
       eventLogs: new Array<EventLog>(),
-      currentTab: ContractVC.TAB_FUNCTION,
+      selLogType: ContractVC.TAB_FUNCTION,
       contractOverviews: contract.getAllContractOverview(),
       selContractAddr: contract.getContractAddressList()[0],
     };
@@ -48,7 +49,7 @@ class ContractVC extends Component<{}, ContractVCState> {
     this.setState({ ...this.state, eventLogs, functionLogs });
   }
 
-  private async _onSelectOption(selContractAddr: string): Promise<void> {
+  public async onSelectContract(selContractAddr: string): Promise<void> {
     if (this.state.selContractAddr === selContractAddr) return;
 
     const eventLogs = await ContractDC.getEventLogs(selContractAddr);
@@ -56,30 +57,29 @@ class ContractVC extends Component<{}, ContractVCState> {
     this.setState({ ...this.state, eventLogs, functionLogs, selContractAddr });
   }
 
-  private _onClickTab(tab: string): void {
-    this.setState({ ...this.state, currentTab: tab });
+  public onSelectLogType(type: string): void {
+    this.setState({ ...this.state, selLogType: type });
   }
 
   render() {
     return (
-      <Container>
+      <Container className={styles.contractVC}>
         <ContractOverviewView
           contractOverviews={this.state.contractOverviews}
           selContractAddr={this.state.selContractAddr}
-          onSelectOption={this._onSelectOption.bind(this)}
+          onSelectContract={this.onSelectContract.bind(this)}
         />
-        {/* <RayonTab
-          className={styles.logTab}
-          tabs={this._tabs}
-          selectedTab={this.state.currentTab}
-          onClickTab={this._onClickTab.bind(this)}
-        > */}
-          <ContractTabLogView
-            functionLogs={this.state.functionLogs}
-            eventLogs={this.state.eventLogs}
-            currentTab={this.state.currentTab}
-          />
-        {/* </RayonTab> */}
+        <ContractLogView
+          selLogType={this.state.selLogType}
+          logTypes={[ContractVC.TAB_FUNCTION, ContractVC.TAB_EVENT]}
+          onSelectLogType={this.onSelectLogType.bind(this)}
+        >
+          {this.state.selLogType === ContractVC.TAB_EVENT ? (
+            <EventLogTableView eventLogs={this.state.eventLogs} />
+          ) : (
+            <FunctionLogTableView functionLogs={this.state.functionLogs} />
+          )}
+        </ContractLogView>
       </Container>
     );
   }

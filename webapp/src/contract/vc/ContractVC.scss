@@ -1,3 +1,26 @@
-.logTab {
-    
+.contractVC {
+  table {
+    width: 100%;
+    margin-top: 30px;
+    thead {
+      border: 1px solid $rayon-gray;
+      border-radius: 8px;
+      th {
+        text-align: left;
+        padding: 10px 15px;
+      }
+    }
+    tbody {
+      tr {
+        border-bottom: 1px solid $rayon-lightgray;
+        &:hover {
+          background: #f8fcff;
+        }
+        td {
+          padding: 10px 15px;
+          z-index: 2;
+        }
+      }
+    }
+  }
 }
