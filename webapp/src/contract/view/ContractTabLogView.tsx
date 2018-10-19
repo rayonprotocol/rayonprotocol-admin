@@ -8,6 +8,7 @@ import ContractVC from 'contract/vc/ContractVC';
 
 // util
 import DateUtil from '../../../../shared/common/util/DateUtil';
+import StringUtil from '../../../../shared/common/util/StringUtil';
 
 // styles
 import styles from './ContractTabLogView.scss';
@@ -21,13 +22,13 @@ interface ContractTabLogViewProps {
 class ContractTabLogView extends Component<ContractTabLogViewProps, {}> {
   renderInputs(inputData: string) {
     const inputs = JSON.parse(inputData);
+
     return Object.keys(inputs).map((inputKey, index) => {
-      return (
-        <p key={index}>
-          <span>{`${inputKey}: `}</span>
-          <span>{inputs[inputKey]}</span>
-        </p>
-      );
+      const input =
+        typeof inputs[inputKey] === 'string' && inputs[inputKey].startsWith('0x')
+          ? StringUtil.trimAddress(inputs[inputKey])
+          : inputs[inputKey];
+      return <p key={index}>{`${inputKey}: ${input}`}</p>;
     });
   }
 
@@ -95,9 +96,22 @@ class ContractTabLogView extends Component<ContractTabLogViewProps, {}> {
     );
   }
 
+  renderTitleAndTabView() {
+    return (
+      <div className={styles.logTitleSection}>
+        <div className={styles.title}>{'Transaction Log'}</div>
+        <div className={styles.tabs}>
+          <div className={styles.tab}>Event</div>
+          <div className={styles.tab}>Function</div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
-      <div className={styles.logView}>
+      <div className={styles.contractLogView}>
+        {this.renderTitleAndTabView()}
         <table>
           {this.props.currentTab === ContractVC.TAB_FUNCTION ? this.renderEventLog() : this.renderFunctionLog()}
         </table>

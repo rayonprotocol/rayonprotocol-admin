@@ -68,18 +68,18 @@ class ContractVC extends Component<{}, ContractVCState> {
           selContractAddr={this.state.selContractAddr}
           onSelectOption={this._onSelectOption.bind(this)}
         />
-        <RayonTab
+        {/* <RayonTab
           className={styles.logTab}
           tabs={this._tabs}
           selectedTab={this.state.currentTab}
           onClickTab={this._onClickTab.bind(this)}
-        >
+        > */}
           <ContractTabLogView
             functionLogs={this.state.functionLogs}
             eventLogs={this.state.eventLogs}
             currentTab={this.state.currentTab}
           />
-        </RayonTab>
+        {/* </RayonTab> */}
       </Container>
     );
   }
