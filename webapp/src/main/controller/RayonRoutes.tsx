@@ -7,6 +7,7 @@ import RouteController from 'main/controller/RouteController';
 
 // view
 import Navigation from 'common/view/nav/Navigation';
+import Footer from 'common/view/footer/Footer';
 
 interface RouterState {
   userAccount: string;
@@ -56,6 +57,7 @@ class Router extends Component<{}, RouterState> {
           <Fragment>
             <Navigation userAccount={this.state.userAccount} networkName={this.state.networkName} />
             {this.state.isLoading ? this.renderLoading() : this.renderAdminPage()}
+            <Footer />
           </Fragment>
         </BrowserRouter>
       </Fragment>

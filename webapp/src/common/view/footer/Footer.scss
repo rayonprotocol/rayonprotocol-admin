@@ -1,0 +1,25 @@
+.footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+}
+.barUpperLine {
+  height: 3px;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 140% 140%;
+  animation: moveBackgroundImage 5s ease infinite;
+}
+.footerOuter {
+  padding: 24px 0;
+  color: white;
+  background: $nav-black;
+
+  .footerInner {
+    display: flex;
+    flex-direction: column;
+    img {
+      width: 130px;
+      margin-bottom: 40px;
+    }
+  }
+}
