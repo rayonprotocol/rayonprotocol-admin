@@ -80,7 +80,7 @@ class FunctionLogTableView extends Component<FunctionLogTableViewProps, {}> {
               filterable: false,
               Cell: row => (
                 <div className={styles.etherscanCursor}>
-                  <a href={row.value}>
+                  <a href={row.value} target={'_blank'}>
                     <span>&#x2295;</span>
                   </a>
                 </div>

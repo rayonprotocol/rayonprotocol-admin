@@ -19,9 +19,9 @@
       display: flex;
       margin-bottom: 10px;
       span {
-        margin-right: 5px;
+        margin-right: 10px;
         border-radius: 8px;
-        padding: 1px 8px;
+        padding: 1px 12px;
         background: $rayon-lake;
         @include set-font(14px, white);
       }
