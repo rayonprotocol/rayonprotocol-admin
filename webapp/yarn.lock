@@ -2793,6 +2793,10 @@ detect-node@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/detect-node/-/detect-node-2.0.3.tgz#a2033c09cc8e158d37748fbde7507832bd6ce127"
 
+diacritic@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/diacritic/-/diacritic-0.0.2.tgz#fc2a887b5a5bc0a0a854fb614c7c2f209061ee04"
+
 diff@3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.3.1.tgz#aa8567a6eed03c531fc89d3f711cd0e5259dec75"
@@ -6022,6 +6026,12 @@ markdown-table@^1.1.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-1.1.2.tgz#c78db948fa879903a41bce522e3b96f801c63786"
 
+match-sorter@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/match-sorter/-/match-sorter-2.3.0.tgz#99eaf386689f75bf976f6bbf7f49afb9a7ffecc8"
+  dependencies:
+    diacritic "0.0.2"
+
 math-expression-evaluator@^1.2.14:
   version "1.2.17"
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.2.17.tgz#de819fdbcd84dccd8fae59c6aeb79615b9d266ac"
@@ -7856,6 +7866,12 @@ react-slick@^0.23.1:
     json2mq "^0.2.0"
     lodash.debounce "^4.0.8"
     resize-observer-polyfill "^1.5.0"
+
+react-table@^6.8.6:
+  version "6.8.6"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-6.8.6.tgz#a0ad8b4839319052d5befc012603fb161e52ede3"
+  dependencies:
+    classnames "^2.2.5"
 
 react-waypoint@^8.0.1:
   version "8.0.1"

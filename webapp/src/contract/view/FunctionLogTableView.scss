@@ -1,0 +1,30 @@
+.etherscanCursor {
+  font-size: 25px;
+  text-align: center;
+  cursor: 'pointer';
+}
+.inputSubComponent {
+  display: flex;
+  padding: 15px 45px;
+  transition: all 0.3s ease;
+  .inputTitle {
+    padding-right: 30px;
+    border-right: 1px solid $rayon-gray;
+    @include set-font(18px, black, $fontweight-bold);
+  }
+  .inputs {
+    margin-top: 5px;
+    padding-left: 30px;
+    p {
+      display: flex;
+      margin-bottom: 10px;
+      span {
+        margin-right: 5px;
+        border-radius: 8px;
+        padding: 1px 8px;
+        background: $rayon-lake;
+        @include set-font(14px, white);
+      }
+    }
+  }
+}

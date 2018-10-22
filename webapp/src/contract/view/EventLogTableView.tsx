@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
+import ReactTable from 'react-table';
+import matchSorter from 'match-sorter';
+import 'react-table/react-table.css';
+
+// styles
+import styles from './EventLogTableView.scss';
 
 // model
 import { EventLog } from '../../../../shared/common/model/TxLog';
 
 // util
 import DateUtil from '../../../../shared/common/util/DateUtil';
-import StringUtil from '../../../../shared/common/util/StringUtil';
 
 interface EventLogTableViewProps {
   eventLogs: EventLog[];
@@ -14,46 +19,95 @@ interface EventLogTableViewProps {
 class EventLogTableView extends Component<EventLogTableViewProps, {}> {
   renderInputs(inputData: string) {
     const inputs = JSON.parse(inputData);
-
-    return Object.keys(inputs).map((inputKey, index) => {
-      const input =
-        typeof inputs[inputKey] === 'string' && inputs[inputKey].startsWith('0x')
-          ? StringUtil.trimAddress(inputs[inputKey])
-          : inputs[inputKey];
-      return <p key={index}>{`${inputKey}: ${input}`}</p>;
-    });
+    return Object.keys(inputs).map((inputKey, index) => (
+      <p key={index}>
+        <span>{inputKey}</span>
+        {inputs[inputKey]}
+      </p>
+    ));
   }
 
   render() {
     return (
-      <table>
-        <thead>
-          <tr>
-            <th>Status</th>
-            <th>Method</th>
-            <th>Event</th>
-            <th>Parameter</th>
-            <th>Age</th>
-            <th>Eterscan</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.props.eventLogs.map((eventLog, index) => {
+      <div>
+        <ReactTable
+          data={this.props.eventLogs}
+          filterable
+          defaultFilterMethod={(filter, row) => String(row[filter.id]) === filter.value}
+          columns={[
+            {
+              Header: 'Status',
+              accessor: 'status',
+              maxWidth: 130,
+              filterable: false,
+              Cell: row => (
+                <span>
+                  <span
+                    style={{
+                      color: row.value === 0 ? '#ff2e00' : '#57d500',
+                      transition: 'all .3s ease',
+                    }}
+                  >
+                    &#x25cf;
+                  </span>{' '}
+                  {row.value === 0 ? 'Fail' : 'Success'}
+                </span>
+              ),
+            },
+            {
+              Header: 'Block',
+              accessor: 'blockNumber',
+              maxWidth: 130,
+              filterable: false,
+            },
+            {
+              Header: 'Function',
+              accessor: 'functionName',
+              filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ['functionName'] }),
+              filterAll: true,
+            },
+            {
+              Header: 'Event',
+              accessor: 'eventName',
+              filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ['functionName'] }),
+              filterAll: true,
+            },
+            {
+              Header: 'Age',
+              accessor: 'calledTime',
+              maxWidth: 130,
+              filterable: false,
+              Cell: row => <div>{DateUtil.timstampCommonFormConverter(row.value)}</div>,
+            },
+            {
+              Header: 'More',
+              accessor: 'urlEtherscan',
+              maxWidth: 60,
+              filterable: false,
+              Cell: row => (
+                <div className={styles.etherscanCursor}>
+                  <a href={row.value}>
+                    <span>&#x2295;</span>
+                  </a>
+                </div>
+              ),
+              style: {
+                padding: '0',
+              },
+            },
+          ]}
+          defaultPageSize={10}
+          className={'-striped -highlight'}
+          SubComponent={row => {
             return (
-              <tr key={index}>
-                <td>{eventLog.status}</td>
-                <td>{eventLog.functionName}</td>
-                <td>{eventLog.eventName}</td>
-                <td>{this.renderInputs(eventLog.inputData)}</td>
-                <td>{DateUtil.timstampCommonFormConverter(eventLog.calledTime)}</td>
-                <td>
-                  <a href={eventLog.urlEtherscan}>></a>
-                </td>
-              </tr>
+              <div className={styles.inputSubComponent}>
+                <div className={styles.inputTitle}>{'Event Input'}</div>
+                <div className={styles.inputs}>{this.renderInputs(row.original.inputData)}</div>
+              </div>
             );
-          })}
-        </tbody>
-      </table>
+          }}
+        />
+      </div>
     );
   }
 }
