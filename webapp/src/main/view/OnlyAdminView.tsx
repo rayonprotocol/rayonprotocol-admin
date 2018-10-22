@@ -11,8 +11,14 @@ class OnlyAdminView extends Component<{}, {}> {
     return (
       <Container>
         <div className={styles.onlyAdminView}>
-          <p className={styles.caution}>Caution!</p>
-          <p>Only admin can enter this page</p>
+          <div className={styles.image}>
+            <img src={require('../image/security.png')} />
+          </div>
+          <div>
+            <p className={styles.caution}>Caution!</p>
+            <p>This is Admin page</p>
+            <p>You don't have enter authority</p>
+          </div>
         </div>
       </Container>
     );

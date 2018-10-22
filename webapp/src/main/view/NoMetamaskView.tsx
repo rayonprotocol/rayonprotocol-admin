@@ -11,8 +11,14 @@ class NoMetamaskView extends Component<{}, {}> {
     return (
       <Container>
         <div className={styles.noMetamaskView}>
-          <p className={styles.caution}>Caution!</p>
-          <p>you must login metamask</p>
+          <div className={styles.image}>
+            <img src={require('../image/wallet.png')} />
+          </div>
+          <div>
+            <p className={styles.caution}>Caution!</p>
+            <p>This is Admin page</p>
+            <p>For account verification, You must login metamask</p>
+          </div>
         </div>
       </Container>
     );
