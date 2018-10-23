@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { BigNumber } from 'bignumber.js';
 
 // model
 import { UserTokenHistory } from '../../../../shared/token/model/Token';
@@ -15,9 +14,9 @@ import TokenHolderView from 'token/view/TokenHolderView';
 
 interface TokenVCState {
   isStateLoading: boolean;
-  //   totalSupply: BigNumber;
-  //   tokenCap: BigNumber;
-  //   userTokenHistory: UserTokenHistory;
+  totalSupply: number;
+  tokenCap: number;
+  userTokenHistory: UserTokenHistory;
   holders: Holder[];
 }
 
@@ -29,6 +28,8 @@ class TokenVC extends Component<{}, TokenVCState> {
     this.state = {
       ...this.state,
       holders: [],
+      totalSupply: 0,
+      tokenCap: 0,
     };
   }
 
@@ -41,28 +42,32 @@ class TokenVC extends Component<{}, TokenVCState> {
   }
 
   private async fetchDashboardStates() {
-    // const totalSupply: BigNumber = await TokenDC.fetchTokenTotalBalance();
     const holders = await TokenDC.fetchTokenHolders();
-    // const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
-    // const tokenCap: BigNumber = await TokenDC.fetchTokenCap();
-
-    delete holders['0x0000000000000000000000000000000000000000'];
+    const totalSupply: number = await TokenDC.fetchTokenTotalBalance();
+    const tokenCap: number = await TokenDC.fetchTokenCap();
 
     this.setState({
       ...this.state,
-      //   totalSupply,
-      //   tokenCap,
       holders,
-      //   userTokenHistory,
+      totalSupply,
+      tokenCap,
       isStateLoading: false,
     });
+  }
+
+  async onClickHistory() {
+    console.log('good!');
+    // const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
+    // this.setState({
+    //   userTokenHistory,
+    // });
   }
 
   render() {
     return (
       <Container>
-        <TokenOverviewView />
-        <TokenHolderView holders={this.state.holders} />
+        <TokenOverviewView totalSupply={this.state.totalSupply} tokenCap={this.state.tokenCap} />
+        <TokenHolderView holders={this.state.holders} onClickHistory={this.onClickHistory.bind(this)} />
       </Container>
     );
   }

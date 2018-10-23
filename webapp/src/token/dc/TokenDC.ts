@@ -1,5 +1,3 @@
-import { BigNumber } from 'bignumber.js';
-
 // agent
 import TokenServerAgent from 'token/agent/TokenServerAgent';
 
@@ -7,10 +5,10 @@ import TokenServerAgent from 'token/agent/TokenServerAgent';
 import { UserTokenHistory, Holder } from '../../../../shared/token/model/Token';
 
 class TokenDC {
-  public async fetchTokenTotalBalance(): Promise<BigNumber> {
+  public async fetchTokenTotalBalance(): Promise<number> {
     return await TokenServerAgent.fetchTokenTotalBalance();
   }
-  public async fetchTokenCap(): Promise<BigNumber> {
+  public async fetchTokenCap(): Promise<number> {
     return await TokenServerAgent.fetchTokenCap();
   }
   public async fetchTokenHolders(): Promise<Holder[]> {

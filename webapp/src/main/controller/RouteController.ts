@@ -44,6 +44,11 @@ class RouterPathController {
       component: ContractVC,
       exact: true,
     },
+    {
+      path: '/kyc',
+      component: OnlyAdminView,
+      exact: true,
+    },
   ];
 
   public getRoutes(userAccount: string): any {

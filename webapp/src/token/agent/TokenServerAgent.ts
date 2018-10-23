@@ -40,12 +40,12 @@ class TokenServerAgent extends RayonContractAgent {
     return userTokenHistories;
   }
 
-  async fetchTokenTotalBalance(): Promise<BigNumber> {
-    return new BigNumber(await this.getRequest<string>(URLForGetTokenTotalSupply));
+  async fetchTokenTotalBalance(): Promise<number> {
+    return await this.getRequest<number>(URLForGetTokenTotalSupply);
   }
 
-  async fetchTokenCap(): Promise<BigNumber> {
-    return new BigNumber(await this.getRequest<string>(URLForGetTokenCap));
+  async fetchTokenCap(): Promise<number> {
+    return await this.getRequest<number>(URLForGetTokenCap);
   }
 }
 

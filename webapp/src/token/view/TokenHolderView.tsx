@@ -15,6 +15,7 @@ import styles from './TokenHolderView.scss';
 
 interface TokenHolderViewProps {
   holders: Holder[];
+  onClickHistory: (contractAddr: string) => void;
 }
 
 class TokenHolderView extends Component<TokenHolderViewProps, {}> {
@@ -82,6 +83,20 @@ class TokenHolderView extends Component<TokenHolderViewProps, {}> {
             },
             style: {
               textAlign: 'center',
+            },
+          },
+          {
+            Header: 'History',
+            maxWidth: 100,
+            filterable: false,
+            Cell: row => (
+              <div className={styles.historyBtn} onClick={() => this.props.onClickHistory(row.original.address)}>
+                <span>&#x2295;</span>
+              </div>
+            ),
+            style: {
+              padding: '0',
+              cursor: 'pointer',
             },
           },
         ]}
