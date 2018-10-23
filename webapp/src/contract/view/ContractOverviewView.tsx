@@ -3,6 +3,9 @@ import React, { Component } from 'react';
 // model
 import { ContractOverview } from '../../../../shared/contract/model/Contract';
 
+// view
+import SectionTitle from 'common/view/section/SectionTitle';
+
 // styles
 import styles from './ContractOverviewView.scss';
 
@@ -16,8 +19,7 @@ class ContractOverviewView extends Component<ContractOverviewViewProps, {}> {
   renderTitleAndCombobox() {
     const { contractOverviews } = this.props;
     return (
-      <div className={styles.overviewTitleSection}>
-        <div className={styles.title}>{'Overview'}</div>
+      <SectionTitle title={'Overview'}>
         <div className={styles.contractCombobox}>
           <div className={styles.combobox}>
             <span className={styles.comboboxLabel}>{'Current contract : '}</span>
@@ -32,7 +34,7 @@ class ContractOverviewView extends Component<ContractOverviewViewProps, {}> {
             </select>
           </div>
         </div>
-      </div>
+      </SectionTitle>
     );
   }
 

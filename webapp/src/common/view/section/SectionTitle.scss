@@ -1,0 +1,9 @@
+.titleSection {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid gray;
+  .title {
+    font-size: 36px;
+    padding-bottom: 4px;
+  }
+}

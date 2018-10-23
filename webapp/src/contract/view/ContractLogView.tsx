@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 // view
 import ComboBox from 'common/view/combobox/ComboBox';
+import SectionTitle from 'common/view/section/SectionTitle';
 
 // styles
 import styles from './ContractLogView.scss';
@@ -15,14 +16,13 @@ interface ContractLogViewProps {
 class ContractLogView extends Component<ContractLogViewProps, {}> {
   renderTitleAndTabView() {
     return (
-      <div className={styles.logTitleSection}>
-        <div className={styles.title}>{'Transaction Log'}</div>
+      <SectionTitle title={'Transaction Log'}>
         <ComboBox
           options={this.props.logTypes}
           label={'Log type : '}
           onSelectOption={this.props.onSelectLogType.bind(this)}
         />
-      </div>
+      </SectionTitle>
     );
   }
 
