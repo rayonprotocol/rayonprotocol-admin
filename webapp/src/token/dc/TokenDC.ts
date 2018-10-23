@@ -4,19 +4,16 @@ import { BigNumber } from 'bignumber.js';
 import TokenServerAgent from 'token/agent/TokenServerAgent';
 
 // model
-import { TransferEvent, UserTokenHistory } from '../../../../shared/token/model/Token';
+import { UserTokenHistory, Holder } from '../../../../shared/token/model/Token';
 
 class TokenDC {
-  public async fetchTransferEvents(): Promise<TransferEvent[]> {
-    return await TokenServerAgent.fetchTransferEvents();
-  }
   public async fetchTokenTotalBalance(): Promise<BigNumber> {
     return await TokenServerAgent.fetchTokenTotalBalance();
   }
   public async fetchTokenCap(): Promise<BigNumber> {
     return await TokenServerAgent.fetchTokenCap();
   }
-  public async fetchTokenHolders(): Promise<object> {
+  public async fetchTokenHolders(): Promise<Holder[]> {
     return await TokenServerAgent.fetchTokenHolders();
   }
   async fetchTokenHistory(): Promise<UserTokenHistory> {

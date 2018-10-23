@@ -1,0 +1,19 @@
+.tokenHolderView {
+  margin-top: 50px;
+  .holderViewBody {
+    display: flex;
+    .holderGraph {
+      flex: 3;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid $rayon-lightgray;
+      border-left: 1px solid $rayon-lightgray;
+      .holderChart {
+        padding: 30px;
+      }
+    }
+    .holdersTable {
+      flex: 7;
+    }
+  }
+}

@@ -13,6 +13,10 @@ class Web3Controller {
   public getWeb3() {
     return this._web3;
   }
+  
+  public getContractInstance(abi: any, contractAddress: string) {
+    return new this._web3.eth.Contract(abi, contractAddress);
+  }
 }
 
 export default new Web3Controller();

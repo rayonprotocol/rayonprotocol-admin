@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js';
 
 // model
 import { UserTokenHistory } from '../../../../shared/token/model/Token';
+import { Holder } from '../../../../shared/token/model/Token';
 
 // dc
 import TokenDC from 'token/dc/TokenDC';
@@ -14,14 +15,22 @@ import TokenHolderView from 'token/view/TokenHolderView';
 
 interface TokenVCState {
   isStateLoading: boolean;
-  totalSupply: BigNumber;
-  tokenCap: BigNumber;
-  userTokenHistory: UserTokenHistory;
-  holders: object;
+  //   totalSupply: BigNumber;
+  //   tokenCap: BigNumber;
+  //   userTokenHistory: UserTokenHistory;
+  holders: Holder[];
 }
 
 class TokenVC extends Component<{}, TokenVCState> {
   private _ZERO_ACCOUNT = '0x0000000000000000000000000000000000000000';
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.state,
+      holders: [],
+    };
+  }
 
   componentDidMount() {
     this._setLoadingAndfetchDashboadState();
@@ -32,19 +41,19 @@ class TokenVC extends Component<{}, TokenVCState> {
   }
 
   private async fetchDashboardStates() {
-    const totalSupply: BigNumber = await TokenDC.fetchTokenTotalBalance();
+    // const totalSupply: BigNumber = await TokenDC.fetchTokenTotalBalance();
     const holders = await TokenDC.fetchTokenHolders();
-    const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
-    const tokenCap: BigNumber = await TokenDC.fetchTokenCap();
+    // const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
+    // const tokenCap: BigNumber = await TokenDC.fetchTokenCap();
 
     delete holders['0x0000000000000000000000000000000000000000'];
 
     this.setState({
       ...this.state,
-      totalSupply,
-      tokenCap,
+      //   totalSupply,
+      //   tokenCap,
       holders,
-      userTokenHistory,
+      //   userTokenHistory,
       isStateLoading: false,
     });
   }
@@ -53,7 +62,7 @@ class TokenVC extends Component<{}, TokenVCState> {
     return (
       <Container>
         <TokenOverviewView />
-        <TokenHolderView />
+        <TokenHolderView holders={this.state.holders} />
       </Container>
     );
   }

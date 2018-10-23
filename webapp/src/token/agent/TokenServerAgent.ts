@@ -7,12 +7,9 @@ import RayonContractAgent from 'common/agent/RayonContractAgent';
 import {
   URLForGetTokenHistory,
   URLForGetTokenHolders,
-  URLForGetMintEvents,
-  URLForGetTransferEvents,
   URLForGetTokenTotalSupply,
   URLForGetTokenCap,
-  MintEvent,
-  TransferEvent,
+  Holder,
   UserTokenHistory,
 } from '../../../../shared/token/model/Token';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
@@ -26,16 +23,8 @@ class TokenServerAgent extends RayonContractAgent {
     super(contract);
   }
 
-  async fetchMintEvents(): Promise<MintEvent[]> {
-    return await this.getRequest<MintEvent[]>(URLForGetMintEvents);
-  }
-
-  async fetchTransferEvents(): Promise<TransferEvent[]> {
-    return await this.getRequest<TransferEvent[]>(URLForGetTransferEvents);
-  }  
-
-  async fetchTokenHolders(): Promise<object> {
-    return await this.getRequest<object>(URLForGetTokenHolders);
+  async fetchTokenHolders(): Promise<Holder[]> {
+    return await this.getRequest<Holder[]>(URLForGetTokenHolders);
   }
 
   async fetchTokenHistory(): Promise<UserTokenHistory> {

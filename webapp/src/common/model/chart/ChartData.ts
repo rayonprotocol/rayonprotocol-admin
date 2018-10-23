@@ -1,5 +1,5 @@
 export class DataSets {
-    data: number[];
+    data: string[];
     backgroundColor: string[];
     borderColor: string[];
     borderWidth: number;

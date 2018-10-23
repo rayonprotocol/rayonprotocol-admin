@@ -26,7 +26,7 @@ RayonArtifactAgent.startArtifactConvert();
 RayonLogCollectAgent.collectionStart();
 
 // datacontroller configure(router)
-// TokenDC.configure(app);
+TokenDC.configure(app);
 ContractDC.configure(app);
 
 app.get('/', (req, res) => res.send('Hello World!'));

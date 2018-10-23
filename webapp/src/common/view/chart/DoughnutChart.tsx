@@ -5,8 +5,9 @@ import { Doughnut } from 'react-chartjs-2';
 import ChartData, { DataSets } from 'common/model/chart/ChartData';
 
 interface DoughnutChartProps {
+  className?: string;
   labels: string[];
-  data: number[];
+  data: string[];
   backgroundColor?: string[];
   borderColor?: string[];
   borderWidth?: number;
@@ -39,7 +40,7 @@ class DoughnutChart extends Component<DoughnutChartProps, DoughnutChartState> {
     chartData.labels = labels;
     chartData.datasets = datasets;
     return (
-      <div style={{ height: (height || 100) + 'px' }}>
+      <div className={this.props.className} style={{ height: (height || 100) + 'px' }}>
         <Doughnut
           data={chartData}
           options={{

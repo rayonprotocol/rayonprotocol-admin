@@ -1,12 +1,25 @@
-// import RayonBlockchainAgent from '../../common/agent/RayonBlockchainAgent';
+// util
+import ContractUtil from '../../common/util/ContractUtil';
+import Web3Controller from '../../common/controller/Web3Controller';
 
-// model
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
-import { RayonEvent } from '../../../../shared/token/model/Token';
 
 class TokenBlockchainAgent {
+  private _contractInstance: any;
+
   constructor() {
-    const watchEvents: Set<RayonEvent> = new Set([RayonEvent.Mint, RayonEvent.Transfer]);
+    this._contractInstance = Web3Controller.getContractInstance(
+      ContractUtil.getContract(ContractConfigure.ADDR_RAYONTOKEN).abi,
+      ContractConfigure.ADDR_RAYONTOKEN
+    );
+  }
+
+  public async getTokenCap() {
+    return ContractUtil.weiToToken(await this._contractInstance.methods.cap().call());
+  }
+
+  public async getTotalSupply() {
+    return ContractUtil.weiToToken(await this._contractInstance.methods.totalSupply().call());
   }
 }
 

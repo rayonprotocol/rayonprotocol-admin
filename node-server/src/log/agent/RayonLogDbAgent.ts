@@ -6,6 +6,8 @@ import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/Tx
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 class RayonLogDbAgent {
+  private TRANSFER_EVENT = 'Transfer(address,address,uint256)';
+
   // getter
 
   public async getNextBlockToRead() {
@@ -68,6 +70,7 @@ class RayonLogDbAgent {
   }
 
   private async _storeTxEventLogs(eventLog: EventLog) {
+    if (eventLog.eventName === this.TRANSFER_EVENT) this._storeTxHolder(eventLog);
     const result = await DbAgent.executeAsync(
       `
         INSERT INTO rayon.event_log (
@@ -107,6 +110,26 @@ class RayonLogDbAgent {
     );
 
     // console.log('storeResult', result);
+  }
+
+  private async _storeTxHolder(eventLog: EventLog) {
+    const inputData = JSON.parse(eventLog.inputData);
+    const result = await DbAgent.executeAsync(
+      `
+      INSERT INTO rayon.holder_log (
+        from,
+        to,
+        amount,
+        called_time
+      ) VALUES (
+        ?,
+        ?,
+        ?,
+        ?,
+        ?
+      )`,
+      [inputData.from, inputData.to, inputData.value, eventLog.calledTime]
+    );
   }
 }
 
