@@ -2,10 +2,10 @@
 import UserDC from 'user/dc/UserDC';
 
 // view
+import TokenVC from 'token/vc/TokenVC';
 import ContractVC from 'contract/vc/ContractVC';
 import NoMetamaskView from 'main/view/NoMetamaskView';
 import OnlyAdminView from 'main/view/OnlyAdminView';
-
 
 // util
 import StringUtil from '../../../../shared/common/util/StringUtil';
@@ -36,7 +36,7 @@ class RouterPathController {
   privateRoute = [
     {
       path: '/',
-      component: ContractVC,
+      component: TokenVC,
       exact: true,
     },
     {
