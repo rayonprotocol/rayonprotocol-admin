@@ -6,10 +6,15 @@ export const URLForGetAllLogs = `${parentUrl}/contract/logs/all`;
 export const URLForGetContractLogs = `${parentUrl}/contract/logs`;
 export const URLForGetContractOverview = `${parentUrl}/contract/overview`;
 
+export type ContractEnvOverview = {
+  [env: string]: ContractOverview;
+};
+
 export type ContractOverview = {
   [contractAddress: string]: {
     name: string;
     owner: string;
+    blockNumber: number;
   };
 };
 
@@ -47,19 +52,36 @@ export default class Contract {
   public static ABI_TYPE_FUNCTION = 'function';
   public static ABI_TYPE_EVENT = 'event';
 
+  public static CONTRACT_RAYONTOKEN = 'RayonToken';
+
+  _contractEnvOverview: ContractEnvOverview;
   _contractOverviews: ContractOverview;
 
-  constructor() {
-    this._contractOverviews = {
-      [ContractConfigure.ADDR_RAYONTOKEN]: {
-        name: 'Rayon Token',
-        owner: ContractConfigure.ADMIN_RAYONTOKEN,
+  constructor(env: string) {
+    this._contractEnvOverview = {
+      [ContractConfigure.ENV_LOCAL]: {
+        '0x810cd3bd9b0dc191ff0165a3cd5e55b9c37577a3': {
+          name: Contract.CONTRACT_RAYONTOKEN,
+          owner: '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290',
+          blockNumber: 0,
+        },
       },
-      // ['asdfasdfasdf']: {
-      //   name: 'Rayon Test',
-      //   owner: 'asdf123123',
-      // },
+      [ContractConfigure.ENV_TESTNET]: {
+        '0xf9a8a966d310cb240c4edc98ca43eb7ff1c5d491': {
+          name: Contract.CONTRACT_RAYONTOKEN,
+          owner: '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290',
+          blockNumber: 3936488,
+        },
+      },
     };
+    this._contractOverviews = this._contractEnvOverview[env];
+  }
+
+  public getStartBlockNumber() {
+    return Math.min.apply(
+      null,
+      this.getContractAddressList().map(overview => this._contractOverviews[overview].blockNumber)
+    );
   }
 
   public getAllContractOverview() {
@@ -72,7 +94,7 @@ export default class Contract {
 
   public getContractAddrByName(contractName: string) {
     const addrList = this.getContractAddressList();
-    const addr = Object.keys(addrList.filter(addr => this._contractOverviews[addr].name === contractName));
-    return addr.length ? addr.pop() : null;
+    const result = addrList.filter(addr => this._contractOverviews[addr].name === contractName);
+    return result.length ? result.pop() : null;
   }
 }

@@ -1,7 +1,5 @@
-import { BigNumber } from 'bignumber.js';
-
 // agent
-import RayonContractAgent from 'common/agent/RayonContractAgent';
+import RayonServerAgent from 'common/agent/RayonServerAgent';
 
 // model
 import {
@@ -12,17 +10,8 @@ import {
   Holder,
   TokenHistory,
 } from '../../../../shared/token/model/Token';
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
-// util
-import ContractUtil from 'common/util/ContractUtil';
-
-class TokenServerAgent extends RayonContractAgent {
-  constructor() {
-    const contract = ContractUtil.getContractArtifact(ContractConfigure.ADDR_RAYONTOKEN);
-    super(contract);
-  }
-
+class TokenServerAgent extends RayonServerAgent {
   async fetchTokenHolders(): Promise<Holder[]> {
     return await this.getRequest<Holder[]>(URLForGetTokenHolders);
   }

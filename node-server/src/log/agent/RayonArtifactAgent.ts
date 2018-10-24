@@ -15,7 +15,7 @@ import Contract, { AbiElement, ConvertedAbi } from '../../../../shared/contract/
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 
 class RayonArtifactAgent {
-  private _contract: Contract = new Contract();
+  private _contract: Contract = new Contract(process.env.ENV_BLOCKCHAIN);
   private _convertedAbi: ConvertedAbi = {};
 
   public startArtifactConvert(): void {

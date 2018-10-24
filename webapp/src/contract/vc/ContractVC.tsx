@@ -32,7 +32,7 @@ class ContractVC extends Component<{}, ContractVCState> {
 
   constructor(props) {
     super(props);
-    const contract = new Contract();
+    const contract = new Contract(ENV_BLOCKCHAIN);
     this.state = {
       ...this.state,
       functionLogs: new Array<FunctionLog>(),

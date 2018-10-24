@@ -4,6 +4,7 @@ import DbAgent from '../../common/agent/DbAgent';
 // model
 import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+import Contract from '../../../../shared/contract/model/Contract';
 
 class RayonLogDbAgent {
   private TRANSFER_EVENT = 'Transfer(address,address,uint256)';
@@ -16,9 +17,8 @@ class RayonLogDbAgent {
       SELECT MAX(block_number) readLastBlock FROM event_log
     `);
     queryResult = queryResult && queryResult.pop();
-    return queryResult.readLastBlock === null
-      ? ContractConfigure.getStartBlock(process.env.ENV_BLOCKCHAIN)
-      : queryResult.readLastBlock + 1;
+    const contract = new Contract(process.env.ENV_BLOCKCHAIN);
+    return queryResult.readLastBlock === null ? contract.getStartBlockNumber() : queryResult.readLastBlock + 1;
   }
 
   // store

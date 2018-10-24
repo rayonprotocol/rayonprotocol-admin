@@ -1,20 +1,11 @@
 // agent
-import RayonContractAgent from 'common/agent/RayonContractAgent';
+import RayonServerAgent from 'common/agent/RayonServerAgent';
 
 // model
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import Contract, { URLForGetContractLogs, URLForGetContractOverview } from '../../../../shared/contract/model/Contract';
 import { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 
-// util
-import ContractUtil from 'common/util/ContractUtil';
-
-class ContractAgent extends RayonContractAgent {
-  constructor() {
-    const contract = ContractUtil.getContractArtifact(ContractConfigure.ADDR_RAYONTOKEN);
-    super(contract);
-  }
-
+class ContractAgent extends RayonServerAgent {
   public async fetchEventLogs(address: string) {
     const params = { type: Contract.ABI_TYPE_EVENT, address };
     return await this.getRequest<EventLog[]>(URLForGetContractLogs, params);
