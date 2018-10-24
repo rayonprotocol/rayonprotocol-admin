@@ -16,7 +16,9 @@ class RayonLogDbAgent {
       SELECT MAX(block_number) readLastBlock FROM event_log
     `);
     queryResult = queryResult && queryResult.pop();
-    return queryResult.readLastBlock === null ? ContractConfigure.CONTRACTBLOCK_TESTNET : queryResult.readLastBlock + 1;
+    return queryResult.readLastBlock === null
+      ? ContractConfigure.getStartBlock(process.env.ENV_BLOCKCHAIN)
+      : queryResult.readLastBlock + 1;
   }
 
   // store

@@ -34,6 +34,12 @@ class ContractConfigure {
     mainnet: 'https://mainnet.infura.io/',
   };
 
+  public static getStartBlock(env: string) {
+    if (env === ContractConfigure.ENV_LOCAL) return ContractConfigure.CONTRACTBLOCK_LOCAL;
+    else if (env === ContractConfigure.ENV_TESTNET) return ContractConfigure.CONTRACTBLOCK_TESTNET;
+    else return ContractConfigure.CONTRACTBLOCK_MAINNET;
+  }
+
   public static getWebsocketUrl(blockchainEnv: string) {
     return ContractConfigure.websocketUrl[blockchainEnv];
   }
