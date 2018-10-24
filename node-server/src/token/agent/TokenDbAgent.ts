@@ -10,10 +10,10 @@ class TokenDbAgent {
         from
         (
           SELECT A.from as holder, (-1 * A.amount) as amount
-          FROM rayon.holder_log as A
+          FROM holder_log as A
           union
           SELECT B.to as holder, B.amount as amount
-          FROM rayon.holder_log as B
+          FROM holder_log as B
         ) as h
         group by h.holder
         order by sum(h.amount) DESC;
@@ -35,10 +35,10 @@ class TokenDbAgent {
             A.to,
             (-1 * A.amount) as amount,
             A.called_time as calledTime
-          FROM rayon.holder_log as A where A.from = ?
+          FROM holder_log as A where A.from = ?
           union
           SELECT *
-          FROM rayon.holder_log as B where B.to = ?
+          FROM holder_log as B where B.to = ?
         ) as h
       order by h.calledTime DESC
       `,

@@ -21,8 +21,8 @@ class ContractDbAgent {
     if (StringUtil.isEmpty(contractAddress) || StringUtil.isEmpty(type)) return null;
     const query =
       type === Contract.ABI_TYPE_EVENT
-        ? this._base + `, event_name as eventName FROM rayon.event_log WHERE contract_address=? ORDER BY block_number`
-        : this._base + ` FROM rayon.function_log WHERE contract_address=? ORDER BY block_number`;
+        ? this._base + `, event_name as eventName FROM event_log WHERE contract_address=? ORDER BY block_number`
+        : this._base + ` FROM function_log WHERE contract_address=? ORDER BY block_number`;
     return await DbAgent.executeAsync(query, [contractAddress]);
   }
 
@@ -31,8 +31,8 @@ class ContractDbAgent {
       return null;
     const query =
       type === Contract.ABI_TYPE_EVENT
-        ? `${this._base}, event_name as eventName FROM rayon.event_log ORDER BY block_number`
-        : `${this._base} FROM rayon.function_log ORDER BY block_number`;
+        ? `${this._base}, event_name as eventName FROM event_log ORDER BY block_number`
+        : `${this._base} FROM function_log ORDER BY block_number`;
     return await DbAgent.executeAsync(query);
   }
 }
