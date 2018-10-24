@@ -12,24 +12,9 @@ export interface Holder {
   balance: string;
 }
 
-/*
-Etc
-*/
-export type UserTokenHistory = {
-  [userAddress: string]: TokenHistory[];
-};
-
 export interface TokenHistory {
   from: string;
   to: string;
-  amount: BigNumber;
-  balance?: BigNumber;
-  blockTime: BlockTime;
-}
-
-export interface BlockTime {
-  timestamp: number;
-  year: number;
-  month: number;
-  date: number;
+  amount: number;
+  calledTime: number;
 }

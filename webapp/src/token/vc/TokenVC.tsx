@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
 // model
-import { UserTokenHistory } from '../../../../shared/token/model/Token';
-import { Holder } from '../../../../shared/token/model/Token';
+import { Holder, TokenHistory } from '../../../../shared/token/model/Token';
 
 // dc
 import TokenDC from 'token/dc/TokenDC';
@@ -11,13 +10,15 @@ import TokenDC from 'token/dc/TokenDC';
 import Container from 'common/view/container/Container';
 import TokenOverviewView from 'token/view/TokenOverviewView';
 import TokenHolderView from 'token/view/TokenHolderView';
+import TokenHolderLogView from 'token/view/TokenHolderLogView';
 
 interface TokenVCState {
   isStateLoading: boolean;
   totalSupply: number;
   tokenCap: number;
-  userTokenHistory: UserTokenHistory;
+  tokenHistory: TokenHistory[];
   holders: Holder[];
+  selUserAddr: string;
 }
 
 class TokenVC extends Component<{}, TokenVCState> {
@@ -28,8 +29,10 @@ class TokenVC extends Component<{}, TokenVCState> {
     this.state = {
       ...this.state,
       holders: [],
+      tokenHistory: [],
       totalSupply: 0,
       tokenCap: 0,
+      selUserAddr: '',
     };
   }
 
@@ -55,12 +58,13 @@ class TokenVC extends Component<{}, TokenVCState> {
     });
   }
 
-  async onClickHistory() {
-    console.log('good!');
-    // const userTokenHistory: UserTokenHistory = await TokenDC.fetchTokenHistory();
-    // this.setState({
-    //   userTokenHistory,
-    // });
+  async onClickHistory(userAddr: string) {
+    const tokenHistory: TokenHistory[] = await TokenDC.fetchTokenHistory(userAddr);
+    this.setState({
+      ...this.state,
+      selUserAddr: userAddr,
+      tokenHistory,
+    });
   }
 
   render() {
@@ -68,6 +72,7 @@ class TokenVC extends Component<{}, TokenVCState> {
       <Container>
         <TokenOverviewView totalSupply={this.state.totalSupply} tokenCap={this.state.tokenCap} />
         <TokenHolderView holders={this.state.holders} onClickHistory={this.onClickHistory.bind(this)} />
+        <TokenHolderLogView selUserAddr={this.state.selUserAddr} tokenHistory={this.state.tokenHistory} />
       </Container>
     );
   }

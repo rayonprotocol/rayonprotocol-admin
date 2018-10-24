@@ -16,8 +16,6 @@ import {
   URLForGetTokenTotalSupply,
   URLForGetTokenCap,
   Holder,
-  BlockTime,
-  UserTokenHistory,
   TokenHistory,
 } from '../../../../shared/token/model/Token';
 
@@ -36,7 +34,6 @@ class TokenDC extends RayonDC {
 
   public async respondTokenHolders(req: Request, res: Response) {
     const tokenHolders = await TokenDbAgent.getTokenHolders();
-    console.log(tokenHolders);
     const result: SendResult<Holder[]> = res.status(200)
       ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Holders', tokenHolders)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Holders', null);
@@ -44,9 +41,11 @@ class TokenDC extends RayonDC {
     res.send(result);
   }
 
-  public respondTokenHistory(req: Request, res: Response) {
-    const result: SendResult<Object> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token History', null)
+  public async respondTokenHistory(req: Request, res: Response) {
+    const userAddr = req.query.userAddr;
+    const tokenHistory = await TokenDbAgent.getTokenHistory(userAddr);
+    const result: SendResult<TokenHistory[]> = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token History', tokenHistory)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token History', null);
 
     res.send(result);

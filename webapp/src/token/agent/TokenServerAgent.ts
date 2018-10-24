@@ -10,7 +10,7 @@ import {
   URLForGetTokenTotalSupply,
   URLForGetTokenCap,
   Holder,
-  UserTokenHistory,
+  TokenHistory,
 } from '../../../../shared/token/model/Token';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
@@ -27,17 +27,10 @@ class TokenServerAgent extends RayonContractAgent {
     return await this.getRequest<Holder[]>(URLForGetTokenHolders);
   }
 
-  async fetchTokenHistory(): Promise<UserTokenHistory> {
-    const userTokenHistories = await this.getRequest<UserTokenHistory>(URLForGetTokenHistory);
-    for (const tokenHitories of Object.keys(userTokenHistories)) {
-      userTokenHistories[tokenHitories].forEach(history =>
-        Object.assign(history, {
-          amount: new BigNumber(history.amount),
-          balance: new BigNumber(history.balance),
-        })
-      );
-    }
-    return userTokenHistories;
+  async fetchTokenHistory(userAddr: string): Promise<TokenHistory[]> {
+    return await this.getRequest<TokenHistory[]>(URLForGetTokenHistory, {
+      userAddr,
+    });
   }
 
   async fetchTokenTotalBalance(): Promise<number> {

@@ -1,2 +1,44 @@
 .tokenOverview {
+  .topSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .tokenName {
+      display: flex;
+      align-items: center;
+      img {
+        width: 60px;
+        height: 60px;
+      }
+      p {
+        @include set-font(24px, $rayon-gray);
+      }
+    }
+    .tokenSection {
+      display: flex;
+      padding: 20px;
+      border-bottom: 2px solid $rayon-gray;
+      border-left: 2px solid $rayon-gray;
+      border-right: 2px solid $rayon-gray;
+      .totalSupply,
+      .tokenCap {
+        p {
+          &:first-child {
+            @include set-font(16px, $rayon-gray);
+          }
+          &:last-child {
+            font-size: 48px;
+          }
+        }
+      }
+      .totalSupply {
+        padding-right: 80px;
+        border-right: 1px solid $rayon-gray;
+      }
+      .tokenCap {
+        padding-left: 20px;
+        padding-right: 60px;
+      }
+    }
+  }
 }

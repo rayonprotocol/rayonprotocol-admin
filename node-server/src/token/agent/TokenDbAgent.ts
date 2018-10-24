@@ -22,7 +22,30 @@ class TokenDbAgent {
     return result;
   }
 
-  public async getTokenHistory() {}
+  public async getTokenHistory(userAddr: string) {
+    const result = await DbAgent.executeAsync(
+      `
+      select
+      *
+      from
+        (
+          SELECT
+            A.id,
+            A.from,
+            A.to,
+            (-1 * A.amount) as amount,
+            A.called_time as calledTime
+          FROM rayon.holder_log as A where A.from = ?
+          union
+          SELECT *
+          FROM rayon.holder_log as B where B.to = ?
+        ) as h
+      order by h.calledTime DESC
+      `,
+      [userAddr, userAddr]
+    );
+    return result;
+  }
 }
 
 export default new TokenDbAgent();
