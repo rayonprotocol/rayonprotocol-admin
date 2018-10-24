@@ -13,7 +13,7 @@ class RayonLogDbAgent {
   public async getNextBlockToRead() {
     let queryResult;
     queryResult = await DbAgent.executeAsync(`
-      SELECT MAX(block_number) readLastBlock FROM rayon.event_log
+      SELECT MAX(block_number) readLastBlock FROM event_log
     `);
     queryResult = queryResult && queryResult.pop();
     return queryResult.readLastBlock === null ? ContractConfigure.CONTRACTBLOCK_TESTNET : queryResult.readLastBlock + 1;
@@ -33,7 +33,7 @@ class RayonLogDbAgent {
   private async _storeTxFunctionLog(functionLog: FunctionLog) {
     const result = await DbAgent.executeAsync(
       `
-        INSERT INTO rayon.function_log (
+        INSERT INTO function_log (
             block_number,
             tx_hash,
             status,
@@ -73,7 +73,7 @@ class RayonLogDbAgent {
     if (eventLog.eventName === this.TRANSFER_EVENT) this._storeTxHolder(eventLog);
     const result = await DbAgent.executeAsync(
       `
-        INSERT INTO rayon.event_log (
+        INSERT INTO event_log (
             block_number,
             tx_hash,
             status,
@@ -116,13 +116,12 @@ class RayonLogDbAgent {
     const inputData = JSON.parse(eventLog.inputData);
     const result = await DbAgent.executeAsync(
       `
-      INSERT INTO rayon.holder_log (
-        from,
-        to,
-        amount,
-        called_time
+      INSERT INTO holder_log (
+        holder_log.from,
+        holder_log.to,
+        holder_log.amount,
+        holder_log.called_time
       ) VALUES (
-        ?,
         ?,
         ?,
         ?,

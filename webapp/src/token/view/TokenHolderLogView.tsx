@@ -9,6 +9,9 @@ import { TokenHistory } from '../../../../shared/token/model/Token';
 // view
 import SectionTitle from 'common/view/section/SectionTitle';
 
+// util
+import DateUtil from '../../../../shared/common/util/DateUtil';
+
 // styles
 import styles from './TokenHolderLogView.scss';
 
@@ -48,13 +51,13 @@ class TokenHolderLogView extends Component<TokenHolderLogViewProps, {}> {
                 <span>
                   <span
                     style={{
-                      color: row.original.from === this.props.selUserAddr ? '#046d86' : '#b43664',
+                      color: row.original.from === this.props.selUserAddr ? '#b43664' : '#046d86',
                       transition: 'all .3s ease',
                     }}
                   >
                     &#x25cf;
                   </span>{' '}
-                  {row.original.from === this.props.selUserAddr ? 'Receive' : 'Send'}
+                  {row.original.from === this.props.selUserAddr ? 'Send' : 'Receive'}
                 </span>
               ),
             },
@@ -86,6 +89,7 @@ class TokenHolderLogView extends Component<TokenHolderLogViewProps, {}> {
               accessor: 'calledTime',
               filterable: false,
               maxWidth: 150,
+              Cell: row => <div>{DateUtil.timstampCommonFormConverter(row.value)}</div>,
               style: {
                 textAlign: 'center',
               },
