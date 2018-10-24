@@ -29,16 +29,18 @@ class RayonLogCollectAgent {
     let nextBlockNumber = await RayonLogDbAgent.getNextBlockToRead();
     while (true) {
       const latestBlock = await Web3Controller.getWeb3().eth.getBlock('latest');
-      const nextBlockToRead: TxBlock = await Web3Controller.getWeb3().eth.getBlock(nextBlockNumber, true);
 
-      console.log('blockNumber:', nextBlockNumber);
-      if (nextBlockToRead.number === latestBlock.number) {
+      if (nextBlockNumber - 1 === latestBlock.number) {
+        console.log('blockNumber:', nextBlockNumber - 1);
         await this._sleep(ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL);
         continue;
+      } else {
+        console.log('blockNumber:', nextBlockNumber);
       }
 
-      const rayonContractTxLogs = await this._getRayonContractTxLogs(nextBlockToRead);
+      const nextBlockToRead: TxBlock = await Web3Controller.getWeb3().eth.getBlock(nextBlockNumber, true);
 
+      const rayonContractTxLogs = await this._getRayonContractTxLogs(nextBlockToRead);
       if (rayonContractTxLogs.length) yield rayonContractTxLogs;
       nextBlockNumber++;
     }

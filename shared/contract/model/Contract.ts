@@ -6,7 +6,7 @@ export const URLForGetAllLogs = `${parentUrl}/contract/logs/all`;
 export const URLForGetContractLogs = `${parentUrl}/contract/logs`;
 export const URLForGetContractOverview = `${parentUrl}/contract/overview`;
 
-export type ContractEnvOverview = {
+type ContractEnvOverview = {
   [env: string]: ContractOverview;
 };
 
@@ -17,14 +17,6 @@ export type ContractOverview = {
     blockNumber: number;
   };
 };
-
-export interface ContractAbi {
-  contractAddress: string;
-  inputs: string;
-  name: string;
-  type: string;
-  signature: string;
-}
 
 export type ConvertedAbi = {
   [contractAddress: string]: {
@@ -60,7 +52,7 @@ export default class Contract {
   constructor(env: string) {
     this._contractEnvOverview = {
       [ContractConfigure.ENV_LOCAL]: {
-        '0x810cd3bd9b0dc191ff0165a3cd5e55b9c37577a3': {
+        '0x87734414f6fe26c3fff5b3fa69d379be4c0a2056': {
           name: Contract.CONTRACT_RAYONTOKEN,
           owner: '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290',
           blockNumber: 0,
