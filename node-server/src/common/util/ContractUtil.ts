@@ -5,8 +5,8 @@ import { BigNumber } from 'bignumber.js';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 class ContractUtil {
-  public getContract(contractAddress: string) {
-    const contractPath = `../../../../shared/build/${process.env.ENV_BLOCKCHAIN}/${contractAddress}.json`;
+  public getContract(contractAddress: string, env: string) {
+    const contractPath = `../../../../shared/build/${env}/${contractAddress}.json`;
     return JSON.parse(fs.readFileSync(path.join(__dirname, contractPath), 'utf8'));
   }
 

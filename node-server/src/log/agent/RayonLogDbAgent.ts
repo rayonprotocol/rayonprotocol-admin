@@ -4,7 +4,7 @@ import DbAgent from '../../common/agent/DbAgent';
 // model
 import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
-import Contract from '../../../../shared/contract/model/Contract';
+import RegistryAgent from '../../registry/agent/RegistryAgent';
 
 class RayonLogDbAgent {
   private TRANSFER_EVENT = 'Transfer(address,address,uint256)';
@@ -16,9 +16,10 @@ class RayonLogDbAgent {
     queryResult = await DbAgent.executeAsync(`
       SELECT MAX(block_number) readLastBlock FROM event_log
     `);
+    console.log(queryResult);
     queryResult = queryResult && queryResult.pop();
-    const contract = new Contract(process.env.ENV_BLOCKCHAIN);
-    return queryResult.readLastBlock === null ? contract.getStartBlockNumber() : queryResult.readLastBlock + 1;
+
+    return queryResult.readLastBlock === null ? RegistryAgent.getFirstContractAddress() : queryResult.readLastBlock + 1;
   }
 
   // store

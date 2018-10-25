@@ -23,11 +23,13 @@ export interface TxBlock {
   number: number;
   hash: string;
   parentHash: string;
+  mixHash: string;
   nonce: string;
   sha3Uncles: string;
   logsBloom: string;
   transactionsRoot: string;
   stateRoot: string;
+  receiptsRoot: string;
   miner: string;
   difficulty: string;
   totalDifficulty: string;
@@ -52,6 +54,9 @@ export interface Transaction {
   transactionIndex: number;
   to: string;
   value: string;
+  v: string;
+  r: string;
+  s: string;
 }
 
 export interface TxReceipt {

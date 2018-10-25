@@ -2,13 +2,14 @@ import { Express, Request, Response } from 'express';
 
 // agent
 import ContractDbAgent from '../agent/ContractDbAgent';
+import RegistryAgent from '../../registry/agent/RegistryAgent';
 import RayonArtifactAgent from '../../log/agent/RayonArtifactAgent';
 
 // dc
 import RayonDC from '../../common/dc/RayonDC';
 
 // model
-import {
+import Contract, {
   URLForGetAllLogs,
   URLForGetContractLogs,
   URLForGetContractOverview,
@@ -22,7 +23,7 @@ class ContractDC extends RayonDC {
   }
 
   public async respondContractOverview(req: Request, res: Response) {
-    const contractOverview = RayonArtifactAgent.getContractOverview(req.query.address);
+    const contractOverview = RegistryAgent.getContractByAddr(req.query.address);
     const result = res.status(200)
       ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Contract Overview', contractOverview)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Contract Overview', null);

@@ -14,12 +14,13 @@ import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/Tx
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 import Web3Controller from '../../common/controller/Web3Controller';
 import RayonArtifactAgent from './RayonArtifactAgent';
+import RegistryAgent from '../../registry/agent/RegistryAgent';
 
 class RayonLogCollectAgent {
   public async collectionStart() {
     // 제너레이터를 실행시켜, 가공된 rayon의 transaction log를 순차적으로 받아옴
     for await (const rayonContractTxLogs of this._generateRayonContractTxLogs()) {
-      console.log('rayonContractTxLogs', rayonContractTxLogs);
+      // console.log('rayonContractTxLogs', rayonContractTxLogs);
       RayonLogDbAgent.storeTxLogs(rayonContractTxLogs);
     }
   }
@@ -39,7 +40,6 @@ class RayonLogCollectAgent {
       }
 
       const nextBlockToRead: TxBlock = await Web3Controller.getWeb3().eth.getBlock(nextBlockNumber, true);
-
       const rayonContractTxLogs = await this._getRayonContractTxLogs(nextBlockToRead);
       if (rayonContractTxLogs.length) yield rayonContractTxLogs;
       nextBlockNumber++;
@@ -49,7 +49,7 @@ class RayonLogCollectAgent {
   private async _getRayonContractTxLogs(txBlock: TxBlock): Promise<TxLog[]> {
     const txLog: TxLog[] = await Promise.all(
       txBlock.transactions.map(async transaction => {
-        if (!RayonArtifactAgent.isRayonContract(transaction.to)) return;
+        if (!RegistryAgent.isRayonContract(transaction.to)) return;
 
         const txReceipt: TxReceipt = await Web3Controller.getWeb3().eth.getTransactionReceipt(transaction.hash);
         const functionLog: FunctionLog = this._makeFunctionLog(txReceipt, transaction, txBlock);

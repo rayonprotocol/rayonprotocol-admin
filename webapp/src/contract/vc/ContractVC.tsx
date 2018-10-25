@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 // model
 import { EventLog, FunctionLog } from '../../../../shared/common/model/TxLog';
-import Contract, { ContractOverview } from '../../../../shared/contract/model/Contract';
+import { ContractOverview } from '../../../../shared/contract/model/Contract';
 
 // dc
 import ContractDC from 'contract/dc/ContractDC';
@@ -32,7 +32,6 @@ class ContractVC extends Component<{}, ContractVCState> {
 
   constructor(props) {
     super(props);
-    const contract = new Contract(ENV_BLOCKCHAIN);
     this.state = {
       ...this.state,
       functionLogs: new Array<FunctionLog>(),

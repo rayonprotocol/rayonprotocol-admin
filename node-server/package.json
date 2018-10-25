@@ -17,17 +17,19 @@
     "start:prod:ropsten": "ENV_BLOCKCHAIN=ropsten node lib/node-server/src/main/controller/RayonNodeServerApp.js",
     "deploy": "pm2 deploy production deploy",
     "pm2:reload": "pm2 reload ecosystem.config.js --env production",
-    "test": "node_modules/mocha/bin/mocha $(find ./test -name '*.spec.js') --recursive -w"
+    "test": "mocha -r ts-node/register test/*.spec.ts"
   },
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "APLv2",
   "dependencies": {
     "@types/express": "^4.16.0",
+    "@types/mocha": "^5.2.5",
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "mysql": "^2.16.0",
     "node-mocks-http": "^1.7.3",
     "should": "^13.2.3",
+    "sinon": "^7.0.0",
     "tslib": "~1.9.2"
   },
   "devDependencies": {

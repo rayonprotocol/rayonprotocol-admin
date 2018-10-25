@@ -1,6 +1,6 @@
 // agent
 import DbAgent from '../../common/agent/DbAgent';
-import Contract from '../../../../shared/contract/model/Contract';
+import { ABI_TYPE_EVENT, ABI_TYPE_FUNCTION } from '../../../../shared/contract/model/Contract';
 
 // util
 import StringUtil from '../../../../shared/common/util/StringUtil';
@@ -20,19 +20,26 @@ class ContractDbAgent {
   public async getContractLogs(contractAddress: string, type: string) {
     if (StringUtil.isEmpty(contractAddress) || StringUtil.isEmpty(type)) return null;
     const query =
-      type === Contract.ABI_TYPE_EVENT
+      type === ABI_TYPE_EVENT
         ? this._base + `, event_name as eventName FROM event_log WHERE contract_address=? ORDER BY block_number`
         : this._base + ` FROM function_log WHERE contract_address=? ORDER BY block_number`;
     return await DbAgent.executeAsync(query, [contractAddress]);
   }
 
   public async getAllContractLogs(type: string) {
-    if (StringUtil.isEmpty(type) || type !== Contract.ABI_TYPE_EVENT || type !== Contract.ABI_TYPE_FUNCTION)
-      return null;
+    if (StringUtil.isEmpty(type) || type !== ABI_TYPE_EVENT || type !== ABI_TYPE_FUNCTION) return null;
     const query =
-      type === Contract.ABI_TYPE_EVENT
+      type === ABI_TYPE_EVENT
         ? `${this._base}, event_name as eventName FROM event_log ORDER BY block_number`
         : `${this._base} FROM function_log ORDER BY block_number`;
+    return await DbAgent.executeAsync(query);
+  }
+
+  public async getLastRecord(type: string) {
+    const query =
+      type !== ABI_TYPE_EVENT
+        ? `SELECT * FROM function_log ORDER BY block_number DESC`
+        : `SELECT * FROM event_log ORDER BY block_number DESC`;
     return await DbAgent.executeAsync(query);
   }
 }
