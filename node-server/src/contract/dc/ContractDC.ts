@@ -27,7 +27,6 @@ class ContractDC extends RayonDC {
     const result = res.status(200)
       ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Contract Overview', contractOverview)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Contract Overview', null);
-
     res.send(result);
   }
 

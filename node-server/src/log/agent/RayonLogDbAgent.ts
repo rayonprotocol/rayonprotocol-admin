@@ -11,14 +11,12 @@ class RayonLogDbAgent {
 
   // getter
 
-  public async getNextBlockToRead() {
+  public async getNextBlockNumberToRead() {
     let queryResult;
     queryResult = await DbAgent.executeAsync(`
       SELECT MAX(block_number) readLastBlock FROM event_log
     `);
-    console.log(queryResult);
     queryResult = queryResult && queryResult.pop();
-
     return queryResult.readLastBlock === null ? RegistryAgent.getFirstContractAddress() : queryResult.readLastBlock + 1;
   }
 

@@ -27,7 +27,7 @@ class RayonLogCollectAgent {
 
   // contract transaction을 생성하는 제너레이터
   private async *_generateRayonContractTxLogs(): AsyncIterableIterator<TxLog[]> {
-    let nextBlockNumber = await RayonLogDbAgent.getNextBlockToRead();
+    let nextBlockNumber = await RayonLogDbAgent.getNextBlockNumberToRead();
     while (true) {
       const latestBlock = await Web3Controller.getWeb3().eth.getBlock('latest');
 

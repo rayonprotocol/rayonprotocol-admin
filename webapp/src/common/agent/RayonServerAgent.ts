@@ -3,12 +3,6 @@ import axios from 'axios';
 // model
 import SendResult from '../../../../shared/common/model/SendResult';
 
-// controller
-import Web3Controller from 'common/dc/Web3Controller';
-
-// util
-import ContractUtil from 'common/util/ContractUtil';
-
 abstract class RayonServerAgent {
   public static RESULTCODE_SUCCESS: number = 0;
 
