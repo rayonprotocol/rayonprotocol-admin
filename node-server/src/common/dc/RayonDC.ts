@@ -1,12 +1,3 @@
-import { Response } from 'express';
-
-// model
-import SendResult from '../../../../shared/common/model/SendResult';
-
-interface EventListner {
-  [eventType: number]: ((event) => void)[];
-}
-
 abstract class RayonDC {
   public RESULT_CODE_SUCCESS = 0;
   public RESULT_CODE_FAIL = 1;

@@ -21,7 +21,7 @@ import {
 
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
-import ContractUtil from '../../common/util/ContractUtil';
+import { weiToToken } from '../../../../shared/common/util/webToToken';
 import TokenBlockchainAgent from '../agent/TokenBlockchainAgent';
 
 class TokenDC extends RayonDC {

@@ -63,7 +63,6 @@ describe('Contract API', () => {
       resData.should.be.Array();
       resData.should.have.length(1);
       resData[0].should.be.equal('0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290');
-
       done();
     });
 

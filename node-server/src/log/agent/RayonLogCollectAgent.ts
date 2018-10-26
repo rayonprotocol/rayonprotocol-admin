@@ -20,7 +20,7 @@ class RayonLogCollectAgent {
   public async collectionStart() {
     // 제너레이터를 실행시켜, 가공된 rayon의 transaction log를 순차적으로 받아옴
     for await (const rayonContractTxLogs of this._generateRayonContractTxLogs()) {
-      // console.log('rayonContractTxLogs', rayonContractTxLogs);
+      console.log('rayonContractTxLogs', rayonContractTxLogs);
       RayonLogDbAgent.storeTxLogs(rayonContractTxLogs);
     }
   }
