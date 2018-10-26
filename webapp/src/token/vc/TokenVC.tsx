@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 // model
 import { Holder, TokenHistory } from '../../../../shared/token/model/Token';
@@ -7,18 +7,19 @@ import { Holder, TokenHistory } from '../../../../shared/token/model/Token';
 import TokenDC from 'token/dc/TokenDC';
 
 // view
+import Loading from 'common/view/loading/Loading';
 import Container from 'common/view/container/Container';
 import TokenOverviewView from 'token/view/TokenOverviewView';
 import TokenHolderView from 'token/view/TokenHolderView';
 import TokenHolderLogView from 'token/view/TokenHolderLogView';
 
 interface TokenVCState {
-  isStateLoading: boolean;
   totalSupply: number;
   tokenCap: number;
   tokenHistory: TokenHistory[];
   holders: Holder[];
   selUserAddr: string;
+  isLoading: boolean;
 }
 
 class TokenVC extends Component<{}, TokenVCState> {
@@ -31,18 +32,11 @@ class TokenVC extends Component<{}, TokenVCState> {
       totalSupply: 0,
       tokenCap: 0,
       selUserAddr: '',
+      isLoading: true,
     };
   }
 
-  componentDidMount() {
-    this._setLoadingAndfetchDashboadState();
-  }
-
-  private _setLoadingAndfetchDashboadState() {
-    this.setState({ ...this.state, isStateLoading: true }, this.fetchDashboardStates.bind(this));
-  }
-
-  private async fetchDashboardStates() {
+  async componentDidMount() {
     const holders = await TokenDC.fetchTokenHolders();
     const totalSupply: number = await TokenDC.fetchTokenTotalSupply();
     const tokenCap: number = await TokenDC.fetchTokenCap();
@@ -52,7 +46,7 @@ class TokenVC extends Component<{}, TokenVCState> {
       holders: holders.filter(holder => holder.address !== '0x0000000000000000000000000000000000000000'),
       totalSupply,
       tokenCap,
-      isStateLoading: false,
+      isLoading: false,
     });
   }
 
@@ -68,9 +62,15 @@ class TokenVC extends Component<{}, TokenVCState> {
   render() {
     return (
       <Container>
-        <TokenOverviewView totalSupply={this.state.totalSupply} tokenCap={this.state.tokenCap} />
-        <TokenHolderView holders={this.state.holders} onClickHistory={this.onClickHistory.bind(this)} />
-        <TokenHolderLogView selUserAddr={this.state.selUserAddr} tokenHistory={this.state.tokenHistory} />
+        {this.state.isLoading ? (
+          <Loading />
+        ) : (
+          <Fragment>
+            <TokenOverviewView totalSupply={this.state.totalSupply} tokenCap={this.state.tokenCap} />
+            <TokenHolderView holders={this.state.holders} onClickHistory={this.onClickHistory.bind(this)} />
+            <TokenHolderLogView selUserAddr={this.state.selUserAddr} tokenHistory={this.state.tokenHistory} />
+          </Fragment>
+        )}
       </Container>
     );
   }

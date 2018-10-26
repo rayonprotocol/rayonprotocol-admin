@@ -1,20 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 // model
 import { EventLog, FunctionLog } from '../../../../shared/common/model/TxLog';
 import Contract from '../../../../shared/contract/model/Contract';
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 // dc
 import ContractDC from 'contract/dc/ContractDC';
 
 // view
+import Loading from 'common/view/loading/Loading';
 import Container from 'common/view/container/Container';
-import ContractOverviewView from 'contract/view/ContractOverviewView';
 import ContractLogView from 'contract/view/ContractLogView';
-
-import FunctionLogTableView from 'contract/view/FunctionLogTableView';
+import ContractOverviewView from 'contract/view/ContractOverviewView';
 import EventLogTableView from 'contract/view/EventLogTableView';
+import FunctionLogTableView from 'contract/view/FunctionLogTableView';
 
 // styles
 import styles from './ContractVC.scss';
@@ -25,6 +24,7 @@ interface ContractVCState {
   selLogType: string;
   contracts: Contract[];
   selContractAddr: string;
+  isLoading: boolean;
 }
 
 class ContractVC extends Component<{}, ContractVCState> {
@@ -38,6 +38,7 @@ class ContractVC extends Component<{}, ContractVCState> {
       functionLogs: new Array<FunctionLog>(),
       eventLogs: new Array<EventLog>(),
       selLogType: ContractVC.TAB_FUNCTION,
+      isLoading: true,
     };
   }
 
@@ -50,7 +51,7 @@ class ContractVC extends Component<{}, ContractVCState> {
     const selContractAddr = ContractDC.getFirstContractAddr();
     const eventLogs = await ContractDC.getEventLogs(selContractAddr);
     const functionLogs = await ContractDC.getFunctionLogs(selContractAddr);
-    this.setState({ ...this.state, contracts, eventLogs, functionLogs, selContractAddr });
+    this.setState({ ...this.state, contracts, eventLogs, functionLogs, selContractAddr, isLoading: false });
   }
 
   public async onSelectContract(selContractAddr: string): Promise<void> {
@@ -81,21 +82,25 @@ class ContractVC extends Component<{}, ContractVCState> {
   render() {
     return (
       <Container className={styles.contractVC}>
-        {this.state.contracts && (
-          <ContractOverviewView
-            contracts={this.state.contracts}
-            selContractAddr={this.state.selContractAddr}
-            onSelectContract={this.onSelectContract.bind(this)}
-          />
-        )}
+        {this.state.isLoading ? (
+          <Loading />
+        ) : (
+          <Fragment>
+            <ContractOverviewView
+              contracts={this.state.contracts}
+              selContractAddr={this.state.selContractAddr}
+              onSelectContract={this.onSelectContract.bind(this)}
+            />
 
-        <ContractLogView
-          selLogType={this.state.selLogType}
-          logTypes={[ContractVC.TAB_FUNCTION, ContractVC.TAB_EVENT]}
-          onSelectLogType={this.onSelectLogType.bind(this)}
-        >
-          {this.state.eventLogs && this.state.functionLogs && this.renderLogTable()}
-        </ContractLogView>
+            <ContractLogView
+              selLogType={this.state.selLogType}
+              logTypes={[ContractVC.TAB_FUNCTION, ContractVC.TAB_EVENT]}
+              onSelectLogType={this.onSelectLogType.bind(this)}
+            >
+              {this.renderLogTable()}
+            </ContractLogView>
+          </Fragment>
+        )}
       </Container>
     );
   }
