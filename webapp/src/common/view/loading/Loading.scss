@@ -1,0 +1,17 @@
+.loading {
+  margin-top: 80px;
+  padding: 50px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  flex-direction: column;
+  div {
+    display: inline-block;
+    .loadingTitle {
+      @include set-font(48px, #0097c6);
+    }
+    .loadingDesc {
+      @include set-font(18px, $rayon-gray);
+    }
+  }
+}

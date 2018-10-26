@@ -6,7 +6,9 @@ import UserDC from 'user/dc/UserDC';
 import RouteController from 'main/controller/RouteController';
 
 // view
+import Container from 'common/view/container/Container';
 import Navigation from 'common/view/nav/Navigation';
+import Loading from 'common/view/loading/Loading';
 import Footer from 'common/view/footer/Footer';
 
 interface RouterState {
@@ -49,7 +51,11 @@ class Router extends Component<{}, RouterState> {
   }
 
   renderLoading() {
-    return <div>Loading</div>;
+    return (
+      <Container>
+        <Loading />
+      </Container>
+    );
   }
 
   render() {

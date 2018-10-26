@@ -2,10 +2,6 @@ import Web3 from 'web3';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 class ContractUtil {
-  public getContractArtifact(contractAddress: string) {
-    return require(`../../../../shared/build/${ENV_BLOCKCHAIN}/${contractAddress}.json`);
-  }
-
   public getWebsocketProvider() {
     const Web3 = require('web3');
     const url: Object = ContractConfigure.getWebsocketUrl(ENV_BLOCKCHAIN);
