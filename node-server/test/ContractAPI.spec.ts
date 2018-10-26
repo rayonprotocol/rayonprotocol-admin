@@ -1,7 +1,6 @@
 import 'mocha';
 import 'should';
 import * as sinon from 'sinon';
-import * as axios from 'axios';
 import * as httpMocks from 'node-mocks-http';
 import * as myEventEmitter from 'events';
 

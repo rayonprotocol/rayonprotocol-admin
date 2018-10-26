@@ -3,7 +3,7 @@ import DbAgent from '../../common/agent/DbAgent';
 
 class TokenDbAgent {
   public async getTokenHolders() {
-    const result = await DbAgent.executeAsync(
+    return await DbAgent.executeAsync(
       `select
         h.holder as address,
         sum(h.amount) as balance
@@ -19,11 +19,10 @@ class TokenDbAgent {
         order by sum(h.amount) DESC;
       `
     );
-    return result;
   }
 
   public async getTokenHistory(userAddr: string) {
-    const result = await DbAgent.executeAsync(
+    return await DbAgent.executeAsync(
       `
       select
       *
@@ -44,7 +43,6 @@ class TokenDbAgent {
       `,
       [userAddr, userAddr]
     );
-    return result;
   }
 }
 

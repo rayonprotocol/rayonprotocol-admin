@@ -1,44 +1,138 @@
-// import 'mocha';
-// import 'should';
-// import * as sinon from 'sinon';
+import 'mocha';
+import 'should';
+import * as sinon from 'sinon';
+import * as httpMocks from 'node-mocks-http';
+import * as myEventEmitter from 'events';
+import BigNumber from 'bignumber.js';
 
-// // agent
-// import DbAgent from '../src/common/agent/DbAgent';
-// import RayonLogDbAgent from '../src/log/agent/RayonLogDbAgent';
-// import RegistryAgent from '../src/registry/agent/RegistryAgent';
+// agent
+import DbAgent from '../src/common/agent/DbAgent';
+import TokenBlockchainAgent from '../src/token/agent/TokenBlockchainAgent';
 
-// // controller
-// import Web3Controller from '../src/common/controller/Web3Controller';
+// dc
+import TokenDC from '../src/token/dc/TokenDC';
 
-// const web3 = Web3Controller.getWeb3();
-// let sandbox;
+// model
+import * as TokenAPI from '../../shared/token/model/Token';
 
-// describe('RayonLogDbAgent', () => {
-//   before(() => {
-//     sandbox = sinon.createSandbox();
-//   });
-//   afterEach(() => {
-//     sandbox.restore();
-//   });
-//   it('should return collect number when call getNextBlockToRead', async () => {
-//     sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve([{ readLastBlock: 0 }])));
-//     let nextBlockNumber = await RayonLogDbAgent.getNextBlockNumberToRead();
-//     nextBlockNumber.should.be.equal(1);
+// mock
+import { holders, tokenHistory } from './mocks/token';
 
-//     sandbox.restore();
+let sandbox;
+let req, res;
 
-//     sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve([{ readLastBlock: 2 }])));
-//     nextBlockNumber = await RayonLogDbAgent.getNextBlockNumberToRead();
-//     nextBlockNumber.should.be.equal(3);
+describe('Token API', () => {
+  before(() => {
+    sandbox = sinon.createSandbox();
+  });
+  afterEach(() => {
+    sandbox.restore();
+  });
+  it('should return token cap', done => {
+    req = httpMocks.createRequest({
+      method: 'GET',
+      url: TokenAPI.URLForGetTokenCap,
+    });
+    res = httpMocks.createResponse({
+      eventEmitter: myEventEmitter,
+    });
+    res.on('end', () => {
+      const resData = res._getData().data;
+      res.statusCode.should.be.equal(200);
+      resData.should.be.equal(5000);
+      done();
+    });
 
-//     sandbox.restore();
+    TokenDC.respondTokenCap(req, res);
+  });
+  it('should return total supply', done => {
+    sandbox.replace(
+      TokenBlockchainAgent,
+      'getTotalSupply',
+      () => new Promise((resolve, reject) => resolve(new BigNumber(100)))
+    );
+    req = httpMocks.createRequest({
+      method: 'GET',
+      url: TokenAPI.URLForGetTokenTotalSupply,
+    });
+    res = httpMocks.createResponse({
+      eventEmitter: myEventEmitter,
+    });
+    res.on('end', () => {
+      const resData = res._getData().data;
+      res.statusCode.should.be.equal(200);
+      resData.should.be.equal(100);
+      done();
+    });
 
-//     sandbox.replace(
-//       DbAgent,
-//       'executeAsync',
-//       () => new Promise((resolve, reject) => resolve([{ readLastBlock: null }]))
-//     );
-//     nextBlockNumber = await RayonLogDbAgent.getNextBlockNumberToRead();
-//     nextBlockNumber.should.be.equal(RegistryAgent.getFirstContractAddress());
-//   });
-// });
+    TokenDC.respondTotalSupply(req, res);
+  });
+  it('should return token holders', done => {
+    sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(holders)));
+    req = httpMocks.createRequest({
+      method: 'GET',
+      url: TokenAPI.URLForGetTokenHolders,
+    });
+    res = httpMocks.createResponse({
+      eventEmitter: myEventEmitter,
+    });
+    res.on('end', () => {
+      const resData = res._getData().data;
+      res.statusCode.should.be.equal(200);
+      resData[0].should.have.properties(['address', 'balance']);
+      resData.should.have.length(3);
+      done();
+    });
+
+    TokenDC.respondTokenHolders(req, res);
+  });
+
+  it('should return token holder histories', done => {
+    sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(tokenHistory)));
+    req = httpMocks.createRequest({
+      method: 'GET',
+      url: TokenAPI.URLForGetTokenHistory,
+      query: {
+        userAddr: '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290',
+      },
+    });
+    res = httpMocks.createResponse({
+      eventEmitter: myEventEmitter,
+    });
+    res.on('end', () => {
+      const resData = res._getData().data;
+      res.statusCode.should.be.equal(200);
+      resData.should.be.Array();
+      resData[0].should.have.properties(['from', 'to', 'amount', 'calledTime']);
+      resData[0].from.should.be.equal('0x0000000000000000000000000000000000000000');
+      resData[0].to.should.be.equal('0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290');
+      resData[0].amount.should.be.equal(10);
+      resData[0].calledTime.should.be.equal(1540364588);
+      done();
+    });
+
+    TokenDC.respondTokenHistory(req, res);
+  });
+
+  it('should send null when request wrong address', done => {
+    req = httpMocks.createRequest({
+      method: 'GET',
+      url: TokenAPI.URLForGetTokenHistory,
+      query: {
+        userAddr: '0x9d9f0',
+      },
+    });
+    res = httpMocks.createResponse({
+      eventEmitter: myEventEmitter,
+    });
+    res.on('end', () => {
+      const resData = res._getData().data;
+      res.statusCode.should.be.equal(200);
+      resData.should.be.a.Array();
+      resData.should.have.length(0);
+      done();
+    });
+
+    TokenDC.respondTokenHistory(req, res);
+  });
+});
