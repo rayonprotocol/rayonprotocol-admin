@@ -22,8 +22,6 @@ interface TokenVCState {
 }
 
 class TokenVC extends Component<{}, TokenVCState> {
-  private _ZERO_ACCOUNT = '0x0000000000000000000000000000000000000000';
-
   constructor(props) {
     super(props);
     this.state = {
@@ -46,12 +44,12 @@ class TokenVC extends Component<{}, TokenVCState> {
 
   private async fetchDashboardStates() {
     const holders = await TokenDC.fetchTokenHolders();
-    const totalSupply: number = await TokenDC.fetchTokenTotalBalance();
+    const totalSupply: number = await TokenDC.fetchTokenTotalSupply();
     const tokenCap: number = await TokenDC.fetchTokenCap();
 
     this.setState({
       ...this.state,
-      holders,
+      holders: holders.filter(holder => holder.address !== '0x0000000000000000000000000000000000000000'),
       totalSupply,
       tokenCap,
       isStateLoading: false,

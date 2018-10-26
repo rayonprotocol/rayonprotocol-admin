@@ -4,16 +4,19 @@ import DbAgent from '../../common/agent/DbAgent';
 class TokenDbAgent {
   public async getTokenHolders() {
     return await DbAgent.executeAsync(
-      `select
+      `
+      select
         h.holder as address,
         sum(h.amount) as balance
         from
         (
-          SELECT A.from as holder, (-1 * A.amount) as amount
+          SELECT A.from as holder, sum(-1 * A.amount ) as amount
           FROM holder_log as A
+          group by A.from
           union
-          SELECT B.to as holder, B.amount as amount
+          SELECT B.to as holder, sum(B.amount) as amount
           FROM holder_log as B
+          group by B.to
         ) as h
         group by h.holder
         order by sum(h.amount) DESC;

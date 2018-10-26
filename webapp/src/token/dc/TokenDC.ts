@@ -5,8 +5,8 @@ import TokenServerAgent from 'token/agent/TokenServerAgent';
 import { TokenHistory, Holder } from '../../../../shared/token/model/Token';
 
 class TokenDC {
-  public async fetchTokenTotalBalance(): Promise<number> {
-    return await TokenServerAgent.fetchTokenTotalBalance();
+  public async fetchTokenTotalSupply(): Promise<number> {
+    return await TokenServerAgent.fetchTokenTotalSupply();
   }
   public async fetchTokenCap(): Promise<number> {
     return await TokenServerAgent.fetchTokenCap();

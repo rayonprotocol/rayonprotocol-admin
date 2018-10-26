@@ -22,7 +22,7 @@ class TokenServerAgent extends RayonServerAgent {
     });
   }
 
-  async fetchTokenTotalBalance(): Promise<number> {
+  async fetchTokenTotalSupply(): Promise<number> {
     return await this.getRequest<number>(URLForGetTokenTotalSupply);
   }
 
