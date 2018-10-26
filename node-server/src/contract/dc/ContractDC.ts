@@ -32,9 +32,9 @@ class ContractDC extends RayonDC {
 
   public async respondAllContractLogs(req: Request, res: Response) {
     const type = req.query.type;
-    const methodLogs = await ContractDbAgent.getAllContractLogs(type);
+    const constractLogs = await ContractDbAgent.getAllContractLogs(type);
     const result = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond All Contract Logs', methodLogs)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond All Contract Logs', constractLogs)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond All Contract Logs', null);
     res.send(result);
   }

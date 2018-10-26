@@ -17,17 +17,16 @@ class ContractDbAgent {
     called_time as calledTime,
     url_etherscan as urlEtherscan`;
 
-  public async getContractLogs(contractAddress: string, type: string) {
-    if (StringUtil.isEmpty(contractAddress) || StringUtil.isEmpty(type)) return null;
+  public async getLastRecord(type: string) {
     const query =
-      type === ABI_TYPE_EVENT
-        ? this._base + `, event_name as eventName FROM event_log WHERE contract_address=? ORDER BY block_number`
-        : this._base + ` FROM function_log WHERE contract_address=? ORDER BY block_number`;
-    return await DbAgent.executeAsync(query, [contractAddress]);
+      type !== ABI_TYPE_EVENT
+        ? `SELECT * FROM function_log ORDER BY block_number DESC`
+        : `SELECT * FROM event_log ORDER BY block_number DESC`;
+    return await DbAgent.executeAsync(query);
   }
 
   public async getAllContractLogs(type: string) {
-    if (StringUtil.isEmpty(type) || type !== ABI_TYPE_EVENT || type !== ABI_TYPE_FUNCTION) return null;
+    if (StringUtil.isEmpty(type) || !(type === ABI_TYPE_EVENT || type === ABI_TYPE_FUNCTION)) return null;
     const query =
       type === ABI_TYPE_EVENT
         ? `${this._base}, event_name as eventName FROM event_log ORDER BY block_number`
@@ -35,12 +34,14 @@ class ContractDbAgent {
     return await DbAgent.executeAsync(query);
   }
 
-  public async getLastRecord(type: string) {
+  public async getContractLogs(contractAddress: string, type: string) {
+    if (StringUtil.isEmpty(contractAddress) || StringUtil.isEmpty(type)) return null;
+    else if (!(type === ABI_TYPE_EVENT || type === ABI_TYPE_FUNCTION)) return null;
     const query =
-      type !== ABI_TYPE_EVENT
-        ? `SELECT * FROM function_log ORDER BY block_number DESC`
-        : `SELECT * FROM event_log ORDER BY block_number DESC`;
-    return await DbAgent.executeAsync(query);
+      type === ABI_TYPE_EVENT
+        ? this._base + `, event_name as eventName FROM event_log WHERE contract_address=? ORDER BY block_number`
+        : this._base + ` FROM function_log WHERE contract_address=? ORDER BY block_number`;
+    return await DbAgent.executeAsync(query, [contractAddress]);
   }
 }
 
