@@ -13,6 +13,7 @@ interface RouterState {
   userAccount: string;
   isLoading: boolean;
   networkName: string;
+  route: any;
 }
 
 class Router extends Component<{}, RouterState> {
@@ -21,6 +22,7 @@ class Router extends Component<{}, RouterState> {
     this.state = {
       ...this.state,
       isLoading: true,
+      route: [],
     };
   }
 
@@ -28,13 +30,13 @@ class Router extends Component<{}, RouterState> {
     UserDC.addUserLoginStatusChangeListeners(this._onUserLoginStatusChange.bind(this));
   }
 
-  private _onUserLoginStatusChange(userAccount: string, networkName: string): void {
-    this.setState({ ...this.state, userAccount, networkName, isLoading: false });
+  private async _onUserLoginStatusChange(userAccount: string, networkName: string) {
+    const route = await RouteController.getRoutes(userAccount);
+    this.setState({ ...this.state, userAccount, networkName, isLoading: false, route });
   }
 
   renderAdminPage() {
-    const route = RouteController.getRoutes(this.state.userAccount);
-    return route.map((item, index) => {
+    return this.state.route.map((item, index) => {
       return (
         <Route
           key={index}

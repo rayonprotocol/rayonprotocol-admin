@@ -14,22 +14,36 @@ class RouterPathController {
   noUserRoute = [
     {
       path: '/',
-      component: NoMetamaskView,
+      component: TokenVC,
+      exact: true,
     },
     {
       path: '/contract',
       component: NoMetamaskView,
+      exact: true,
+    },
+    {
+      path: '/kyc',
+      component: NoMetamaskView,
+      exact: true,
     },
   ];
 
   noAdminRoute = [
     {
       path: '/',
-      component: OnlyAdminView,
+      component: TokenVC,
+      exact: true,
     },
     {
       path: '/contract',
       component: OnlyAdminView,
+      exact: true,
+    },
+    {
+      path: '/kyc',
+      component: OnlyAdminView,
+      exact: true,
     },
   ];
 
@@ -51,9 +65,9 @@ class RouterPathController {
     },
   ];
 
-  public getRoutes(userAccount: string): any {
+  public async getRoutes(userAccount: string): Promise<any> {
     if (StringUtil.isEmpty(userAccount)) return this.noUserRoute;
-    return UserDC.isAdminUser(userAccount) ? this.privateRoute : this.noAdminRoute;
+    return (await UserDC.isAdminUser(userAccount)) ? this.privateRoute : this.noAdminRoute;
   }
 }
 

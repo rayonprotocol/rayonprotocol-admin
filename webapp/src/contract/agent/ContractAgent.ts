@@ -2,11 +2,11 @@
 import RayonServerAgent from 'common/agent/RayonServerAgent';
 
 // model
-import {
+import Contract, {
   ABI_TYPE_EVENT,
   ABI_TYPE_FUNCTION,
   URLForGetContractLogs,
-  URLForGetContractOverview,
+  URLForGetAllContracts,
 } from '../../../../shared/contract/model/Contract';
 import { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 
@@ -21,9 +21,8 @@ class ContractAgent extends RayonServerAgent {
     return await this.getRequest<FunctionLog[]>(URLForGetContractLogs, params);
   }
 
-  public async fetchContractOverview(address: string) {
-    const params = { address };
-    return await this.getRequest(URLForGetContractOverview, params);
+  public async fetchAllContract() {
+    return await this.getRequest<Promise<Contract[]>>(URLForGetAllContracts);
   }
 }
 

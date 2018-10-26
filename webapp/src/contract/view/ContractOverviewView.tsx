@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // model
-import { ContractOverview } from '../../../../shared/contract/model/Contract';
+import Contract from '../../../../shared/contract/model/Contract';
 
 // view
 import SectionTitle from 'common/view/section/SectionTitle';
@@ -10,24 +10,32 @@ import SectionTitle from 'common/view/section/SectionTitle';
 import styles from './ContractOverviewView.scss';
 
 interface ContractOverviewViewProps {
-  contractOverviews: ContractOverview;
+  contracts: Contract[];
   selContractAddr: string;
   onSelectContract: (option: string) => void;
 }
 
 class ContractOverviewView extends Component<ContractOverviewViewProps, {}> {
+  public getContract(): Contract {
+    if (this.props.contracts === undefined) return;
+    const targetContract = this.props.contracts.filter(contract => {
+      if (contract.address === this.props.selContractAddr) return contract.owner;
+    });
+    return targetContract.length ? targetContract.pop() : null;
+  }
+
   renderTitleAndCombobox() {
-    const { contractOverviews } = this.props;
+    const { contracts } = this.props;
     return (
       <SectionTitle title={'Overview'}>
         <div className={styles.contractCombobox}>
           <div className={styles.combobox}>
             <span className={styles.comboboxLabel}>{'Current contract : '}</span>
             <select onChange={event => this.props.onSelectContract(event.target.value)}>
-              {Object.keys(contractOverviews).map((contractAddr, index) => {
+              {contracts.map((contract, index) => {
                 return (
-                  <option key={index} value={contractAddr}>
-                    {contractOverviews[contractAddr].name}
+                  <option key={index} value={contract.address}>
+                    {contract.name}
                   </option>
                 );
               })}
@@ -39,14 +47,15 @@ class ContractOverviewView extends Component<ContractOverviewViewProps, {}> {
   }
 
   render() {
-    const { contractOverviews, selContractAddr } = this.props;
+    const { selContractAddr } = this.props;
+    const contract = this.getContract();
     return (
       <div className={styles.contractOverview}>
         {this.renderTitleAndCombobox()}
         <section className={styles.overview}>
           <div className={styles.owner}>
             <p>{'Contract Owner'}</p>
-            <p>{contractOverviews[selContractAddr].owner}</p>
+            <p>{contract.owner}</p>
           </div>
           <div className={styles.addr}>
             <p>{'Contract Address'}</p>

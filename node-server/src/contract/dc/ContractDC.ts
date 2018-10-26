@@ -12,20 +12,40 @@ import RayonDC from '../../common/dc/RayonDC';
 import Contract, {
   URLForGetAllLogs,
   URLForGetContractLogs,
-  URLForGetContractOverview,
+  URLForGetContract,
+  URLForGetAllContracts,
+  URLForGetAllOwner,
 } from '../../../../shared/contract/model/Contract';
 
 class ContractDC extends RayonDC {
   public configure(app: Express) {
     app.get(URLForGetAllLogs, this.respondAllContractLogs.bind(this));
     app.get(URLForGetContractLogs, this.respondContractLogs.bind(this));
-    app.get(URLForGetContractOverview, this.respondContractOverview.bind(this));
+    app.get(URLForGetContract, this.respondContract.bind(this));
+    app.get(URLForGetAllContracts, this.respondAllContracts.bind(this));
+    app.get(URLForGetAllOwner, this.respondAllContractOwner.bind(this));
   }
 
-  public async respondContractOverview(req: Request, res: Response) {
-    const contractOverview = RegistryAgent.getContractByAddr(req.query.address);
+  public async respondContract(req: Request, res: Response) {
+    const contract = RegistryAgent.getContractByAddr(req.query.address);
     const result = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Contract Overview', contractOverview)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Contract Overview', contract)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Contract Overview', null);
+    res.send(result);
+  }
+
+  public async respondAllContracts(req: Request, res: Response) {
+    const contracts = RegistryAgent.getContracts();
+    const result = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Contract Overview', contracts)
+      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Contract Overview', null);
+    res.send(result);
+  }
+
+  public async respondAllContractOwner(req: Request, res: Response) {
+    const ownerList = RegistryAgent.getContractOwnerAddrList();
+    const result = res.status(200)
+      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Contract Overview', ownerList)
       : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Contract Overview', null);
     res.send(result);
   }

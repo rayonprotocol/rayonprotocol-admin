@@ -17,7 +17,9 @@ class RayonLogDbAgent {
       SELECT MAX(block_number) readLastBlock FROM event_log
     `);
     queryResult = queryResult && queryResult.pop();
-    return queryResult.readLastBlock === null ? RegistryAgent.getFirstContractAddress() : queryResult.readLastBlock + 1;
+    return queryResult.readLastBlock === null
+      ? RegistryAgent.getFirstContractBlockNumber()
+      : queryResult.readLastBlock + 1;
   }
 
   // store

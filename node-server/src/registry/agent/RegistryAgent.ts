@@ -32,6 +32,11 @@ class RegistryAgent {
     return contracts.map(contract => contract.address);
   }
 
+  public getContractOwnerAddrList() {
+    const contracts: Contract[] = this.getContracts();
+    return contracts.map(contract => contract.owner);
+  }
+
   public getContractByAddr(contractAddr: string) {
     const contracts = this.getContracts();
     const targetContract = contracts.filter(contract => contract.address === contractAddr);
@@ -44,7 +49,7 @@ class RegistryAgent {
     return targetContract.length ? targetContract.pop().address : null;
   }
 
-  public getFirstContractAddress() {
+  public getFirstContractBlockNumber() {
     const contracts = this.getContracts();
     return Math.min.apply(null, contracts.map(contract => contract.deployedBlockNumber));
   }

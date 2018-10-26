@@ -1,8 +1,11 @@
+// agent
+import UserAgent from 'user/agent/UserAgent';
+
+// controller
 import Web3Controller from 'common/dc/Web3Controller';
 
 // model
 import Metamask from 'common/model/metamask/Metamask';
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 // util
 import StringUtil from '../../../../shared/common/util/StringUtil';
@@ -27,7 +30,7 @@ class UserDC {
     };
 
     console.log('_initialize');
-    if (!StringUtil.isEmpty(loginResult.selectedAddress) && this.isAdminUser(loginResult.selectedAddress)) {
+    if (!StringUtil.isEmpty(loginResult.selectedAddress) && (await this.isAdminUser(loginResult.selectedAddress))) {
       Web3Controller.setWeb3();
     } else {
       this._setMetamaskLoginListener(this._onUserLoginStatusChanged.bind(this));
@@ -58,10 +61,10 @@ class UserDC {
       this._userLoginListeners.forEach(listener => listener(this._userAccount, this.getNetworkName()));
   }
 
-  public isAdminUser(userAddress: string) {
+  public async isAdminUser(userAddress: string) {
     if (userAddress === undefined) return false;
 
-    const adminAddrList = ContractConfigure.getAdminAddrList();
+    const adminAddrList = await UserAgent.fetchAllOwner();
     return ArrayUtil.isContainElement(ArrayUtil.makeLowerCase(adminAddrList), userAddress.toLowerCase());
   }
 

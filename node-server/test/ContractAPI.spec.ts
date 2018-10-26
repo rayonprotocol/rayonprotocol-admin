@@ -29,7 +29,7 @@ describe('Contract API', () => {
   it('should get contract infomation when request with address', done => {
     req = httpMocks.createRequest({
       method: 'GET',
-      url: ContractAPI.URLForGetContractOverview,
+      url: ContractAPI.URLForGetContract,
       query: {
         address: '0x87734414f6fe26c3fff5b3fa69d379be4c0a2056',
       },
@@ -48,12 +48,12 @@ describe('Contract API', () => {
       done();
     });
 
-    ContractDC.respondContractOverview(req, res);
+    ContractDC.respondContract(req, res);
   });
   it('should send null when address is missing', done => {
     req = httpMocks.createRequest({
       method: 'GET',
-      url: ContractAPI.URLForGetContractOverview,
+      url: ContractAPI.URLForGetContract,
       query: {
         address: '0x5C79E76230520Fb939C1777C010a1a6419d2Ed4f',
       },
@@ -68,7 +68,7 @@ describe('Contract API', () => {
       done();
     });
 
-    ContractDC.respondContractOverview(req, res);
+    ContractDC.respondContract(req, res);
   });
   it('should get all contract event logs', done => {
     sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
