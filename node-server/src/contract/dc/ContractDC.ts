@@ -12,7 +12,6 @@ import RayonDC from '../../common/dc/RayonDC';
 import Contract, {
   URLForGetAllLogs,
   URLForGetContractLogs,
-  URLForGetContract,
   URLForGetAllContracts,
   URLForGetAllOwner,
 } from '../../../../shared/contract/model/Contract';
@@ -21,17 +20,8 @@ class ContractDC extends RayonDC {
   public configure(app: Express) {
     app.get(URLForGetAllLogs, this.respondAllContractLogs.bind(this));
     app.get(URLForGetContractLogs, this.respondContractLogs.bind(this));
-    app.get(URLForGetContract, this.respondContract.bind(this));
     app.get(URLForGetAllContracts, this.respondAllContracts.bind(this));
     app.get(URLForGetAllOwner, this.respondAllContractOwner.bind(this));
-  }
-
-  public async respondContract(req: Request, res: Response) {
-    const contract = RegistryAgent.getContractByAddr(req.query.address);
-    const result = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Contract Overview', contract)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Contract Overview', null);
-    res.send(result);
   }
 
   public async respondAllContracts(req: Request, res: Response) {

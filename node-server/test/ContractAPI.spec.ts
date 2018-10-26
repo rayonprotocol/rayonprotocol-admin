@@ -26,37 +26,10 @@ describe('Contract API', () => {
   afterEach(() => {
     sandbox.restore();
   });
-  it('should get contract infomation when request with address', done => {
+  it('should get all contract', done => {
     req = httpMocks.createRequest({
       method: 'GET',
-      url: ContractAPI.URLForGetContract,
-      query: {
-        address: '0x87734414f6fe26c3fff5b3fa69d379be4c0a2056',
-      },
-    });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
-      resData.should.have.properties(['address', 'name', 'owner', 'deployedBlockNumber']);
-      resData.address.should.be.equal('0x87734414f6fe26c3fff5b3fa69d379be4c0a2056');
-      resData.name.should.be.equal('RayonToken');
-      resData.owner.should.be.equal('0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290');
-      resData.deployedBlockNumber.should.be.equal(0);
-      done();
-    });
-
-    ContractDC.respondContract(req, res);
-  });
-  it('should send null when address is missing', done => {
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: ContractAPI.URLForGetContract,
-      query: {
-        address: '0x5C79E76230520Fb939C1777C010a1a6419d2Ed4f',
-      },
+      url: ContractAPI.URLForGetAllContracts,
     });
     res = httpMocks.createResponse({
       eventEmitter: myEventEmitter,
@@ -64,11 +37,37 @@ describe('Contract API', () => {
     res.on('end', async () => {
       const resData = res._getData().data;
       res.statusCode.should.be.equal(200);
-      (resData === null).should.be.equal(true);
+      resData.should.be.Array();
+      resData.should.have.length(1);
+      resData[0].should.have.properties(['address', 'name', 'owner', 'deployedBlockNumber']);
+      resData[0].address.should.be.equal('0x87734414f6fe26c3fff5b3fa69d379be4c0a2056');
+      resData[0].name.should.be.equal('RayonToken');
+      resData[0].owner.should.be.equal('0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290');
+      resData[0].deployedBlockNumber.should.be.equal(0);
       done();
     });
 
-    ContractDC.respondContract(req, res);
+    ContractDC.respondAllContracts(req, res);
+  });
+  it('should get all contract owner', done => {
+    req = httpMocks.createRequest({
+      method: 'GET',
+      url: ContractAPI.URLForGetAllOwner,
+    });
+    res = httpMocks.createResponse({
+      eventEmitter: myEventEmitter,
+    });
+    res.on('end', async () => {
+      const resData = res._getData().data;
+      res.statusCode.should.be.equal(200);
+      resData.should.be.Array();
+      resData.should.have.length(1);
+      resData[0].should.be.equal('0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290');
+
+      done();
+    });
+
+    ContractDC.respondAllContractOwner(req, res);
   });
   it('should get all contract event logs', done => {
     sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
@@ -85,7 +84,7 @@ describe('Contract API', () => {
     res.on('end', async () => {
       const resData = res._getData().data;
       res.statusCode.should.be.equal(200);
-      resData.should.be.instanceOf(Array);
+      resData.should.be.Array();
       resData[0].should.have.properties([
         'blockNumber',
         'txHash',

@@ -4,7 +4,6 @@ import ContractConfigure from '../../common/model/ContractConfigure';
 
 export const URLForGetAllLogs = `${parentUrl}/contract/logs/all`;
 export const URLForGetContractLogs = `${parentUrl}/contract/logs`;
-export const URLForGetContract = `${parentUrl}/contract/`;
 export const URLForGetAllContracts = `${parentUrl}/contract/all`;
 export const URLForGetAllOwner = `${parentUrl}/contract/owner/all`;
 
