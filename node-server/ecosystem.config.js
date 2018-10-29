@@ -14,15 +14,14 @@ module.exports = {
         NODE_ENV: 'production',
         ENV_BLOCKCHAIN: 'ropsten',
         APP_PORT: 8080,
-        RAYON_DB_HOST,
-        RAYON_DB_USER,
-        RAYON_DB_PASSWORD,
-        RAYON_DB_DATABASE,
-        RAYON_DB_PORT,
       },
     },
   ],
-
+  // RAYON_DB_HOST,
+  // RAYON_DB_USER,
+  // RAYON_DB_PASSWORD,
+  // RAYON_DB_DATABASE,
+  // RAYON_DB_PORT,
   deploy: {
     production: {
       user: DEPLOY_USER,
@@ -31,7 +30,7 @@ module.exports = {
       ref: 'origin/master',
       repo: 'https://github.com/rayonprotocol/rayonprotocol-admin.git',
       path: '/var/www/rayonprotocol-admin/production',
-      'post-deploy': 'cd shared && yarn && cd ../node-server && yarn && yarn build && yarn pm2:reload',
+      'post-deploy': `cd shared && yarn && cd ../node-server && yarn && yarn build && RAYON_DB_HOST=${RAYON_DB_HOST} RAYON_DB_USER=${RAYON_DB_USER} RAYON_DB_PASSWORD=${RAYON_DB_PASSWORD} RAYON_DB_DATABASE=${RAYON_DB_DATABASE} RAYON_DB_PORT=${RAYON_DB_PORT} yarn pm2:reload `,
     },
   },
 };

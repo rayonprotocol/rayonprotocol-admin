@@ -15,7 +15,7 @@ const express = require('express');
 const app = express();
 
 // for use .env variables
-require('dotenv').config({ path: '../../../.env' });
+require('dotenv').config();
 const port = Number(process.env.APP_PORT) || 3000;
 
 // defined use middle ware
