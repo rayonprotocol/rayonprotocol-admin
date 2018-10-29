@@ -13,9 +13,12 @@ class RayonLogDbAgent {
 
   public async getNextBlockNumberToRead() {
     let queryResult;
-    queryResult = await DbAgent.executeAsync(`
-      SELECT MAX(block_number) readLastBlock FROM event_log
-    `);
+    queryResult = await DbAgent.executeAsync(
+      `
+      SELECT MAX(block_number) readLastBlock FROM function_log where environment=?
+    `,
+      [process.env.ENV_BLOCKCHAIN]
+    );
     queryResult = queryResult && queryResult.pop();
     return queryResult.readLastBlock === null
       ? RegistryAgent.getFirstContractBlockNumber()
