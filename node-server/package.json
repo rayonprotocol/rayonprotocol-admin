@@ -16,7 +16,7 @@
     "start:ropsten": "ENV_BLOCKCHAIN=ropsten nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts",
     "start:prod:ropsten": "ENV_BLOCKCHAIN=ropsten node lib/node-server/src/main/controller/RayonNodeServerApp.js",
     "deploy": "pm2 deploy production deploy",
-    "pm2:reload": "pm2 reload ecosystem.config.js --env production",
+    "pm2:reload": "pm2 reload ecosystem.config.js --env production --update-env",
     "test": "ENV_BLOCKCHAIN=local mocha -r ts-node/register test/*.spec.ts"
   },
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",

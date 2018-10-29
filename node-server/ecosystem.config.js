@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_SSH_OPTIONS } = process.env;
-const { FINDA_DB_HOST, FINDA_DB_USER, FINDA_DB_PASSWORD, FINDA_DB_DATABASE, FINDA_DB_PORT } = process.env;
+const { RAYON_DB_HOST, RAYON_DB_USER, RAYON_DB_PASSWORD, RAYON_DB_DATABASE, RAYON_DB_PORT } = process.env;
 console.log({ FINDA_DB_HOST });
 module.exports = {
   apps: [
@@ -15,11 +15,11 @@ module.exports = {
         NODE_ENV: 'production',
         ENV_BLOCKCHAIN: 'ropsten',
         APP_PORT: 8080,
-        RAYON_DB_HOST: FINDA_DB_HOST,
-        RAYON_DB_USER: FINDA_DB_USER,
-        RAYON_DB_PASSWORD: FINDA_DB_PASSWORD,
-        RAYON_DB_DATABASE: FINDA_DB_DATABASE,
-        RAYON_DB_PORT: FINDA_DB_PORT,
+        RAYON_DB_HOST,
+        RAYON_DB_USER,
+        RAYON_DB_PASSWORD,
+        RAYON_DB_DATABASE,
+        RAYON_DB_PORT,
       },
     },
   ],
