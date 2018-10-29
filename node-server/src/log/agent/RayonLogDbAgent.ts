@@ -15,7 +15,7 @@ class RayonLogDbAgent {
     let queryResult;
     queryResult = await DbAgent.executeAsync(
       `
-      SELECT MAX(block_number) readLastBlock FROM function_log where environment=?
+      SELECT MAX(block_number) readLastBlock FROM rayon.function_log where environment=?
     `,
       [process.env.ENV_BLOCKCHAIN]
     );
@@ -39,7 +39,7 @@ class RayonLogDbAgent {
   private async _storeTxFunctionLog(functionLog: FunctionLog) {
     const result = await DbAgent.executeAsync(
       `
-        INSERT INTO function_log (
+        INSERT INTO rayon.function_log (
             block_number,
             tx_hash,
             status,
@@ -79,7 +79,7 @@ class RayonLogDbAgent {
     if (eventLog.eventName === this.TRANSFER_EVENT) this._storeTxHolder(eventLog);
     const result = await DbAgent.executeAsync(
       `
-        INSERT INTO event_log (
+        INSERT INTO rayon.event_log (
             block_number,
             tx_hash,
             status,
@@ -122,7 +122,7 @@ class RayonLogDbAgent {
     const inputData = JSON.parse(eventLog.inputData);
     const result = await DbAgent.executeAsync(
       `
-      INSERT INTO holder_log (
+      INSERT INTO rayon.holder_log (
         holder_log.from,
         holder_log.to,
         holder_log.amount,

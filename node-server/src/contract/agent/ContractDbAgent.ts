@@ -20,8 +20,8 @@ class ContractDbAgent {
   public async getLastRecord(type: string) {
     const query =
       type !== ABI_TYPE_EVENT
-        ? `SELECT * FROM function_log ORDER BY block_number DESC`
-        : `SELECT * FROM event_log ORDER BY block_number DESC`;
+        ? `SELECT * FROM rayon.function_log ORDER BY block_number DESC`
+        : `SELECT * FROM rayon.event_log ORDER BY block_number DESC`;
     return await DbAgent.executeAsync(query);
   }
 
@@ -29,8 +29,8 @@ class ContractDbAgent {
     if (StringUtil.isEmpty(type) || !(type === ABI_TYPE_EVENT || type === ABI_TYPE_FUNCTION)) return null;
     const query =
       type === ABI_TYPE_EVENT
-        ? `${this._base}, event_name as eventName FROM event_log ORDER BY block_number`
-        : `${this._base} FROM function_log ORDER BY block_number`;
+        ? `${this._base}, event_name as eventName FROM rayon.event_log ORDER BY block_number`
+        : `${this._base} FROM rayon.function_log ORDER BY block_number`;
     return await DbAgent.executeAsync(query);
   }
 
@@ -39,8 +39,8 @@ class ContractDbAgent {
     else if (!(type === ABI_TYPE_EVENT || type === ABI_TYPE_FUNCTION)) return null;
     const query =
       type === ABI_TYPE_EVENT
-        ? this._base + `, event_name as eventName FROM event_log WHERE contract_address=? ORDER BY block_number`
-        : this._base + ` FROM function_log WHERE contract_address=? ORDER BY block_number`;
+        ? this._base + `, event_name as eventName FROM rayon.event_log WHERE contract_address=? ORDER BY block_number`
+        : this._base + ` FROM rayon.function_log WHERE contract_address=? ORDER BY block_number`;
     return await DbAgent.executeAsync(query, [contractAddress]);
   }
 }
