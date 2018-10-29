@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_SSH_OPTIONS } = process.env;
 const { RAYON_DB_HOST, RAYON_DB_USER, RAYON_DB_PASSWORD, RAYON_DB_DATABASE, RAYON_DB_PORT } = process.env;
-console.log({ FINDA_DB_HOST });
 module.exports = {
   apps: [
     {
