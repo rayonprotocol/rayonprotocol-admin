@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_SSH_OPTIONS } = process.env;
 const { FINDA_DB_HOST, FINDA_DB_USER, FINDA_DB_PASSWORD, FINDA_DB_DATABASE, FINDA_DB_PORT } = process.env;
-
+console.log({ FINDA_DB_HOST });
 module.exports = {
   apps: [
     {
