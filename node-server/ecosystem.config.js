@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_SSH_OPTIONS } = process.env;
-const { RAYON_DB_HOST, RAYON_DB_USER, RAYON_DB_PASSWORD, RAYON_DB_DATABASE, RAYON_DB_PORT } = process.env;
+
 module.exports = {
   apps: [
     {
@@ -17,11 +17,6 @@ module.exports = {
       },
     },
   ],
-  // RAYON_DB_HOST,
-  // RAYON_DB_USER,
-  // RAYON_DB_PASSWORD,
-  // RAYON_DB_DATABASE,
-  // RAYON_DB_PORT,
   deploy: {
     production: {
       user: DEPLOY_USER,
@@ -30,7 +25,7 @@ module.exports = {
       ref: 'origin/master',
       repo: 'https://github.com/rayonprotocol/rayonprotocol-admin.git',
       path: '/var/www/rayonprotocol-admin/production',
-      'post-deploy': `cd shared && yarn && cd ../node-server && yarn && yarn build && RAYON_DB_HOST=${RAYON_DB_HOST} RAYON_DB_USER=${RAYON_DB_USER} RAYON_DB_PASSWORD=${RAYON_DB_PASSWORD} RAYON_DB_DATABASE=${RAYON_DB_DATABASE} RAYON_DB_PORT=${RAYON_DB_PORT} yarn pm2:reload `,
+      'post-deploy': `cd shared && yarn && cd ../node-server && yarn && yarn pm2:reload `,
     },
   },
 };
