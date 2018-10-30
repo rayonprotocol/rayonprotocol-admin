@@ -3,6 +3,7 @@ import Contract from '../../../../shared/contract/model/Contract';
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 
 class RegistryAgent {
+
   private _contracts_local: Contract[] = [
     {
       address: '0x87734414f6fe26c3fff5b3fa69d379be4c0a2056',

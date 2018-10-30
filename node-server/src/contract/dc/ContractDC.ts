@@ -6,6 +6,7 @@ import RegistryAgent from '../../registry/agent/RegistryAgent';
 
 // dc
 import RayonDC from '../../common/dc/RayonDC';
+import sendResult from '../../main/dc/sendResult';
 
 // model
 import Contract, {
@@ -13,6 +14,8 @@ import Contract, {
   URLForGetContractLogs,
   URLForGetAllContracts,
   URLForGetAllOwner,
+  ABI_TYPE_FUNCTION,
+  ABI_TYPE_EVENT,
 } from '../../../../shared/contract/model/Contract';
 
 class ContractDC extends RayonDC {
@@ -25,38 +28,45 @@ class ContractDC extends RayonDC {
 
   public async respondAllContracts(req: Request, res: Response) {
     const contracts = RegistryAgent.getContracts();
-    const result = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Contract Overview', contracts)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Contract Overview', null);
-    res.send(result);
+    res.status(200).sendResult(contracts);
   }
 
   public async respondAllContractOwner(req: Request, res: Response) {
     const ownerList = RegistryAgent.getContractOwnerAddrList();
-    const result = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Contract Overview', ownerList)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Contract Overview', null);
-    res.send(result);
+    res.status(200).sendResult(ownerList);
   }
 
   public async respondAllContractLogs(req: Request, res: Response) {
     const type = req.query.type;
+    if (!type) return res.status(400).sendResult<void>(this.RESULT_CODE_FAIL, 'Log type missing', null);
+
+    const validRayonLogtype = type === ABI_TYPE_FUNCTION || type === ABI_TYPE_EVENT;
+    if (!validRayonLogtype)
+      return res.status(400).sendResult<void>(this.RESULT_CODE_FAIL, `${type} is not rayon log type`, null);
+
     const constractLogs = await ContractDbAgent.getAllContractLogs(type);
-    const result = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond All Contract Logs', constractLogs)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond All Contract Logs', null);
-    res.send(result);
+    res.status(200).sendResult(constractLogs);
   }
 
   public async respondContractLogs(req: Request, res: Response) {
-    const contractAddress = req.query.address;
-    const type = req.query.type;
-    const contractLogs = await ContractDbAgent.getContractLogs(contractAddress, type);
-    const result = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Contract Logs', contractLogs)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Contract Logs', null);
+    const contractAddr = req.query.address;
+    if (!contractAddr) return res.status(400).sendResult<void>(this.RESULT_CODE_FAIL, 'Contract address missing', null);
 
-    res.send(result);
+    const validRayonContractAddr = RegistryAgent.getContractAddrList().indexOf(contractAddr) > -1;
+    if (!validRayonContractAddr)
+      return res
+        .status(400)
+        .sendResult<void>(this.RESULT_CODE_FAIL, `${contractAddr} is not rayon contract address`, null);
+
+    const type = req.query.type;
+    if (!type) return res.status(400).sendResult<void>(this.RESULT_CODE_FAIL, 'Log type missing', null);
+
+    const validRayonLogtype = type === ABI_TYPE_FUNCTION || type === ABI_TYPE_EVENT;
+    if (!validRayonLogtype)
+      return res.status(400).sendResult<void>(this.RESULT_CODE_FAIL, `${type} is not rayon log type`, null);
+
+    const contractLogs = await ContractDbAgent.getContractLogs(contractAddr, type);
+    res.status(200).sendResult<any>(contractLogs);
   }
 }
 

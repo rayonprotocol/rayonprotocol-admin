@@ -2,10 +2,10 @@ import { BigNumber } from 'bignumber.js';
 import { relativeUrl as parentUrl } from '../../interface/Ajax';
 import ContractConfigure from '../../common/model/ContractConfigure';
 
-export const URLForGetAllLogs = `${parentUrl}/contract/logs/all`;
-export const URLForGetContractLogs = `${parentUrl}/contract/logs`;
-export const URLForGetAllContracts = `${parentUrl}/contract/all`;
-export const URLForGetAllOwner = `${parentUrl}/contract/owner/all`;
+export const URLForGetAllLogs = `${parentUrl}/contracts/logs/`;
+export const URLForGetContractLogs = `${parentUrl}/contracts/:address/logs/:type`;
+export const URLForGetAllContracts = `${parentUrl}/contracts/`;
+export const URLForGetAllOwner = `${parentUrl}/contracts/owners/`;
 
 export const ABI_TYPE_FUNCTION: string = 'function';
 export const ABI_TYPE_EVENT: string = 'event';

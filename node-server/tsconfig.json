@@ -5,16 +5,12 @@
     "sourceMap": true,
     "moduleResolution": "node",
     "outDir": "lib",
-    "lib": [
-      "esnext",
-      "esnext.asynciterable",
-      "dom"
-    ],
+    "lib": ["esnext", "esnext.asynciterable", "dom"],
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
-    "./src/**/*",
+    "src/**/*",
     "__tests__/**/*",
     "./node_modules/web3-typescript-typings/index.d.ts",
     "../shared/build/**/*.json"

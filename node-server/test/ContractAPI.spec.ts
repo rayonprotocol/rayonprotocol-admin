@@ -1,13 +1,17 @@
 import 'mocha';
 import 'should';
+import * as request from 'supertest';
 import * as sinon from 'sinon';
-import * as httpMocks from 'node-mocks-http';
-import * as myEventEmitter from 'events';
+
+// app
+import app from '../src/main/controller/RayonNodeServerApp';
 
 // agent
 import DbAgent from '../src/common/agent/DbAgent';
+import RegistryAgent from '../src/registry/agent/RegistryAgent';
 
 // model
+import { ContractIndex } from '../src/registry/model/Registry';
 import * as ContractAPI from '../../shared/contract/model/Contract';
 
 // dc
@@ -17,107 +21,199 @@ import ContractDC from '../src/contract/dc/ContractDC';
 import { eventLogs, functionLogs, rayonTokenEventLogs, rayonTokenFunctionLogs } from './mocks/logs';
 
 let sandbox;
-let req, res;
 
-describe('Contract API', () => {
+describe('Get All contract', () => {
+  describe('Success case, response', () => {
+    let resData;
+    const rayonTokenContract = RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN];
+    it('should return status 200', done => {
+      request(app)
+        .get(ContractAPI.URLForGetAllContracts)
+        .end((err, res) => {
+          resData = res.body.data;
+          res.status.should.be.equal(200);
+          done();
+        });
+    });
+    it('should return Array', done => {
+      resData.should.be.Array();
+      done();
+    });
+    it('should have contract properties', done => {
+      resData[ContractIndex.RAYON_TOKEN].should.have.properties(Object.keys(rayonTokenContract));
+      done();
+    });
+    it('should be equal contract address', done => {
+      resData[ContractIndex.RAYON_TOKEN].address.should.be.equal(rayonTokenContract.address);
+      done();
+    });
+    it('should be equal contract name', done => {
+      resData[ContractIndex.RAYON_TOKEN].name.should.be.equal(rayonTokenContract.name);
+      done();
+    });
+    it('should be equal contract owner address', done => {
+      resData[ContractIndex.RAYON_TOKEN].owner.should.be.equal(rayonTokenContract.owner);
+      done();
+    });
+    it('should be equal contract block number', done => {
+      resData[ContractIndex.RAYON_TOKEN].deployedBlockNumber.should.be.equal(0);
+      done();
+    });
+  });
+});
+
+describe('Get All Logs', () => {
+  describe('Success case,', () => {
+    describe('when request event logs, response ', () => {
+      let resData;
+      before(() => {
+        sandbox = sinon.createSandbox();
+      });
+      afterEach(() => {
+        sandbox.restore();
+      });
+      it('should return status 200', done => {
+        sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
+        request(app)
+          .get(ContractAPI.URLForGetAllLogs)
+          .query({ type: ContractAPI.ABI_TYPE_EVENT })
+          .end((err, res) => {
+            resData = res.body.data;
+            res.status.should.be.equal(200);
+            done();
+          });
+      });
+      it('should return Array', done => {
+        resData.should.be.Array();
+        done();
+      });
+      it('should return Array', done => {
+        resData[0].should.have.properties([
+          'blockNumber',
+          'txHash',
+          'status',
+          'contractAddress',
+          'eventName',
+          'functionName',
+          'inputData',
+          'calledTime',
+          'urlEtherscan',
+          'environment',
+        ]);
+        done();
+      });
+    });
+    describe('when request function logs, response ', () => {
+      let resData;
+      before(() => {
+        sandbox = sinon.createSandbox();
+      });
+      afterEach(() => {
+        sandbox.restore();
+      });
+      it('should return status 200', done => {
+        sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
+        request(app)
+          .get(ContractAPI.URLForGetAllLogs)
+          .query({ type: ContractAPI.ABI_TYPE_FUNCTION })
+          .end((err, res) => {
+            resData = res.body.data;
+            res.status.should.be.equal(200);
+            done();
+          });
+      });
+      it('should return Array', done => {
+        resData.should.be.Array();
+        done();
+      });
+      it('should return Array', done => {
+        resData[0].should.have.properties([
+          'blockNumber',
+          'txHash',
+          'status',
+          'contractAddress',
+          'functionName',
+          'inputData',
+          'calledTime',
+          'urlEtherscan',
+          'environment',
+        ]);
+        done();
+      });
+    });
+  });
+
+  describe('Fail case,', () => {
+    let body;
+    describe('when type parameter missing, response ', () => {
+      it('should return status 400', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+          })
+          .end((err, res) => {
+            body = res.body;
+            res.status.should.be.equal(400);
+            done();
+          });
+      });
+      it('should return collect error message', done => {
+        body.result_message.should.be.equal('Log type missing');
+        done();
+      });
+    });
+    describe('when request not rayon log type, response ', () => {
+      const fakeLogType = 'special';
+      it('should return status 400', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+            type: fakeLogType,
+          })
+          .end((err, res) => {
+            body = res.body;
+            res.status.should.be.equal(400);
+            done();
+          });
+      });
+      it('should return collect error message', done => {
+        body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
+        done();
+      });
+    });
+  });
+});
+
+describe('Get Rayon Token Function Logs', () => {
   before(() => {
     sandbox = sinon.createSandbox();
+    sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
   });
   afterEach(() => {
     sandbox.restore();
   });
-  it('should get all contract', done => {
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: ContractAPI.URLForGetAllContracts,
+  describe('Success case, response', () => {
+    let resData;
+    it('should return status 200', done => {
+      request(app)
+        .get(ContractAPI.URLForGetContractLogs)
+        .query({
+          address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+          type: ContractAPI.ABI_TYPE_FUNCTION,
+        })
+        .end((err, res) => {
+          resData = res.body.data;
+          res.status.should.be.equal(200);
+          done();
+        });
     });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', async () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
+    it('should return Array', done => {
       resData.should.be.Array();
-      resData.should.have.length(1);
-      resData[0].should.have.properties(['address', 'name', 'owner', 'deployedBlockNumber']);
-      resData[0].address.should.be.equal('0x87734414f6fe26c3fff5b3fa69d379be4c0a2056');
-      resData[0].name.should.be.equal('RayonToken');
-      resData[0].owner.should.be.equal('0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290');
-      resData[0].deployedBlockNumber.should.be.equal(0);
       done();
     });
-
-    ContractDC.respondAllContracts(req, res);
-  });
-  it('should get all contract owner', done => {
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: ContractAPI.URLForGetAllOwner,
-    });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', async () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
-      resData.should.be.Array();
-      resData.should.have.length(1);
-      resData[0].should.be.equal('0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290');
-      done();
-    });
-
-    ContractDC.respondAllContractOwner(req, res);
-  });
-  it('should get all contract event logs', done => {
-    sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: ContractAPI.URLForGetAllLogs,
-      query: {
-        type: ContractAPI.ABI_TYPE_EVENT,
-      },
-    });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', async () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
-      resData.should.be.Array();
-      resData[0].should.have.properties([
-        'blockNumber',
-        'txHash',
-        'status',
-        'contractAddress',
-        'eventName',
-        'functionName',
-        'inputData',
-        'calledTime',
-        'urlEtherscan',
-        'environment',
-      ]);
-      resData.should.have.length(4);
-      done();
-    });
-
-    ContractDC.respondAllContractLogs(req, res);
-  });
-  it('should get all contract function logs', done => {
-    sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(functionLogs)));
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: ContractAPI.URLForGetAllLogs,
-      query: {
-        type: ContractAPI.ABI_TYPE_FUNCTION,
-      },
-    });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', async () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
-      resData.should.be.instanceOf(Array);
+    it('should return Array', done => {
       resData[0].should.have.properties([
         'blockNumber',
         'txHash',
@@ -129,124 +225,86 @@ describe('Contract API', () => {
         'urlEtherscan',
         'environment',
       ]);
-      resData.should.have.length(2);
       done();
     });
-
-    ContractDC.respondAllContractLogs(req, res);
   });
-
-  it('should get rayon token contract event logs', done => {
-    sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(rayonTokenEventLogs)));
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: ContractAPI.URLForGetContractLogs,
-      query: {
-        address: '0x87734414f6fe26c3fff5b3fa69d379be4c0a2056',
-        type: ContractAPI.ABI_TYPE_EVENT,
-      },
+  describe('Fail case,', () => {
+    let body;
+    describe('when address parameter missing, response ', () => {
+      it('should return status 400', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            type: ContractAPI.ABI_TYPE_FUNCTION,
+          })
+          .end((err, res) => {
+            body = res.body;
+            res.status.should.be.equal(400);
+            done();
+          });
+      });
+      it('should return collect error message', done => {
+        body.result_message.should.be.equal('Contract address missing');
+        done();
+      });
     });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
+    describe('when type parameter missing, response ', () => {
+      it('should return status 400', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+          })
+          .end((err, res) => {
+            body = res.body;
+            res.status.should.be.equal(400);
+            done();
+          });
+      });
+      it('should return collect error message', done => {
+        body.result_message.should.be.equal('Log type missing');
+        done();
+      });
     });
-    res.on('end', async () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
-      resData.should.be.instanceOf(Array);
-      resData[0].should.have.properties([
-        'blockNumber',
-        'txHash',
-        'status',
-        'contractAddress',
-        'eventName',
-        'functionName',
-        'inputData',
-        'calledTime',
-        'urlEtherscan',
-        'environment',
-      ]);
-      resData.should.have.length(4);
-      done();
+    describe('when request not rayon contract, response ', () => {
+      const fakeContractAddr = '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290';
+      it('should return status 400', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            address: fakeContractAddr,
+            type: ContractAPI.ABI_TYPE_FUNCTION,
+          })
+          .end((err, res) => {
+            body = res.body;
+            res.status.should.be.equal(400);
+            done();
+          });
+      });
+      it('should return collect error message', done => {
+        body.result_message.should.be.equal(`${fakeContractAddr} is not rayon contract address`);
+        done();
+      });
     });
-
-    ContractDC.respondContractLogs(req, res);
-  });
-
-  it('should get rayon token contract function logs', done => {
-    sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(rayonTokenFunctionLogs)));
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: ContractAPI.URLForGetContractLogs,
-      query: {
-        address: '0x87734414f6fe26c3fff5b3fa69d379be4c0a2056',
-        type: ContractAPI.ABI_TYPE_FUNCTION,
-      },
+    describe('when request not rayon log type, response ', () => {
+      const fakeLogType = 'special';
+      it('should return status 400', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+            type: fakeLogType,
+          })
+          .end((err, res) => {
+            body = res.body;
+            res.status.should.be.equal(400);
+            done();
+          });
+      });
+      it('should return collect error message', done => {
+        body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
+        done();
+      });
     });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', async () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
-      resData.should.be.instanceOf(Array);
-      resData[0].should.have.properties([
-        'blockNumber',
-        'txHash',
-        'status',
-        'contractAddress',
-        'functionName',
-        'inputData',
-        'calledTime',
-        'urlEtherscan',
-        'environment',
-      ]);
-      resData.should.have.length(2);
-      done();
-    });
-
-    ContractDC.respondContractLogs(req, res);
-  });
-  it('should send null when request wrong address', done => {
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: ContractAPI.URLForGetContractLogs,
-      query: {
-        address: '0x00s9d9f8s9',
-        type: ContractAPI.ABI_TYPE_FUNCTION,
-      },
-    });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', async () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
-      resData.should.be.instanceOf(Array);
-      resData.should.have.length(0);
-      done();
-    });
-
-    ContractDC.respondContractLogs(req, res);
-  });
-  it('should send null when request wrong type', done => {
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: ContractAPI.URLForGetContractLogs,
-      query: {
-        address: '0x87734414f6fe26c3fff5b3fa69d379be4c0a2056',
-        type: 'type',
-      },
-    });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', async () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
-      (resData === null).should.be.equal(true);
-      done();
-    });
-
-    ContractDC.respondContractLogs(req, res);
   });
 });
