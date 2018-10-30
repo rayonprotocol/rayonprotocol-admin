@@ -1,9 +1,11 @@
 import 'mocha';
 import 'should';
+import * as request from 'supertest';
 import * as sinon from 'sinon';
-import * as httpMocks from 'node-mocks-http';
-import * as myEventEmitter from 'events';
 import BigNumber from 'bignumber.js';
+
+// app
+import app from '../src/main/controller/RayonNodeServerApp';
 
 // agent
 import DbAgent from '../src/common/agent/DbAgent';
@@ -19,120 +21,143 @@ import * as TokenAPI from '../../shared/token/model/Token';
 import { holders, tokenHistory } from './mocks/token';
 
 let sandbox;
-let req, res;
 
-describe('Token API', () => {
+describe('Get token cap', () => {
+  describe('Success case, response', () => {
+    let resData;
+    it('should return status 200', done => {
+      request(app)
+        .get(TokenAPI.URLForGetTokenCap)
+        .end((err, res) => {
+          resData = res.body.data;
+          res.status.should.be.equal(200);
+          done();
+        });
+    });
+    it('should return token cap', done => {
+      resData.should.be.equal(5000);
+      done();
+    });
+  });
+});
+
+describe('Get token total supply', () => {
   before(() => {
     sandbox = sinon.createSandbox();
   });
   afterEach(() => {
     sandbox.restore();
   });
-  it('should return token cap', done => {
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: TokenAPI.URLForGetTokenCap,
+  describe('Success case, response', () => {
+    let resData;
+    it('should return status 200', done => {
+      sandbox.replace(
+        TokenBlockchainAgent,
+        'getTotalSupply',
+        () => new Promise((resolve, reject) => resolve(new BigNumber(100)))
+      );
+      request(app)
+        .get(TokenAPI.URLForGetTokenTotalSupply)
+        .end((err, res) => {
+          resData = res.body.data;
+          res.status.should.be.equal(200);
+          done();
+        });
     });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
-      resData.should.be.equal(5000);
-      done();
-    });
-
-    TokenDC.respondTokenCap(req, res);
-  });
-  it('should return total supply', done => {
-    sandbox.replace(
-      TokenBlockchainAgent,
-      'getTotalSupply',
-      () => new Promise((resolve, reject) => resolve(new BigNumber(100)))
-    );
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: TokenAPI.URLForGetTokenTotalSupply,
-    });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
+    it('should return total supply', done => {
       resData.should.be.equal(100);
       done();
     });
-
-    TokenDC.respondTotalSupply(req, res);
   });
-  it('should return token holders', done => {
-    sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(holders)));
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: TokenAPI.URLForGetTokenHolders,
+});
+
+describe('Get token holders', () => {
+  before(() => {
+    sandbox = sinon.createSandbox();
+  });
+  afterEach(() => {
+    sandbox.restore();
+  });
+  describe('Success case, response', () => {
+    let resData;
+    it('should return status 200', done => {
+      sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(holders)));
+      request(app)
+        .get(TokenAPI.URLForGetTokenHolders)
+        .end((err, res) => {
+          resData = res.body.data;
+          res.status.should.be.equal(200);
+          done();
+        });
     });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
+    it('should have these properties', done => {
       resData[0].should.have.properties(['address', 'balance']);
-      resData.should.have.length(3);
       done();
     });
-
-    TokenDC.respondTokenHolders(req, res);
   });
+});
 
-  it('should return token holder histories', done => {
-    sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(tokenHistory)));
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: TokenAPI.URLForGetTokenHistory,
-      query: {
-        userAddr: '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290',
-      },
+describe('Get token holders', () => {
+  before(() => {
+    sandbox = sinon.createSandbox();
+  });
+  afterEach(() => {
+    sandbox.restore();
+  });
+  describe('Success case, response', () => {
+    let resData;
+    it('should return status 200', done => {
+      sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(tokenHistory)));
+      request(app)
+        .get(TokenAPI.URLForGetTokenHistory)
+        .query({
+          userAddr: '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290',
+        })
+        .end((err, res) => {
+          resData = res.body.data;
+          res.status.should.be.equal(200);
+          done();
+        });
     });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
+    it('should be array', done => {
       resData.should.be.Array();
+      done();
+    });
+    it('should have these properties', done => {
       resData[0].should.have.properties(['from', 'to', 'amount', 'calledTime']);
+      done();
+    });
+    it('should be collect from address', done => {
       resData[0].from.should.be.equal('0x0000000000000000000000000000000000000000');
+      done();
+    });
+    it('should be collect to address', done => {
       resData[0].to.should.be.equal('0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290');
+      done();
+    });
+    it('should be collect amount', done => {
       resData[0].amount.should.be.equal(10);
+      done();
+    });
+    it('should be collect called time', done => {
       resData[0].calledTime.should.be.equal(1540364588);
       done();
     });
-
-    TokenDC.respondTokenHistory(req, res);
   });
-
-  it('should send null when request wrong address', done => {
-    req = httpMocks.createRequest({
-      method: 'GET',
-      url: TokenAPI.URLForGetTokenHistory,
-      query: {
-        userAddr: '0x9d9f0',
-      },
+  describe('Fail case,', () => {
+    let body;
+    it('when userAddress missing, sholud return status 400', done => {
+      request(app)
+        .get(TokenAPI.URLForGetTokenHistory)
+        .end((err, res) => {
+          body = res.body;
+          res.status.should.be.equal(400);
+          done();
+        });
     });
-    res = httpMocks.createResponse({
-      eventEmitter: myEventEmitter,
-    });
-    res.on('end', () => {
-      const resData = res._getData().data;
-      res.statusCode.should.be.equal(200);
-      resData.should.be.a.Array();
-      resData.should.have.length(0);
+    it('should return collect message', done => {
+      body.result_message.should.be.equal('User address missing');
       done();
     });
-
-    TokenDC.respondTokenHistory(req, res);
   });
 });

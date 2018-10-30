@@ -7,9 +7,9 @@ import TokenDbAgent from '../agent/TokenDbAgent';
 
 // dc
 import RayonDC from '../../common/dc/RayonDC';
+import sendResult from '../../main/dc/sendResult';
 
 // model
-import SendResult from '../../../../shared/common/model/SendResult';
 import {
   URLForGetTokenHolders,
   URLForGetTokenHistory,
@@ -34,47 +34,26 @@ class TokenDC extends RayonDC {
 
   public async respondTokenHolders(req: Request, res: Response) {
     const tokenHolders = await TokenDbAgent.getTokenHolders();
-    const result: SendResult<Holder[]> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token Holders', tokenHolders)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token Holders', null);
-
-    res.send(result);
+    res.status(200).sendResult(tokenHolders);
   }
 
   public async respondTokenHistory(req: Request, res: Response) {
     const userAddr = req.query.userAddr;
-    const tokenHistory = await TokenDbAgent.getTokenHistory(userAddr);
-    const result: SendResult<TokenHistory[]> = res.status(200)
-      ? this.generateResultResponse(this.RESULT_CODE_SUCCESS, 'Success Respond Token History', tokenHistory)
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token History', null);
+    if (!userAddr) return res.status(400).sendResult(this.RESULT_CODE_FAIL, 'User address missing');
 
-    res.send(result);
+    const tokenHistory = await TokenDbAgent.getTokenHistory(userAddr);
+
+    res.status(200).sendResult(tokenHistory);
   }
 
   public async respondTokenCap(req: Request, res: Response) {
     const tokenCap = await TokenBlockchainAgent.getTokenCap();
-    const result: SendResult<number> = res.status(200)
-      ? this.generateResultResponse(
-          this.RESULT_CODE_SUCCESS,
-          'Success Respond Token cap',
-          Math.round(tokenCap.toNumber())
-        )
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Token cap', null);
-
-    res.send(result);
+    res.status(200).sendResult(Math.round(tokenCap.toNumber()));
   }
 
   public async respondTotalSupply(req: Request, res: Response) {
     const totalSupply = await TokenBlockchainAgent.getTotalSupply();
-    const result: SendResult<number> = res.status(200)
-      ? this.generateResultResponse(
-          this.RESULT_CODE_SUCCESS,
-          'Success Respond Total Supply',
-          Math.round(totalSupply.toNumber())
-        )
-      : this.generateResultResponse(this.RESULT_CODE_FAIL, 'Fail Respond Total Supply', null);
-
-    res.send(result);
+    res.status(200).sendResult(Math.round(totalSupply.toNumber()));
   }
 }
 
