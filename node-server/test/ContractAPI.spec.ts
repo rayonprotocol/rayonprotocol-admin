@@ -62,126 +62,133 @@ describe('Get All contract', () => {
   });
 });
 
-describe('Get All Logs', () => {
+describe('Get All event logs', () => {
   describe('Success case,', () => {
-    describe('when request event logs, response ', () => {
-      let resData;
-      before(() => {
-        sandbox = sinon.createSandbox();
-      });
-      afterEach(() => {
-        sandbox.restore();
-      });
-      it('should return status 200', done => {
-        sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
-        request(app)
-          .get(ContractAPI.URLForGetAllLogs)
-          .query({ type: ContractAPI.ABI_TYPE_EVENT })
-          .end((err, res) => {
-            resData = res.body.data;
-            res.status.should.be.equal(200);
-            done();
-          });
-      });
-      it('should return Array', done => {
-        resData.should.be.Array();
-        done();
-      });
-      it('should have these properties', done => {
-        resData[0].should.have.properties([
-          'blockNumber',
-          'txHash',
-          'status',
-          'contractAddress',
-          'eventName',
-          'functionName',
-          'inputData',
-          'calledTime',
-          'urlEtherscan',
-          'environment',
-        ]);
-        done();
-      });
+    let resData;
+    before(() => {
+      sandbox = sinon.createSandbox();
     });
-    describe('when request function logs, response ', () => {
-      let resData;
-      before(() => {
-        sandbox = sinon.createSandbox();
-      });
-      afterEach(() => {
-        sandbox.restore();
-      });
-      it('should return status 200', done => {
-        sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
-        request(app)
-          .get(ContractAPI.URLForGetAllLogs)
-          .query({ type: ContractAPI.ABI_TYPE_FUNCTION })
-          .end((err, res) => {
-            resData = res.body.data;
-            res.status.should.be.equal(200);
-            done();
-          });
-      });
-      it('should return Array', done => {
-        resData.should.be.Array();
-        done();
-      });
-      it('should have these properties', done => {
-        resData[0].should.have.properties([
-          'blockNumber',
-          'txHash',
-          'status',
-          'contractAddress',
-          'functionName',
-          'inputData',
-          'calledTime',
-          'urlEtherscan',
-          'environment',
-        ]);
-        done();
-      });
+    afterEach(() => {
+      sandbox.restore();
+    });
+    it('should return status 200', done => {
+      sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
+      request(app)
+        .get(ContractAPI.URLForGetAllLogs)
+        .query({ type: ContractAPI.ABI_TYPE_EVENT })
+        .end((err, res) => {
+          resData = res.body.data;
+          res.status.should.be.equal(200);
+          done();
+        });
+    });
+    it('should return Array', done => {
+      resData.should.be.Array();
+      done();
+    });
+    it('should have these properties', done => {
+      resData[0].should.have.properties([
+        'blockNumber',
+        'txHash',
+        'status',
+        'contractAddress',
+        'eventName',
+        'functionName',
+        'inputData',
+        'calledTime',
+        'urlEtherscan',
+        'environment',
+      ]);
+      done();
+    });
+  });
+  describe('Fail case,', () => {
+    let body;
+    it('should return status 400 when type missing', done => {
+      request(app)
+        .get(ContractAPI.URLForGetContractLogs)
+        .query({
+          address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+        })
+        .end((err, res) => {
+          body = res.body;
+          res.status.should.be.equal(400);
+          body.result_message.should.be.equal('Log type missing');
+          done();
+        });
+    });
+  });
+});
+
+describe('Get All function logs', () => {
+  describe('Success case,', () => {
+    let resData;
+    before(() => {
+      sandbox = sinon.createSandbox();
+    });
+    afterEach(() => {
+      sandbox.restore();
+    });
+    it('should return status 200', done => {
+      sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
+      request(app)
+        .get(ContractAPI.URLForGetAllLogs)
+        .query({ type: ContractAPI.ABI_TYPE_FUNCTION })
+        .end((err, res) => {
+          resData = res.body.data;
+          res.status.should.be.equal(200);
+          done();
+        });
+    });
+    it('should return Array', done => {
+      resData.should.be.Array();
+      done();
+    });
+    it('should have these properties', done => {
+      resData[0].should.have.properties([
+        'blockNumber',
+        'txHash',
+        'status',
+        'contractAddress',
+        'functionName',
+        'inputData',
+        'calledTime',
+        'urlEtherscan',
+        'environment',
+      ]);
+      done();
     });
   });
 
   describe('Fail case,', () => {
     let body;
-    describe('when type parameter missing, response ', () => {
-      it('should return status 400', done => {
-        request(app)
-          .get(ContractAPI.URLForGetContractLogs)
-          .query({
-            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-          })
-          .end((err, res) => {
-            body = res.body;
-            res.status.should.be.equal(400);
-            done();
-          });
-      });
-      it('should return collect error message', done => {
-        body.result_message.should.be.equal('Log type missing');
-        done();
-      });
+    const fakeLogType = 'special';
+
+    it('should return status 400 and error message when log type missing', done => {
+      request(app)
+        .get(ContractAPI.URLForGetContractLogs)
+        .query({
+          address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+        })
+        .end((err, res) => {
+          body = res.body;
+          res.status.should.be.equal(400);
+          done();
+        });
     });
-    describe('when request not rayon log type, response ', () => {
-      const fakeLogType = 'special';
-      it('should return status 400', done => {
-        request(app)
-          .get(ContractAPI.URLForGetContractLogs)
-          .query({
-            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-            type: fakeLogType,
-          })
-          .end((err, res) => {
-            body = res.body;
-            res.status.should.be.equal(400);
-            done();
-          });
-      });
-      it('should return collect error message', done => {
-        body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
-        done();
-      });
+    it('should return status 400 and error message when request not rayon log type ', done => {
+      request(app)
+        .get(ContractAPI.URLForGetContractLogs)
+        .query({
+          address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+          type: fakeLogType,
+        })
+        .end((err, res) => {
+          body = res.body;
+          res.status.should.be.equal(400);
+          body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
+          done();
+        });
     });
   });
 });
@@ -213,7 +220,7 @@ describe('Get Rayon Token Function Logs', () => {
       resData.should.be.Array();
       done();
     });
-    it('should return Array', done => {
+    it('should have these properties', done => {
       resData[0].should.have.properties([
         'blockNumber',
         'txHash',
@@ -230,65 +237,51 @@ describe('Get Rayon Token Function Logs', () => {
   });
   describe('Fail case,', () => {
     let body;
-    describe('when address parameter missing, response ', () => {
-      it('should return status 400', done => {
-        request(app)
-          .get(ContractAPI.URLForGetContractLogs)
-          .query({
-            type: ContractAPI.ABI_TYPE_FUNCTION,
-          })
-          .end((err, res) => {
-            body = res.body;
-            res.status.should.be.equal(400);
-            done();
-          });
-      });
-      it('should return collect error message', done => {
-        body.result_message.should.be.equal('Contract address missing');
-        done();
-      });
+    it('should return status 400 and error message when address parameter missing', done => {
+      request(app)
+        .get(ContractAPI.URLForGetContractLogs)
+        .query({
+          type: ContractAPI.ABI_TYPE_FUNCTION,
+        })
+        .end((err, res) => {
+          body = res.body;
+          res.status.should.be.equal(400);
+          body.result_message.should.be.equal('Contract address missing');
+          done();
+        });
     });
-    describe('when type parameter missing, response ', () => {
-      it('should return status 400', done => {
-        request(app)
-          .get(ContractAPI.URLForGetContractLogs)
-          .query({
-            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-          })
-          .end((err, res) => {
-            body = res.body;
-            res.status.should.be.equal(400);
-            done();
-          });
-      });
-      it('should return collect error message', done => {
-        body.result_message.should.be.equal('Log type missing');
-        done();
-      });
+    it('should return status 400 and error message when type parameter missing, response ', done => {
+      request(app)
+        .get(ContractAPI.URLForGetContractLogs)
+        .query({
+          address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+        })
+        .end((err, res) => {
+          body = res.body;
+          res.status.should.be.equal(400);
+          body.result_message.should.be.equal('Log type missing');
+          done();
+        });
     });
-    describe('when request not rayon contract, response ', () => {
+
+    it('should return status 400 and error message when request not rayon contract, response ', done => {
       const fakeContractAddr = '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290';
-      it('should return status 400', done => {
-        request(app)
-          .get(ContractAPI.URLForGetContractLogs)
-          .query({
-            address: fakeContractAddr,
-            type: ContractAPI.ABI_TYPE_FUNCTION,
-          })
-          .end((err, res) => {
-            body = res.body;
-            res.status.should.be.equal(400);
-            done();
-          });
-      });
-      it('should return collect error message', done => {
-        body.result_message.should.be.equal(`${fakeContractAddr} is not rayon contract address`);
-        done();
-      });
+      request(app)
+        .get(ContractAPI.URLForGetContractLogs)
+        .query({
+          address: fakeContractAddr,
+          type: ContractAPI.ABI_TYPE_FUNCTION,
+        })
+        .end((err, res) => {
+          body = res.body;
+          res.status.should.be.equal(400);
+          body.result_message.should.be.equal(`${fakeContractAddr} is not rayon contract address`);
+          done();
+        });
     });
-    describe('when request not rayon log type, response ', () => {
-      const fakeLogType = 'special';
-      it('should return status 400', done => {
+    describe(', response ', () => {
+      it('should return status 400 and error message  when request not rayon log type', done => {
+        const fakeLogType = 'special';
         request(app)
           .get(ContractAPI.URLForGetContractLogs)
           .query({
@@ -298,12 +291,9 @@ describe('Get Rayon Token Function Logs', () => {
           .end((err, res) => {
             body = res.body;
             res.status.should.be.equal(400);
+            body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
             done();
           });
-      });
-      it('should return collect error message', done => {
-        body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
-        done();
       });
     });
   });

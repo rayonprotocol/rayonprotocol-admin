@@ -146,18 +146,15 @@ describe('Get token holders', () => {
   });
   describe('Fail case,', () => {
     let body;
-    it('when userAddress missing, sholud return status 400', done => {
+    it('should return status 400 and error message when userAddress missing', done => {
       request(app)
         .get(TokenAPI.URLForGetTokenHistory)
         .end((err, res) => {
           body = res.body;
           res.status.should.be.equal(400);
+          body.result_message.should.be.equal('User address missing');
           done();
         });
-    });
-    it('should return collect message', done => {
-      body.result_message.should.be.equal('User address missing');
-      done();
     });
   });
 });
