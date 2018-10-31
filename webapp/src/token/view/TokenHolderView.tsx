@@ -10,6 +10,9 @@ import { Holder } from '../../../../shared/token/model/Token';
 import SectionTitle from 'common/view/section/SectionTitle';
 import DoughnutChart from 'common/view/chart/DoughnutChart';
 
+// util
+import ContractUtil from '../../../../shared/common/util/ContractUtil';
+
 // styles
 import styles from './TokenHolderView.scss';
 
@@ -79,7 +82,7 @@ class TokenHolderView extends Component<TokenHolderViewProps, {}> {
             maxWidth: 160,
             filterable: false,
             Cell: row => {
-              return <div>{`${row.value} RYN`}</div>;
+              return <div>{`${ContractUtil.weiToToken(row.value).toFixed(4)} RYN`}</div>;
             },
             style: {
               textAlign: 'center',

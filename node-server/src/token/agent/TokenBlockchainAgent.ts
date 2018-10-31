@@ -1,5 +1,5 @@
 // util
-import { weiToToken } from '../../../../shared/common/util/webToToken';
+import ContractUtil from '../../../../shared/common/util/ContractUtil';
 import Web3Controller from '../../common/controller/Web3Controller';
 
 import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
@@ -14,11 +14,11 @@ class TokenBlockchainAgent {
   }
 
   public async getTokenCap() {
-    return weiToToken(await this._contractInstance.methods.cap().call());
+    return ContractUtil.weiToToken(await this._contractInstance.methods.cap().call());
   }
 
   public async getTotalSupply() {
-    return weiToToken(await this._contractInstance.methods.totalSupply().call());
+    return ContractUtil.weiToToken(await this._contractInstance.methods.totalSupply().call());
   }
 }
 

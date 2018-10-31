@@ -11,6 +11,7 @@ import SectionTitle from 'common/view/section/SectionTitle';
 
 // util
 import DateUtil from '../../../../shared/common/util/DateUtil';
+import ContractUtil from '../../../../shared/common/util/ContractUtil';
 
 // styles
 import styles from './TokenHolderLogView.scss';
@@ -78,7 +79,7 @@ class TokenHolderLogView extends Component<TokenHolderLogViewProps, {}> {
               maxWidth: 150,
               filterable: false,
               Cell: row => {
-                return <div>{`${row.value} RYN`}</div>;
+                return <div>{`${ContractUtil.weiToToken(row.value).toFixed(4)} RYN`}</div>;
               },
               style: {
                 textAlign: 'center',
