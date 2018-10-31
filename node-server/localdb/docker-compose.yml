@@ -1,0 +1,15 @@
+version: '2.1'
+
+services:
+  rayon-localdb:
+    image: rayon-localdb
+    command: --init-file /data/application/rayon.sql
+    environment:
+        - MYSQL_DATABASES=rayon
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_HOST=localhost
+    build: .
+    ports:
+      - 3306:3306
+    volumes:
+        - ~/.rayon-localdb/mysql:/var/lib/mysql
