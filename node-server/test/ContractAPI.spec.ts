@@ -16,6 +16,7 @@ import * as ContractAPI from '../../shared/contract/model/Contract';
 
 // dc
 import ContractDC from '../src/contract/dc/ContractDC';
+import Web3Controller from '../src/common/controller/Web3Controller';
 
 // mocks
 import { eventLogs, functionLogs, rayonTokenEventLogs, rayonTokenFunctionLogs } from './mocks/logs';
@@ -62,177 +63,251 @@ describe('Get All contract', () => {
   });
 });
 
-describe('Get All event logs', () => {
-  describe('Success case,', () => {
-    let resData;
-    before(() => {
-      sandbox = sinon.createSandbox();
+describe('Get All logs', () => {
+  describe('request event logs', () => {
+    describe('Success case,', () => {
+      let resData;
+      before(() => {
+        sandbox = sinon.createSandbox();
+      });
+      afterEach(() => {
+        sandbox.restore();
+      });
+      it('should return status 200', done => {
+        sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
+        request(app)
+          .get(ContractAPI.URLForGetAllLogs)
+          .query({ type: ContractAPI.ABI_TYPE_EVENT })
+          .end((err, res) => {
+            resData = res.body.data;
+            res.status.should.be.equal(200);
+            done();
+          });
+      });
+      it('should return Array', done => {
+        resData.should.be.Array();
+        done();
+      });
+      it('should have these properties', done => {
+        resData[0].should.have.properties([
+          'blockNumber',
+          'txHash',
+          'status',
+          'contractAddress',
+          'eventName',
+          'functionName',
+          'inputData',
+          'calledTime',
+          'urlEtherscan',
+          'environment',
+        ]);
+        done();
+      });
     });
-    afterEach(() => {
-      sandbox.restore();
-    });
-    it('should return status 200', done => {
-      sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
-      request(app)
-        .get(ContractAPI.URLForGetAllLogs)
-        .query({ type: ContractAPI.ABI_TYPE_EVENT })
-        .end((err, res) => {
-          resData = res.body.data;
-          res.status.should.be.equal(200);
-          done();
-        });
-    });
-    it('should return Array', done => {
-      resData.should.be.Array();
-      done();
-    });
-    it('should have these properties', done => {
-      resData[0].should.have.properties([
-        'blockNumber',
-        'txHash',
-        'status',
-        'contractAddress',
-        'eventName',
-        'functionName',
-        'inputData',
-        'calledTime',
-        'urlEtherscan',
-        'environment',
-      ]);
-      done();
+    describe('Fail case,', () => {
+      let body;
+      it('should return status 400 when type missing', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+          })
+          .end((err, res) => {
+            body = res.body;
+            res.status.should.be.equal(400);
+            body.result_message.should.be.equal('Log type missing');
+            done();
+          });
+      });
     });
   });
-  describe('Fail case,', () => {
-    let body;
-    it('should return status 400 when type missing', done => {
-      request(app)
-        .get(ContractAPI.URLForGetContractLogs)
-        .query({
-          address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-        })
-        .end((err, res) => {
-          body = res.body;
-          res.status.should.be.equal(400);
-          body.result_message.should.be.equal('Log type missing');
-          done();
-        });
+
+  describe('request function logs', () => {
+    describe('Success case,', () => {
+      let resData;
+      before(() => {
+        sandbox = sinon.createSandbox();
+      });
+      afterEach(() => {
+        sandbox.restore();
+      });
+      it('should return status 200', done => {
+        sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
+        request(app)
+          .get(ContractAPI.URLForGetAllLogs)
+          .query({ type: ContractAPI.ABI_TYPE_FUNCTION })
+          .end((err, res) => {
+            resData = res.body.data;
+            res.status.should.be.equal(200);
+            done();
+          });
+      });
+      it('should return Array', done => {
+        resData.should.be.Array();
+        done();
+      });
+      it('should have these properties', done => {
+        resData[0].should.have.properties([
+          'blockNumber',
+          'txHash',
+          'status',
+          'contractAddress',
+          'functionName',
+          'inputData',
+          'calledTime',
+          'urlEtherscan',
+          'environment',
+        ]);
+        done();
+      });
+    });
+
+    describe('Fail case,', () => {
+      let body;
+      const fakeLogType = 'special';
+
+      it('should return status 400 and error message when log type missing', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+          })
+          .end((err, res) => {
+            body = res.body;
+            res.status.should.be.equal(400);
+            done();
+          });
+      });
+      it('should return status 400 and error message when request not rayon log type ', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+            type: fakeLogType,
+          })
+          .end((err, res) => {
+            body = res.body;
+            res.status.should.be.equal(400);
+            body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
+            done();
+          });
+      });
     });
   });
 });
 
-describe('Get All function logs', () => {
-  describe('Success case,', () => {
-    let resData;
-    before(() => {
-      sandbox = sinon.createSandbox();
+describe('Get rayon token logs', function() {
+  let rayonTokenInstance;
+  let newBlockTxHash;
+  let newTransaction;
+  const targetAddr = '0xb28d0b93eb6aF266C52F40d840084a59B7BCd8B5';
+  const ownerAddr = '0x63d49dae293ff2f077f5cda66be0df251a0d3290';
+  this.timeout(8000); // for increse each test case timeout limit
+  before(done => {
+    const rayonTokenContractAddr = RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address;
+    rayonTokenInstance = Web3Controller.getContractInstance(rayonTokenContractAddr);
+    rayonTokenInstance.methods.mint(targetAddr, 500).send({ from: ownerAddr }, (err, txHash) => {
+      newBlockTxHash = txHash;
+      setTimeout(done, 4000);
     });
-    afterEach(() => {
-      sandbox.restore();
-    });
-    it('should return status 200', done => {
-      sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
-      request(app)
-        .get(ContractAPI.URLForGetAllLogs)
-        .query({ type: ContractAPI.ABI_TYPE_FUNCTION })
-        .end((err, res) => {
-          resData = res.body.data;
-          res.status.should.be.equal(200);
-          done();
-        });
-    });
-    it('should return Array', done => {
-      resData.should.be.Array();
+  });
+  before(done => {
+    Web3Controller.getWeb3().eth.getTransaction(newBlockTxHash, (err, transaction) => {
+      newTransaction = transaction;
       done();
     });
-    it('should have these properties', done => {
-      resData[0].should.have.properties([
-        'blockNumber',
-        'txHash',
-        'status',
-        'contractAddress',
-        'functionName',
-        'inputData',
-        'calledTime',
-        'urlEtherscan',
-        'environment',
-      ]);
-      done();
-    });
-  });
-
-  describe('Fail case,', () => {
-    let body;
-    const fakeLogType = 'special';
-
-    it('should return status 400 and error message when log type missing', done => {
-      request(app)
-        .get(ContractAPI.URLForGetContractLogs)
-        .query({
-          address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-        })
-        .end((err, res) => {
-          body = res.body;
-          res.status.should.be.equal(400);
-          done();
-        });
-    });
-    it('should return status 400 and error message when request not rayon log type ', done => {
-      request(app)
-        .get(ContractAPI.URLForGetContractLogs)
-        .query({
-          address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-          type: fakeLogType,
-        })
-        .end((err, res) => {
-          body = res.body;
-          res.status.should.be.equal(400);
-          body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
-          done();
-        });
-    });
-  });
-});
-
-describe('Get Rayon Token Function Logs', () => {
-  before(() => {
-    sandbox = sinon.createSandbox();
-    sandbox.replace(DbAgent, 'executeAsync', () => new Promise((resolve, reject) => resolve(eventLogs)));
-  });
-  afterEach(() => {
-    sandbox.restore();
   });
   describe('Success case, response', () => {
-    let resData;
-    it('should return status 200', done => {
-      request(app)
-        .get(ContractAPI.URLForGetContractLogs)
-        .query({
-          address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-          type: ContractAPI.ABI_TYPE_FUNCTION,
-        })
-        .end((err, res) => {
-          resData = res.body.data;
-          res.status.should.be.equal(200);
-          done();
-        });
+    describe('request rayon token event logs', () => {
+      let resData;
+      let targetEventLog;
+      it('should return status 200', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+            type: ContractAPI.ABI_TYPE_EVENT,
+          })
+          .end((err, res) => {
+            resData = res.body.data;
+            res.status.should.be.equal(200);
+            done();
+          });
+      });
+      it('should have these properties', done => {
+        targetEventLog = resData.pop();
+        targetEventLog.should.have.properties([
+          'blockNumber',
+          'txHash',
+          'calledTime',
+          'status',
+          'contractAddress',
+          'functionName',
+          'inputData',
+          'urlEtherscan',
+          'environment',
+          'eventName',
+        ]);
+        done();
+      });
+      it('should be equal blockNumber', done => {
+        targetEventLog.blockNumber.should.be.equal(newTransaction.blockNumber);
+        done();
+      });
+      it('should be equal txHash', done => {
+        targetEventLog.txHash.should.be.equal(newTransaction.hash);
+        done();
+      });
+      it('should be equal contract Address', done => {
+        targetEventLog.contractAddress.should.be.equal(RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address);
+        done();
+      });
     });
-    it('should return Array', done => {
-      resData.should.be.Array();
-      done();
-    });
-    it('should have these properties', done => {
-      resData[0].should.have.properties([
-        'blockNumber',
-        'txHash',
-        'status',
-        'contractAddress',
-        'functionName',
-        'inputData',
-        'calledTime',
-        'urlEtherscan',
-        'environment',
-      ]);
-      done();
+    describe('request rayon token function logs', () => {
+      let resData;
+      let targetFunctionLog;
+      it('should return status 200', done => {
+        request(app)
+          .get(ContractAPI.URLForGetContractLogs)
+          .query({
+            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+            type: ContractAPI.ABI_TYPE_FUNCTION,
+          })
+          .end((err, res) => {
+            resData = res.body.data;
+            res.status.should.be.equal(200);
+            done();
+          });
+      });
+      it('should have these properties', done => {
+        targetFunctionLog = resData.pop();
+        targetFunctionLog.should.have.properties([
+          'blockNumber',
+          'txHash',
+          'status',
+          'contractAddress',
+          'functionName',
+          'inputData',
+          'calledTime',
+          'urlEtherscan',
+          'environment',
+        ]);
+        done();
+      });
+      it('should be equal blockNumber', done => {
+        targetFunctionLog.blockNumber.should.be.equal(newTransaction.blockNumber);
+        done();
+      });
+      it('should be equal txHash', done => {
+        targetFunctionLog.txHash.should.be.equal(newTransaction.hash);
+        done();
+      });
+      it('should be equal contract Address', done => {
+        targetFunctionLog.contractAddress.should.be.equal(
+          RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address
+        );
+        done();
+      });
     });
   });
   describe('Fail case,', () => {
@@ -279,22 +354,20 @@ describe('Get Rayon Token Function Logs', () => {
           done();
         });
     });
-    describe(', response ', () => {
-      it('should return status 400 and error message  when request not rayon log type', done => {
-        const fakeLogType = 'special';
-        request(app)
-          .get(ContractAPI.URLForGetContractLogs)
-          .query({
-            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-            type: fakeLogType,
-          })
-          .end((err, res) => {
-            body = res.body;
-            res.status.should.be.equal(400);
-            body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
-            done();
-          });
-      });
+    it('should return status 400 and error message  when request not rayon log type', done => {
+      const fakeLogType = 'special';
+      request(app)
+        .get(ContractAPI.URLForGetContractLogs)
+        .query({
+          address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
+          type: fakeLogType,
+        })
+        .end((err, res) => {
+          body = res.body;
+          res.status.should.be.equal(400);
+          body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
+          done();
+        });
     });
   });
 });
