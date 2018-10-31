@@ -87,7 +87,7 @@ describe('Get All Logs', () => {
         resData.should.be.Array();
         done();
       });
-      it('should return Array', done => {
+      it('should have these properties', done => {
         resData[0].should.have.properties([
           'blockNumber',
           'txHash',
@@ -126,7 +126,7 @@ describe('Get All Logs', () => {
         resData.should.be.Array();
         done();
       });
-      it('should return Array', done => {
+      it('should have these properties', done => {
         resData[0].should.have.properties([
           'blockNumber',
           'txHash',

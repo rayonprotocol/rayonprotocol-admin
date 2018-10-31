@@ -4,7 +4,7 @@ import ContractConfigure from '../../../../shared/common/model/ContractConfigure
 
 class RegistryAgent {
 
-  private _contracts_local: Contract[] = [
+  private _contracts_dev: Contract[] = [
     {
       address: '0x87734414f6fe26c3fff5b3fa69d379be4c0a2056',
       name: 'RayonToken',
@@ -24,7 +24,7 @@ class RegistryAgent {
 
   public getContracts() {
     const env = process.env.ENV_BLOCKCHAIN;
-    if (env === ContractConfigure.ENV_LOCAL) return this._contracts_local;
+    if (env === ContractConfigure.ENV_DEV) return this._contracts_dev;
     else if (env === ContractConfigure.ENV_TESTNET) return this._contracts_ropsten;
   }
 

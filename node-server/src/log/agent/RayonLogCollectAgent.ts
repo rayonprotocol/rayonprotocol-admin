@@ -12,6 +12,7 @@ import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/Tx
 
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
+import DateUtil from '../../../../shared/common/util/DateUtil';
 import Web3Controller from '../../common/controller/Web3Controller';
 import RayonArtifactAgent from './RayonArtifactAgent';
 import RegistryAgent from '../../registry/agent/RegistryAgent';
@@ -33,7 +34,7 @@ class RayonLogCollectAgent {
 
       if (nextBlockNumber - 1 === latestBlock.number) {
         console.log('blockNumber:', nextBlockNumber - 1);
-        await this._sleep(ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL);
+        await DateUtil.sleep(ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL);
         continue;
       } else {
         console.log('blockNumber:', nextBlockNumber);
@@ -98,12 +99,6 @@ class RayonLogCollectAgent {
   private _getEventParameter(topics: string[], data: string) {
     if (topics.length === 0) return;
     return topics.map((topic, index) => topic.slice(2)).join('') + data.slice(2);
-  }
-
-  private _sleep(ms) {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
   }
 }
 

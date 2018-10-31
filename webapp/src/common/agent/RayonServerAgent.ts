@@ -1,14 +1,11 @@
 import axios from 'axios';
 
-// model
-import SendResult from '../../../../shared/common/model/SendResult';
-
 abstract class RayonServerAgent {
   public static RESULTCODE_SUCCESS: number = 0;
 
-  public async postRequest<T>(url: string, params?: Object): Promise<SendResult<T>> {
+  public async postRequest<T>(url: string, params?: Object): Promise<T> {
     const { data } = await axios.post(`${URL_APIBASE}${url}`, params);
-    return <SendResult<T>>data;
+    return <T>data;
   }
 
   public async getRequest<T>(url: string, params?: Object): Promise<T> {

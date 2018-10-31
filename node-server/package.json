@@ -12,12 +12,12 @@
     "copy-build-to-dist": "copyfiles ../shared/build/**/* lib/shared/",
     "build": "tsc -p tsconfig.json && npm run copy-build-to-dist",
     "watch": "tsc -w -p tsconfig.json",
-    "start:dev": "ENV_BLOCKCHAIN=local nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts",
+    "start:dev": "ENV_BLOCKCHAIN=dev nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts",
     "start:ropsten": "ENV_BLOCKCHAIN=ropsten nodemon -x ts-node -w src src/main/controller/RayonNodeServerApp.ts",
     "start:prod:ropsten": "ENV_BLOCKCHAIN=ropsten node lib/node-server/src/main/controller/RayonNodeServerApp.js",
     "deploy": "pm2 deploy production deploy",
     "pm2:reload": "pm2 reload ecosystem.config.js --env production",
-    "test": "ENV_BLOCKCHAIN=local mocha -r ts-node/register test/*.spec.ts"
+    "test": "ENV_BLOCKCHAIN=dev mocha -r ts-node/register test/*.spec.ts"
   },
   "author": "Jakub Synowiec <github@jakubsynowiec.info>",
   "license": "APLv2",

@@ -15,7 +15,8 @@ class ContractDbAgent {
     function_name as functionName,
     input_data as inputData,
     called_time as calledTime,
-    url_etherscan as urlEtherscan`;
+    url_etherscan as urlEtherscan,
+    environment as environment`;
 
   public async getLastRecord(type: string) {
     const query =
@@ -29,9 +30,9 @@ class ContractDbAgent {
     if (StringUtil.isEmpty(type) || !(type === ABI_TYPE_EVENT || type === ABI_TYPE_FUNCTION)) return null;
     const query =
       type === ABI_TYPE_EVENT
-        ? `${this._base}, event_name as eventName FROM rayon.event_log ORDER BY block_number`
-        : `${this._base} FROM rayon.function_log ORDER BY block_number`;
-    return await DbAgent.executeAsync(query);
+        ? `${this._base}, event_name as eventName FROM rayon.event_log where environment = ? ORDER BY block_number`
+        : `${this._base} FROM rayon.function_log where environment = ? ORDER BY block_number `;
+    return await DbAgent.executeAsync(query, [process.env.ENV_BLOCKCHAIN]);
   }
 
   public async getContractLogs(contractAddress: string, type: string) {
@@ -39,9 +40,10 @@ class ContractDbAgent {
     else if (!(type === ABI_TYPE_EVENT || type === ABI_TYPE_FUNCTION)) return null;
     const query =
       type === ABI_TYPE_EVENT
-        ? this._base + `, event_name as eventName FROM rayon.event_log WHERE contract_address=? ORDER BY block_number`
-        : this._base + ` FROM rayon.function_log WHERE contract_address=? ORDER BY block_number`;
-    return await DbAgent.executeAsync(query, [contractAddress]);
+        ? this._base +
+          `, event_name as eventName FROM rayon.event_log WHERE contract_address=? AND environment = ? ORDER BY block_number`
+        : this._base + ` FROM rayon.function_log WHERE contract_address=? AND environment = ? ORDER BY block_number `;
+    return await DbAgent.executeAsync(query, [contractAddress, process.env.ENV_BLOCKCHAIN]);
   }
 }
 

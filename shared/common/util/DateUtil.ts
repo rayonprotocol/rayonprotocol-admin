@@ -26,6 +26,12 @@ class DateUtil {
     let targetDate = new Date(UNIX_timestamp * 1000);
     return this.transformTime(targetDate, false);
   }
+
+  public sleep(ms) {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+  }
 }
 
 export default new DateUtil();
