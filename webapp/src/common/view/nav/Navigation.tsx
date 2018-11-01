@@ -44,9 +44,25 @@ class Navigation extends Component<NavigationProps, NavigationState> {
 
   constructor(props) {
     super(props);
+    const url = window.location.href;
+    const startChar = url.indexOf('/', 8);
+    const path = url.substr(startChar, url.length);
     this.state = {
-      selMenu: 'Token',
+      selMenu: this.getSelMenu(path),
     };
+  }
+
+  getSelMenu(path: string) {
+    if (path === '/') return 'Token';
+    let selMenu;
+    console.log(path);
+
+    this._navMenus.forEach(menu => {
+      console.log(menu.to, path.startsWith(menu.to));
+      if (path.startsWith(menu.to)) selMenu = menu.name;
+    });
+    console.log(selMenu);
+    return selMenu;
   }
 
   onClickMunu(name: string) {
