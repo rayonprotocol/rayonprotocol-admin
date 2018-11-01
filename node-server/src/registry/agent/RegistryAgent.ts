@@ -3,7 +3,6 @@ import Contract from '../../../../shared/contract/model/Contract';
 import ContractUtil from '../../../../shared/common/util/ContractUtil';
 
 class RegistryAgent {
-
   private _contracts_dev: Contract[] = [
     {
       address: '0x87734414f6fe26c3fff5b3fa69d379be4c0a2056',
@@ -15,10 +14,10 @@ class RegistryAgent {
 
   private _contracts_ropsten: Contract[] = [
     {
-      address: '0xf9a8a966d310cb240c4edc98ca43eb7ff1c5d491',
+      address: '0xf96d3af89278fea66111fcd307b1a5e2b3fa3c04',
       name: 'RayonToken',
       owner: '0x63d49dae293Ff2F077F5cDA66bE0dF251a0d3290',
-      deployedBlockNumber: 3936488,
+      deployedBlockNumber: 4343160,
     },
   ];
 

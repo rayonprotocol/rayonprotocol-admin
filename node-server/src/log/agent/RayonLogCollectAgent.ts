@@ -48,6 +48,7 @@ class RayonLogCollectAgent {
   }
 
   private async _getRayonContractTxLogs(txBlock: TxBlock): Promise<TxLog[]> {
+    if (!txBlock) return [];
     const txLog: TxLog[] = await Promise.all(
       txBlock.transactions.map(async transaction => {
         if (!RegistryAgent.isRayonContract(transaction.to)) return;
@@ -70,6 +71,10 @@ class RayonLogCollectAgent {
     const contractAddress = transaction.to.toLowerCase();
     const functionSignature = transaction.input.slice(0, 10).toLowerCase();
     const functionParameter = transaction.input.slice(10).toLowerCase();
+    const urlBase =
+      process.env.ENV_BLOCKCHAIN === ContractUtil.ENV_TESTNET
+        ? 'https://ropsten.etherscan.io/tx/'
+        : 'https://etherscan.io/tx/';
     return {
       blockNumber: transaction.blockNumber,
       txHash: transaction.hash,
@@ -78,7 +83,7 @@ class RayonLogCollectAgent {
       contractAddress,
       functionName: RayonArtifactAgent.getFullName(contractAddress, functionSignature),
       inputData: RayonArtifactAgent.getParameters(contractAddress, functionSignature, functionParameter),
-      urlEtherscan: `https://etherscan.io/tx/${transaction.hash}`,
+      urlEtherscan: `${urlBase}${transaction.hash}`,
       environment: process.env.ENV_BLOCKCHAIN,
     };
   }
