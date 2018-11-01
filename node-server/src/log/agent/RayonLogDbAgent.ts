@@ -3,7 +3,7 @@ import DbAgent from '../../common/agent/DbAgent';
 
 // model
 import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+
 import RegistryAgent from '../../registry/agent/RegistryAgent';
 
 class RayonLogDbAgent {
@@ -14,8 +14,11 @@ class RayonLogDbAgent {
   public async getNextBlockNumberToRead() {
     let queryResult;
     queryResult = await DbAgent.executeAsync(
-      `
-      SELECT MAX(block_number) readLastBlock FROM rayon.function_log where environment=?
+    `
+      SELECT
+        MAX(block_number) readLastBlock
+      FROM
+        rayon.function_log where environment=?
     `,
       [process.env.ENV_BLOCKCHAIN]
     );
@@ -40,24 +43,26 @@ class RayonLogDbAgent {
     const result = await DbAgent.executeAsync(
       `
         INSERT INTO rayon.function_log (
-            block_number,
-            tx_hash,
-            status,
-            contract_address,
-            function_name,
-            input_data,
-            called_time,
-            url_etherscan,
-            environment) VALUES (
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?
+          block_number,
+          tx_hash,
+          status,
+          contract_address,
+          function_name,
+          input_data,
+          called_time,
+          url_etherscan,
+          environment
+        )
+        VALUES (
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?
         )`,
       [
         functionLog.blockNumber,
@@ -79,28 +84,30 @@ class RayonLogDbAgent {
     if (eventLog.eventName === this.TRANSFER_EVENT) this._storeTxHolder(eventLog);
     const result = await DbAgent.executeAsync(
       `
-        INSERT INTO rayon.event_log (
-            block_number,
-            tx_hash,
-            status,
-            contract_address,
-            event_name,
-            function_name,
-            input_data,
-            called_time,
-            url_etherscan,
-            environment) VALUES (
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?
-        )`,
+      INSERT INTO rayon.event_log (
+        block_number,
+        tx_hash,
+        status,
+        contract_address,
+        event_name,
+        function_name,
+        input_data,
+        called_time,
+        url_etherscan,
+        environment
+      )
+      VALUES (
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?
+      )`,
       [
         eventLog.blockNumber,
         eventLog.txHash.toLowerCase(),
@@ -126,14 +133,16 @@ class RayonLogDbAgent {
         holder_log.from,
         holder_log.to,
         holder_log.amount,
-        holder_log.called_time
+        holder_log.called_time,
+        holder_log.environment
       ) VALUES (
+        ?,
         ?,
         ?,
         ?,
         ?
       )`,
-      [inputData.from, inputData.to, inputData.value, eventLog.calledTime]
+      [inputData.from, inputData.to, inputData.value, eventLog.calledTime, process.env.ENV_BLOCKCHAIN]
     );
   }
 }

@@ -1,6 +1,6 @@
 // model
 import Contract from '../../../../shared/contract/model/Contract';
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+import ContractUtil from '../../../../shared/common/util/ContractUtil';
 
 class RegistryAgent {
 
@@ -24,8 +24,8 @@ class RegistryAgent {
 
   public getContracts() {
     const env = process.env.ENV_BLOCKCHAIN;
-    if (env === ContractConfigure.ENV_DEV) return this._contracts_dev;
-    else if (env === ContractConfigure.ENV_TESTNET) return this._contracts_ropsten;
+    if (env === ContractUtil.ENV_DEV) return this._contracts_dev;
+    else if (env === ContractUtil.ENV_TESTNET) return this._contracts_ropsten;
   }
 
   public getContractAddrList() {

@@ -7,12 +7,12 @@ import RayonLogDbAgent from './RayonLogDbAgent';
 
 // model
 import { TxBlock, Transaction, TxReceipt } from '../../common/model/Web3Type';
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
 
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 import DateUtil from '../../../../shared/common/util/DateUtil';
+import ContractUtil from '../../../../shared/common/util/ContractUtil';
 import Web3Controller from '../../common/controller/Web3Controller';
 import RayonArtifactAgent from './RayonArtifactAgent';
 import RegistryAgent from '../../registry/agent/RegistryAgent';
@@ -34,7 +34,7 @@ class RayonLogCollectAgent {
 
       if (nextBlockNumber - 1 === latestBlock.number) {
         console.log('blockNumber:', nextBlockNumber - 1);
-        await DateUtil.sleep(ContractConfigure.AUTOMAITC_REQUEST_TIME_INTERVAL);
+        await DateUtil.sleep(ContractUtil.AUTOMAITC_REQUEST_TIME_INTERVAL);
         continue;
       } else {
         console.log('blockNumber:', nextBlockNumber);

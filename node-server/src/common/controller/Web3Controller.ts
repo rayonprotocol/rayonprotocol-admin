@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import Web3 from 'web3';
 
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
+import ContractUtil from '../../../../shared/common/util/ContractUtil';
 
 class Web3Controller {
   private _web3: Web3;
@@ -27,7 +27,7 @@ class Web3Controller {
 
   public getHttpProvider() {
     const Web3 = require('web3');
-    const url: Object = ContractConfigure.getHttpUrl(process.env.ENV_BLOCKCHAIN);
+    const url: Object = ContractUtil.getHttpUrl(process.env.ENV_BLOCKCHAIN);
     return new Web3.providers.HttpProvider(url);
   }
 }

@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js';
 import { relativeUrl as parentUrl } from '../../interface/Ajax';
-import ContractConfigure from '../../common/model/ContractConfigure';
 
 export const URLForGetAllLogs = `${parentUrl}/contracts/logs/`;
 export const URLForGetContractLogs = `${parentUrl}/contracts/:address/logs/:type`;

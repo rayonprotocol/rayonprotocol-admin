@@ -1,9 +1,11 @@
-// util
-import ContractUtil from '../../../../shared/common/util/ContractUtil';
+// agent
+import RegistryAgent from '../../registry/agent/RegistryAgent';
+
+// controller
 import Web3Controller from '../../common/controller/Web3Controller';
 
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
-import RegistryAgent from '../../registry/agent/RegistryAgent';
+// util
+import ContractUtil from '../../../../shared/common/util/ContractUtil';
 
 class TokenBlockchainAgent {
   private _contractInstance: any;

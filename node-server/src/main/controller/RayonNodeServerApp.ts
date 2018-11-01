@@ -9,7 +9,6 @@ import TokenDC from '../../token/dc/TokenDC';
 import ContractDC from '../../contract/dc/ContractDC';
 
 // model
-import ContractConfigure from '../../../../shared/common/model/ContractConfigure';
 import RayonArtifactAgent from '../../log/agent/RayonArtifactAgent';
 
 const express = require('express');
