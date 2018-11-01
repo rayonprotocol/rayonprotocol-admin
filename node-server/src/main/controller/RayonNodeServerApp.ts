@@ -1,3 +1,5 @@
+require('dotenv').config(); // load environment variables as early as possible
+
 import * as cors from 'cors';
 import sendResult from '../../main/dc/sendResult';
 
@@ -14,8 +16,6 @@ import RayonArtifactAgent from '../../log/agent/RayonArtifactAgent';
 const express = require('express');
 const app = express();
 
-// for use .env variables
-require('dotenv').config();
 const port = Number(process.env.APP_PORT) || 3000;
 
 // defined use middle ware
