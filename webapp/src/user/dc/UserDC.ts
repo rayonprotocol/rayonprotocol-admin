@@ -58,7 +58,7 @@ class UserDC {
     if (!StringUtil.isEmpty(this._userAccount)) this._userAccount = this._userAccount.toLowerCase();
 
     this._userLoginListeners &&
-      this._userLoginListeners.forEach(listener => listener(this._userAccount, this.getNetworkName()));
+      this._userLoginListeners.forEach(listener => listener(this._userAccount, this.getNetworkName(this._networkId)));
   }
 
   public async isAdminUser(userAddress: string) {
@@ -72,9 +72,9 @@ class UserDC {
     return this._userAccount;
   }
 
-  public getNetworkName() {
-    if (this._networkId === 1) return 'Mainnet';
-    else if (this._networkId === 3) return 'Ropsten';
+  public getNetworkName(networkId: number) {
+    if (networkId.toString() === '1') return 'Mainnet';
+    else if (networkId.toString() === '3') return 'Ropsten';
     else return 'Local';
   }
 }

@@ -55,13 +55,10 @@ class Navigation extends Component<NavigationProps, NavigationState> {
   getSelMenu(path: string) {
     if (path === '/') return 'Token';
     let selMenu;
-    console.log(path);
 
     this._navMenus.forEach(menu => {
-      console.log(menu.to, path.startsWith(menu.to));
       if (path.startsWith(menu.to)) selMenu = menu.name;
     });
-    console.log(selMenu);
     return selMenu;
   }
 
