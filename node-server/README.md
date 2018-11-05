@@ -21,7 +21,7 @@ docker-compose -f "localdb/docker-compose.yml" up -d --build
 2. execute command to start up mysql and inititate schema and user
 
 ```sh
-mysqld --init-file /data/application/rayon.sql
+mysqld --init-file localdb/rayon.sql
 ```
 
 ## deploy
