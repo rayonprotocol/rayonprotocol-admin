@@ -12,23 +12,12 @@ class ContractUtil {
   public ENV_DEV = 'dev';
   public ENV_TESTNET = 'ropsten';
 
-  private websocketUrl = {
-    dev: 'http://localhost:8545',
-    ropsten: 'wss://ropsten.infura.io/ws',
-    rinkeby: 'wss://rinkeby.infura.io/ws',
-    mainnet: 'wss://mainnet.infura.io/ws',
-  };
-
   private httpUrl = {
     dev: 'http://localhost:8545',
     ropsten: 'https://ropsten.infura.io/',
     rinkeby: 'https://rinkeby.infura.io/',
     mainnet: 'https://mainnet.infura.io/',
   };
-
-  public getWebsocketUrl(blockchainEnv: string) {
-    return this.websocketUrl[blockchainEnv];
-  }
 
   public getHttpUrl(blockchainEnv: string) {
     return this.httpUrl[blockchainEnv];

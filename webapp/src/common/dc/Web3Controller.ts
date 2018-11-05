@@ -23,12 +23,6 @@ class Web3Controller {
     return this._web3;
   }
 
-  public getWebsocketProvider() {
-    const Web3 = require('web3');
-    const url: Object = ContractUtil.getWebsocketUrl(ENV_BLOCKCHAIN);
-    return new Web3.providers.WebsocketProvider(url);
-  }
-
   public getHttpProvider() {
     const Web3 = require('web3');
     const url: Object = ContractUtil.getHttpUrl(ENV_BLOCKCHAIN) + ``;
