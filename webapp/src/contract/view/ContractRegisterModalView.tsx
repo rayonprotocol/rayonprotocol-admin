@@ -16,7 +16,7 @@ interface ContractRegisterModalViewState {
 }
 
 class ContractRegisterModalView extends Component<ContractRegisterModalViewProps, ContractRegisterModalViewState> {
-  handleClickRegisterBtn(proxyAddress: string, blockNumber: number) {
+  handleClickRegisterBtn() {
     this.props.onClickRegister(this.state.proxyAddress, this.state.blockNumber);
   }
 

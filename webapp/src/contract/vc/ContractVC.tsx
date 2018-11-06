@@ -15,7 +15,8 @@ import ContractOverviewView from 'contract/view/ContractOverviewView';
 import ContractInfoView from 'contract/view/ContractInfoView';
 import EventLogTableView from 'contract/view/EventLogTableView';
 import FunctionLogTableView from 'contract/view/FunctionLogTableView';
-import ContractRegisterModelView from 'contract/view/ContractRegisterModalView';
+import ContractRegisterModalView from 'contract/view/ContractRegisterModalView';
+import ContractUpgradeModalView from 'contract/view/ContractUpgradeModalView';
 
 // styles
 import styles from './ContractVC.scss';
@@ -28,6 +29,7 @@ interface ContractVCState {
   selContractAddr: string;
   isLoading: boolean;
   isRegisterModalOpen: boolean;
+  isUpgradeModalOpen: boolean;
 }
 
 class ContractVC extends Component<{}, ContractVCState> {
@@ -76,9 +78,18 @@ class ContractVC extends Component<{}, ContractVCState> {
     this.setState({ ...this.state, isRegisterModalOpen: !this.state.isRegisterModalOpen });
   }
 
+  public onClickUpgradeModalOpenAndClose() {
+    this.setState({ ...this.state, isUpgradeModalOpen: !this.state.isUpgradeModalOpen });
+  }
+
   public onClickRegisterButton(proxyAddress: string, blockNumber: number) {
     console.log('proxyAddress', proxyAddress);
     console.log('blockNumber', blockNumber);
+    return;
+  }
+
+  public onClickUpgradeButton(interfaceAddress: string) {
+    console.log('interfaceAddress', interfaceAddress);
     return;
   }
 
@@ -100,7 +111,8 @@ class ContractVC extends Component<{}, ContractVCState> {
         <Container className={styles.contractVC}>
           <ContractInfoView
             contracts={this.state.contracts}
-            onClickRegisterModelOpen={this.onClickRegisterModalOpenAndClose.bind(this)}
+            onClickRegisterModalOpen={this.onClickRegisterModalOpenAndClose.bind(this)}
+            onClickUpgradeModalOpen={this.onClickUpgradeModalOpenAndClose.bind(this)}
           />
           {/* {this.state.isLoading ? (
           <Loading />
@@ -122,10 +134,15 @@ class ContractVC extends Component<{}, ContractVCState> {
           </Fragment>
         )} */}
         </Container>
-        <ContractRegisterModelView
+        <ContractRegisterModalView
           isModalOpen={this.state.isRegisterModalOpen}
           onRequestClose={this.onClickRegisterModalOpenAndClose.bind(this)}
           onClickRegister={this.onClickRegisterButton.bind(this)}
+        />
+        <ContractUpgradeModalView
+          isModalOpen={this.state.isUpgradeModalOpen}
+          onRequestClose={this.onClickUpgradeModalOpenAndClose.bind(this)}
+          onClickUpgrade={this.onClickUpgradeButton.bind(this)}
         />
       </Fragment>
     );
