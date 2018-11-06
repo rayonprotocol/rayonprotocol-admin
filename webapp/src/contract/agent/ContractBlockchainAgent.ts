@@ -32,6 +32,7 @@ class ContractBlockchainAgent {
       };
       contracts.push(contract);
     }
+    console.log('contracts', contracts);
     return contracts;
   }
 

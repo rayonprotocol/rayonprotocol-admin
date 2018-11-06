@@ -4,7 +4,7 @@ import * as path from 'path';
 
 // agent
 import DbAgent from '../../common/agent/DbAgent';
-import RegistryAgent from '../../registry/agent/RegistryAgent';
+import ContractBlockchainAgent from '../../contract/agent/ContractBlockchainAgent';
 
 // controller
 import Web3Controller from '../../common/controller/Web3Controller';
@@ -24,11 +24,12 @@ import ContractUtil from '../../../../shared/common/util/ContractUtil';
 class RayonArtifactAgent {
   private _convertedAbi: ConvertedAbi = {};
 
-  public startArtifactConvert(): void {
-    RegistryAgent.getContractAddrList().forEach(contractAddress => {
-      const contractAbi = ContractUtil.getContractArtifact(process.env.ENV_BLOCKCHAIN, contractAddress).abi;
+  public async startArtifactConvert(): Promise<void> {
+    const contracts = await ContractBlockchainAgent.fetchAllContractInfo();
+    contracts.forEach(contract => {
+      const contractAbi = ContractUtil.getContractArtifact(process.env.ENV_BLOCKCHAIN, contract.proxyAddress).abi;
       contractAbi.forEach(abiElement => {
-        this._convertAndStoreAbi(contractAddress, abiElement);
+        this._convertAndStoreAbi(contract.proxyAddress.toLowerCase(), abiElement);
       });
     });
   }

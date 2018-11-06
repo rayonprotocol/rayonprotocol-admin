@@ -1,7 +1,9 @@
 import { BigNumber } from 'bignumber.js';
 
 class ContractUtil {
+  public ADDR_ZERO = '0x0000000000000000000000000000000000000000';
   public ADDR_REGISTRY = '0xf9a8a966d310cb240c4edc98ca43eb7ff1c5d491';
+
   public AUTOMAITC_REQUEST_TIME_INTERVAL: number = 2000;
 
   public ROPSTEN_NETWORK_ID = 3;
@@ -30,6 +32,10 @@ class ContractUtil {
 
   public getContractArtifact(blockchainEnv: string, contractAddress: string) {
     return require(`../../build/${blockchainEnv}/${contractAddress}.json`);
+  }
+
+  public getAdminList() {
+    return ['0x63d49dae293ff2f077f5cda66be0df251a0d3290'];
   }
 }
 

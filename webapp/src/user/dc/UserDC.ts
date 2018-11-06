@@ -1,6 +1,3 @@
-// agent
-import UserAgent from 'user/agent/UserAgent';
-
 // controller
 import Web3Controller from 'common/dc/Web3Controller';
 
@@ -10,6 +7,7 @@ import Metamask from 'common/model/metamask/Metamask';
 // util
 import StringUtil from '../../../../shared/common/util/StringUtil';
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
+import ContractUtil from '../../../../shared/common/util/ContractUtil';
 
 type UserLoginListener = (userAccount: string, networkName: string) => void;
 
@@ -64,7 +62,7 @@ class UserDC {
   public async isAdminUser(userAddress: string) {
     if (userAddress === undefined) return false;
 
-    const adminAddrList = await UserAgent.fetchAllOwner();
+    const adminAddrList = ContractUtil.getAdminList();
     return ArrayUtil.isContainElement(ArrayUtil.makeLowerCase(adminAddrList), userAddress.toLowerCase());
   }
 

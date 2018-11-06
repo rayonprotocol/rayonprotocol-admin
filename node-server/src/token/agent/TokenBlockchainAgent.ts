@@ -1,5 +1,5 @@
 // agent
-import RegistryAgent from '../../registry/agent/RegistryAgent';
+import ContractBlockchainAgent from '../../contract/agent/ContractBlockchainAgent';
 
 // controller
 import Web3Controller from '../../common/controller/Web3Controller';
@@ -8,19 +8,19 @@ import Web3Controller from '../../common/controller/Web3Controller';
 import ContractUtil from '../../../../shared/common/util/ContractUtil';
 
 class TokenBlockchainAgent {
-  private _contractInstance: any;
-
-  constructor() {
-    const contractAddr = RegistryAgent.getContractAddrByName('RayonToken');
-    this._contractInstance = Web3Controller.getContractInstance(contractAddr);
+  public async getTokenInstance() {
+    const contractAddr = await ContractBlockchainAgent.getContractAddrByName('RayonToken');
+    return Web3Controller.getContractInstance(contractAddr);
   }
 
   public async getTokenCap() {
-    return ContractUtil.weiToToken(await this._contractInstance.methods.cap().call());
+    const contractInstance = await this.getTokenInstance();
+    return ContractUtil.weiToToken(await contractInstance.methods.cap().call());
   }
 
   public async getTotalSupply() {
-    return ContractUtil.weiToToken(await this._contractInstance.methods.totalSupply().call());
+    const contractInstance = await this.getTokenInstance();
+    return ContractUtil.weiToToken(await contractInstance.methods.totalSupply().call());
   }
 }
 

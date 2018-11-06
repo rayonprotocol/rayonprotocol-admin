@@ -1,0 +1,964 @@
+{
+  "contractName": "TestScoreV1",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getVersion",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getName",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "kill",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "claimOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isProxy",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_contractAddr",
+          "type": "address"
+        }
+      ],
+      "name": "claimOwnershipContract",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "reclaimEther",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_contractAddr",
+          "type": "address"
+        }
+      ],
+      "name": "reclaimOwnershipContract",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "pendingOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "fallback"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "previousOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipRenounced",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "hitScore",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getScore",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b5060408051808201909152600981527f5465737453636f72650000000000000000000000000000000000000000000000602082015260008054600160a060020a031916331790556001341561006457600080fd5b600061ffff821610156100fe57604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152602b60248201527f76657273696f6e206d7573742062652067726561746572207468616e206f722060448201527f657175616c73207a65726f000000000000000000000000000000000000000000606482015290519081900360840190fd5b815160001061016e57604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601360248201527f6e616d652063616e6e6f74206265206e756c6c00000000000000000000000000604482015290519081900360640190fd5b6001805460a060020a60ff021916905581516101919060029060208501906101ae565b506003805461ffff191661ffff9290921691909117905550610249565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106101ef57805160ff191683800117855561021c565b8280016001018555821561021c579182015b8281111561021c578251825591602001919060010190610201565b5061022892915061022c565b5090565b61024691905b808211156102285760008155600101610232565b90565b6107bf806102586000396000f3006080604052600436106100cf5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630d8e6e2c81146100de57806317d7de7c1461010a57806325b2abf51461019457806341c0e1b5146101ab5780634e71e0c8146101c057806364da4e6f146101d5578063715018a6146101fe5780638da5cb5b146102135780639ef80e12146102445780639f727c2714610265578063a46423ad1461027a578063afd820671461029b578063e30c3978146102c2578063f2fde38b146102d7575b3480156100db57600080fd5b50005b3480156100ea57600080fd5b506100f36102f8565b6040805161ffff9092168252519081900360200190f35b34801561011657600080fd5b5061011f610302565b6040805160208082528351818301528351919283929083019185019080838360005b83811015610159578181015183820152602001610141565b50505050905090810190601f1680156101865780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b3480156101a057600080fd5b506101a9610395565b005b3480156101b757600080fd5b506101a96103a0565b3480156101cc57600080fd5b506101a96103c5565b3480156101e157600080fd5b506101ea61044d565b604080519115158252519081900360200190f35b34801561020a57600080fd5b506101a961046e565b34801561021f57600080fd5b506102286104da565b60408051600160a060020a039092168252519081900360200190f35b34801561025057600080fd5b506101a9600160a060020a03600435166104e9565b34801561027157600080fd5b506101a96105ee565b34801561028657600080fd5b506101a9600160a060020a0360043516610643565b3480156102a757600080fd5b506102b0610738565b60408051918252519081900360200190f35b3480156102ce57600080fd5b5061022861073e565b3480156102e357600080fd5b506101a9600160a060020a036004351661074d565b60035461ffff1690565b60028054604080516020601f600019610100600187161502019094168590049384018190048102820181019092528281526060939092909183018282801561038b5780601f106103605761010080835404028352916020019161038b565b820191906000526020600020905b81548152906001019060200180831161036e57829003601f168201915b5050505050905090565b60048054600a019055565b600054600160a060020a031633146103b757600080fd5b600054600160a060020a0316ff5b600154600160a060020a031633146103dc57600080fd5b60015460008054604051600160a060020a0393841693909116917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600180546000805473ffffffffffffffffffffffffffffffffffffffff19908116600160a060020a03841617909155169055565b60015474010000000000000000000000000000000000000000900460ff1690565b600054600160a060020a0316331461048557600080fd5b60008054604051600160a060020a03909116917ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482091a26000805473ffffffffffffffffffffffffffffffffffffffff19169055565b600054600160a060020a031681565b60008054600160a060020a0316331461050157600080fd5b600160a060020a038216151561057857604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601e60248201527f636f6e747261637420616464726573732063616e6e6f74206265203078300000604482015290519081900360640190fd5b81905080600160a060020a0316634e71e0c86040518163ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401600060405180830381600087803b1580156105d257600080fd5b505af11580156105e6573d6000803e3d6000fd5b505050505050565b600054600160a060020a0316331461060557600080fd5b60008054604051600160a060020a0390911691303180156108fc02929091818181858888f19350505050158015610640573d6000803e3d6000fd5b50565b60008054600160a060020a0316331461065b57600080fd5b600160a060020a03821615156106d257604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601e60248201527f636f6e747261637420616464726573732063616e6e6f74206265203078300000604482015290519081900360640190fd5b5060008054604080517ff2fde38b000000000000000000000000000000000000000000000000000000008152600160a060020a039283166004820152905184939284169263f2fde38b926024808201939182900301818387803b1580156105d257600080fd5b60045490565b600154600160a060020a031681565b600054600160a060020a0316331461076457600080fd5b6001805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a03929092169190911790555600a165627a7a72305820598c15df09f72330d968931de2e016b301bd37fba87c245e6cd6c95d899560dc0029",
+  "deployedBytecode": "0x6080604052600436106100cf5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630d8e6e2c81146100de57806317d7de7c1461010a57806325b2abf51461019457806341c0e1b5146101ab5780634e71e0c8146101c057806364da4e6f146101d5578063715018a6146101fe5780638da5cb5b146102135780639ef80e12146102445780639f727c2714610265578063a46423ad1461027a578063afd820671461029b578063e30c3978146102c2578063f2fde38b146102d7575b3480156100db57600080fd5b50005b3480156100ea57600080fd5b506100f36102f8565b6040805161ffff9092168252519081900360200190f35b34801561011657600080fd5b5061011f610302565b6040805160208082528351818301528351919283929083019185019080838360005b83811015610159578181015183820152602001610141565b50505050905090810190601f1680156101865780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b3480156101a057600080fd5b506101a9610395565b005b3480156101b757600080fd5b506101a96103a0565b3480156101cc57600080fd5b506101a96103c5565b3480156101e157600080fd5b506101ea61044d565b604080519115158252519081900360200190f35b34801561020a57600080fd5b506101a961046e565b34801561021f57600080fd5b506102286104da565b60408051600160a060020a039092168252519081900360200190f35b34801561025057600080fd5b506101a9600160a060020a03600435166104e9565b34801561027157600080fd5b506101a96105ee565b34801561028657600080fd5b506101a9600160a060020a0360043516610643565b3480156102a757600080fd5b506102b0610738565b60408051918252519081900360200190f35b3480156102ce57600080fd5b5061022861073e565b3480156102e357600080fd5b506101a9600160a060020a036004351661074d565b60035461ffff1690565b60028054604080516020601f600019610100600187161502019094168590049384018190048102820181019092528281526060939092909183018282801561038b5780601f106103605761010080835404028352916020019161038b565b820191906000526020600020905b81548152906001019060200180831161036e57829003601f168201915b5050505050905090565b60048054600a019055565b600054600160a060020a031633146103b757600080fd5b600054600160a060020a0316ff5b600154600160a060020a031633146103dc57600080fd5b60015460008054604051600160a060020a0393841693909116917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600180546000805473ffffffffffffffffffffffffffffffffffffffff19908116600160a060020a03841617909155169055565b60015474010000000000000000000000000000000000000000900460ff1690565b600054600160a060020a0316331461048557600080fd5b60008054604051600160a060020a03909116917ff8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c6482091a26000805473ffffffffffffffffffffffffffffffffffffffff19169055565b600054600160a060020a031681565b60008054600160a060020a0316331461050157600080fd5b600160a060020a038216151561057857604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601e60248201527f636f6e747261637420616464726573732063616e6e6f74206265203078300000604482015290519081900360640190fd5b81905080600160a060020a0316634e71e0c86040518163ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401600060405180830381600087803b1580156105d257600080fd5b505af11580156105e6573d6000803e3d6000fd5b505050505050565b600054600160a060020a0316331461060557600080fd5b60008054604051600160a060020a0390911691303180156108fc02929091818181858888f19350505050158015610640573d6000803e3d6000fd5b50565b60008054600160a060020a0316331461065b57600080fd5b600160a060020a03821615156106d257604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601e60248201527f636f6e747261637420616464726573732063616e6e6f74206265203078300000604482015290519081900360640190fd5b5060008054604080517ff2fde38b000000000000000000000000000000000000000000000000000000008152600160a060020a039283166004820152905184939284169263f2fde38b926024808201939182900301818387803b1580156105d257600080fd5b60045490565b600154600160a060020a031681565b600054600160a060020a0316331461076457600080fd5b6001805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a03929092169190911790555600a165627a7a72305820598c15df09f72330d968931de2e016b301bd37fba87c245e6cd6c95d899560dc0029",
+  "sourceMap": "97:265:4:-;;;137:49;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;291:274:0;;;;;;;;;;;;;;;;;-1:-1:-1;567:18:13;;-1:-1:-1;;;;;;567:18:13;575:10;567:18;;;174:1:4;958:9:12;:14;950:23;;;;;;371:1:0;359:13;;;;;351:69;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;438:19;;460:1;-1:-1:-1;430:55:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;495:5;:13;;-1:-1:-1;;;;;;495:13:0;;;518:12;;;;:4;;:12;;;;;:::i;:::-;-1:-1:-1;540:7:0;:18;;-1:-1:-1;;540:18:0;;;;;;;;;;;;-1:-1:-1;97:265:4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;97:265:4;;;-1:-1:-1;97:265:4;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;",
+  "deployedSourceMap": "97:265:4:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;97:265:4;;651:80:0;;8:9:-1;5:2;;;30:1;27;20:12;5:2;651:80:0;;;;;;;;;;;;;;;;;;;;;;;571:74;;8:9:-1;5:2;;;30:1;27;20:12;5:2;571:74:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:100:-1;33:3;30:1;27:10;8:100;;;90:11;;;84:18;71:11;;;64:39;52:2;45:10;8:100;;;12:14;571:74:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;221:55:4;;8:9:-1;5:2;;;30:1;27;20:12;5:2;221:55:4;;;;;;1850:71:0;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1850:71:0;;;;781:164:11;;8:9:-1;5:2;;;30:1;27;20:12;5:2;781:164:11;;;;1235:73:0;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1235:73:0;;;;;;;;;;;;;;;;;;;;;;1001:111:13;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1001:111:13;;;;238:20;;8:9:-1;5:2;;;30:1;27;20:12;5:2;238:20:13;;;;;;;;-1:-1:-1;;;;;238:20:13;;;;;;;;;;;;;;1314:259:0;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;1314:259:0;-1:-1:-1;;;;;1314:259:0;;;;;1189:91:12;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1189:91:12;;;;1579:265:0;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;1579:265:0;-1:-1:-1;;;;;1579:265:0;;;;;282:78:4;;8:9:-1;5:2;;;30:1;27;20:12;5:2;282:78:4;;;;;;;;;;;;;;;;;;;;253:27:11;;8:9:-1;5:2;;;30:1;27;20:12;5:2;253:27:11;;;;601:96;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;601:96:11;-1:-1:-1;;;;;601:96:11;;;;;651:80:0;717:7;;;;651:80;:::o;571:74::-;634:4;627:11;;;;;;;-1:-1:-1;;627:11:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;610:6;;627:11;;634:4;;627:11;;634:4;627:11;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;571:74;:::o;221:55:4:-;258:5;:11;;267:2;258:11;;;221:55::o;1850:71:0:-;719:5:13;;-1:-1:-1;;;;;719:5:13;705:10;:19;697:28;;;;;;1908:5:0;;-1:-1:-1;;;;;1908:5:0;1895:19;781:164:11;433:12;;-1:-1:-1;;;;;433:12:11;419:10;:26;411:35;;;;;;870:12;;;863:5;;842:41;;-1:-1:-1;;;;;870:12:11;;;;863:5;;;;842:41;;;897:12;;;;889:20;;-1:-1:-1;;889:20:11;;;-1:-1:-1;;;;;897:12:11;;889:20;;;;915:25;;;781:164::o;1235:73:0:-;1296:5;;;;;;;;1235:73::o;1001:111:13:-;719:5;;-1:-1:-1;;;;;719:5:13;705:10;:19;697:28;;;;;;1077:5;;;1058:25;;-1:-1:-1;;;;;1077:5:13;;;;1058:25;;;1105:1;1089:18;;-1:-1:-1;;1089:18:13;;;1001:111::o;238:20::-;;;-1:-1:-1;;;;;238:20:13;;:::o;1314:259:0:-;1478:22;719:5:13;;-1:-1:-1;;;;;719:5:13;705:10;:19;697:28;;;;;;-1:-1:-1;;;;;1406:27:0;;;;1398:70;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1513:13;1478:49;;1537:12;-1:-1:-1;;;;;1537:27:0;;:29;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1537:29:0;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1537:29:0;;;;1314:259;;:::o;1189:91:12:-;719:5:13;;-1:-1:-1;;;;;719:5:13;705:10;:19;697:28;;;;;;1238:5:12;;;:37;;-1:-1:-1;;;;;1238:5:12;;;;1261:4;1253:21;1238:37;;;;;1253:21;;1238:37;:5;:37;1253:21;1238:5;:37;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1238:37:12;1189:91::o;1579:265:0:-;1745:20;719:5:13;;-1:-1:-1;;;;;719:5:13;705:10;:19;697:28;;;;;;-1:-1:-1;;;;;1673:27:0;;;;1665:70;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;1831:5:0;;;1800:37;;;;;;-1:-1:-1;;;;;1831:5:0;;;1800:37;;;;;;1776:13;;1800:30;;;;;;:37;;;;;;;;;;;1831:5;1800:30;:37;;;5:2:-1;;;;30:1;27;20:12;282:78:4;348:5;;282:78;:::o;253:27:11:-;;;-1:-1:-1;;;;;253:27:11;;:::o;601:96::-;719:5:13;;-1:-1:-1;;;;;719:5:13;705:10;:19;697:28;;;;;;669:12:11;:23;;-1:-1:-1;;669:23:11;-1:-1:-1;;;;;669:23:11;;;;;;;;;;601:96::o",
+  "source": "pragma solidity ^0.4.24;\n\nimport \"../../rayonprotocol-contract-common/contracts/RayonBase.sol\";\n\ncontract TestScoreV1 is RayonBase {\n    constructor() RayonBase(\"TestScore\", 1) public {}\n\n    uint256 internal score;\n\n    function hitScore() public {\n        score += 10;\n    }\n\n    function getScore() public view returns (uint256){\n        return score;\n    }\n}",
+  "sourcePath": "/Users/home/Desktop/rayon/rayonprotocol-contract-registry/contracts/TestScoreV1.sol",
+  "ast": {
+    "absolutePath": "/Users/home/Desktop/rayon/rayonprotocol-contract-registry/contracts/TestScoreV1.sol",
+    "exportedSymbols": {
+      "TestScoreV1": [
+        1022
+      ]
+    },
+    "id": 1023,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 992,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:4"
+      },
+      {
+        "absolutePath": "/Users/home/Desktop/rayon/rayonprotocol-contract-common/contracts/RayonBase.sol",
+        "file": "../../rayonprotocol-contract-common/contracts/RayonBase.sol",
+        "id": 993,
+        "nodeType": "ImportDirective",
+        "scope": 1023,
+        "sourceUnit": 177,
+        "src": "26:69:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 994,
+              "name": "RayonBase",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 176,
+              "src": "121:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_RayonBase_$176",
+                "typeString": "contract RayonBase"
+              }
+            },
+            "id": 995,
+            "nodeType": "InheritanceSpecifier",
+            "src": "121:9:4"
+          }
+        ],
+        "contractDependencies": [
+          176,
+          1618,
+          1654,
+          1740
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 1022,
+        "linearizedBaseContracts": [
+          1022,
+          176,
+          1654,
+          1618,
+          1740
+        ],
+        "name": "TestScoreV1",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 1002,
+              "nodeType": "Block",
+              "src": "184:2:4",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 1003,
+            "implemented": true,
+            "isConstructor": true,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "hexValue": "5465737453636f7265",
+                    "id": 998,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "string",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "161:11:4",
+                    "subdenomination": null,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_stringliteral_73dd1c476143055bc4af6ed778d65796ed444056be0b5b960eac9f39e75f066e",
+                      "typeString": "literal_string \"TestScore\""
+                    },
+                    "value": "TestScore"
+                  },
+                  {
+                    "argumentTypes": null,
+                    "hexValue": "31",
+                    "id": 999,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "number",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "174:1:4",
+                    "subdenomination": null,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_rational_1_by_1",
+                      "typeString": "int_const 1"
+                    },
+                    "value": "1"
+                  }
+                ],
+                "id": 1000,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 997,
+                  "name": "RayonBase",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 176,
+                  "src": "151:9:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_type$_t_contract$_RayonBase_$176_$",
+                    "typeString": "type(contract RayonBase)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "151:25:4"
+              }
+            ],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 996,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "148:2:4"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 1001,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "184:0:4"
+            },
+            "scope": 1022,
+            "src": "137:49:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1005,
+            "name": "score",
+            "nodeType": "VariableDeclaration",
+            "scope": 1022,
+            "src": "192:22:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1004,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "192:7:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 1012,
+              "nodeType": "Block",
+              "src": "248:28:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1010,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 1008,
+                      "name": "score",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1005,
+                      "src": "258:5:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "+=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "hexValue": "3130",
+                      "id": 1009,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "267:2:4",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_10_by_1",
+                        "typeString": "int_const 10"
+                      },
+                      "value": "10"
+                    },
+                    "src": "258:11:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 1011,
+                  "nodeType": "ExpressionStatement",
+                  "src": "258:11:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1013,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "hitScore",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1006,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "238:2:4"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 1007,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "248:0:4"
+            },
+            "scope": 1022,
+            "src": "221:55:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 1020,
+              "nodeType": "Block",
+              "src": "331:29:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1018,
+                    "name": "score",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 1005,
+                    "src": "348:5:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 1017,
+                  "id": 1019,
+                  "nodeType": "Return",
+                  "src": "341:12:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1021,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "getScore",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1014,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "299:2:4"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 1017,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1016,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1021,
+                  "src": "323:7:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1015,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "323:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "322:9:4"
+            },
+            "scope": 1022,
+            "src": "282:78:4",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 1023,
+        "src": "97:265:4"
+      }
+    ],
+    "src": "0:362:4"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/home/Desktop/rayon/rayonprotocol-contract-registry/contracts/TestScoreV1.sol",
+    "exportedSymbols": {
+      "TestScoreV1": [
+        1022
+      ]
+    },
+    "id": 1023,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 992,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:4"
+      },
+      {
+        "absolutePath": "/Users/home/Desktop/rayon/rayonprotocol-contract-common/contracts/RayonBase.sol",
+        "file": "../../rayonprotocol-contract-common/contracts/RayonBase.sol",
+        "id": 993,
+        "nodeType": "ImportDirective",
+        "scope": 1023,
+        "sourceUnit": 177,
+        "src": "26:69:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 994,
+              "name": "RayonBase",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 176,
+              "src": "121:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_RayonBase_$176",
+                "typeString": "contract RayonBase"
+              }
+            },
+            "id": 995,
+            "nodeType": "InheritanceSpecifier",
+            "src": "121:9:4"
+          }
+        ],
+        "contractDependencies": [
+          176,
+          1618,
+          1654,
+          1740
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 1022,
+        "linearizedBaseContracts": [
+          1022,
+          176,
+          1654,
+          1618,
+          1740
+        ],
+        "name": "TestScoreV1",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 1002,
+              "nodeType": "Block",
+              "src": "184:2:4",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 1003,
+            "implemented": true,
+            "isConstructor": true,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "hexValue": "5465737453636f7265",
+                    "id": 998,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "string",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "161:11:4",
+                    "subdenomination": null,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_stringliteral_73dd1c476143055bc4af6ed778d65796ed444056be0b5b960eac9f39e75f066e",
+                      "typeString": "literal_string \"TestScore\""
+                    },
+                    "value": "TestScore"
+                  },
+                  {
+                    "argumentTypes": null,
+                    "hexValue": "31",
+                    "id": 999,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "number",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "174:1:4",
+                    "subdenomination": null,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_rational_1_by_1",
+                      "typeString": "int_const 1"
+                    },
+                    "value": "1"
+                  }
+                ],
+                "id": 1000,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 997,
+                  "name": "RayonBase",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 176,
+                  "src": "151:9:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_type$_t_contract$_RayonBase_$176_$",
+                    "typeString": "type(contract RayonBase)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "151:25:4"
+              }
+            ],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 996,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "148:2:4"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 1001,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "184:0:4"
+            },
+            "scope": 1022,
+            "src": "137:49:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1005,
+            "name": "score",
+            "nodeType": "VariableDeclaration",
+            "scope": 1022,
+            "src": "192:22:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1004,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "192:7:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 1012,
+              "nodeType": "Block",
+              "src": "248:28:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1010,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 1008,
+                      "name": "score",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1005,
+                      "src": "258:5:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "+=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "hexValue": "3130",
+                      "id": 1009,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "267:2:4",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_10_by_1",
+                        "typeString": "int_const 10"
+                      },
+                      "value": "10"
+                    },
+                    "src": "258:11:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 1011,
+                  "nodeType": "ExpressionStatement",
+                  "src": "258:11:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1013,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "hitScore",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1006,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "238:2:4"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 1007,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "248:0:4"
+            },
+            "scope": 1022,
+            "src": "221:55:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 1020,
+              "nodeType": "Block",
+              "src": "331:29:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1018,
+                    "name": "score",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 1005,
+                    "src": "348:5:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 1017,
+                  "id": 1019,
+                  "nodeType": "Return",
+                  "src": "341:12:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1021,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "getScore",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1014,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "299:2:4"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 1017,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1016,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1021,
+                  "src": "323:7:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1015,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "323:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "322:9:4"
+            },
+            "scope": 1022,
+            "src": "282:78:4",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 1023,
+        "src": "97:265:4"
+      }
+    ],
+    "src": "0:362:4"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x4f5794473892eef5dd06de32f6aadb22bf19cd78",
+      "transactionHash": "0xed690ccebb6c8cd2cf374ebf69c8473a372b8854c80877f383738655848114a3"
+    }
+  },
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-11-06T02:49:19.541Z"
+}

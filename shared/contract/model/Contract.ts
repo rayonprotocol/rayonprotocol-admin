@@ -3,7 +3,6 @@ import { relativeUrl as parentUrl } from '../../interface/Ajax';
 
 export const URLForGetContractLogs = `${parentUrl}/contracts/logs/`;
 export const URLForGetAllContracts = `${parentUrl}/contracts/`;
-export const URLForGetAllOwner = `${parentUrl}/contracts/owners/`;
 
 export const ABI_TYPE_FUNCTION: string = 'function';
 export const ABI_TYPE_EVENT: string = 'event';

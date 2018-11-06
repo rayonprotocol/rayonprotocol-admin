@@ -4,21 +4,29 @@ import 'core-js/modules/es7.symbol.async-iterator'; // for async iterator
 
 // agent
 import RayonLogDbAgent from './RayonLogDbAgent';
+import RayonArtifactAgent from './RayonArtifactAgent';
+import ContractBlockchainAgent from '../../contract/agent/ContractBlockchainAgent';
+
+// controller
+import Web3Controller from '../../common/controller/Web3Controller';
 
 // model
 import { TxBlock, Transaction, TxReceipt } from '../../common/model/Web3Type';
 import TxLog, { FunctionLog, EventLog } from '../../../../shared/common/model/TxLog';
+import { newContract } from '../../../../shared/contract/model/Contract';
 
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
 import DateUtil from '../../../../shared/common/util/DateUtil';
 import ContractUtil from '../../../../shared/common/util/ContractUtil';
-import Web3Controller from '../../common/controller/Web3Controller';
-import RayonArtifactAgent from './RayonArtifactAgent';
-import RegistryAgent from '../../registry/agent/RegistryAgent';
 
 class RayonLogCollectAgent {
+  private _contracts: newContract[];
+  private _contractAddressList: string[];
+
   public async collectionStart() {
+    this._contracts = await ContractBlockchainAgent.fetchAllContractInfo();
+    this._contractAddressList = this._contracts.map(contract => contract.proxyAddress);
     // 제너레이터를 실행시켜, 가공된 rayon의 transaction log를 순차적으로 받아옴
     for await (const rayonContractTxLogs of this._generateRayonContractTxLogs()) {
       console.log('rayonContractTxLogs', rayonContractTxLogs);
@@ -51,7 +59,7 @@ class RayonLogCollectAgent {
     if (!txBlock) return [];
     const txLog: TxLog[] = await Promise.all(
       txBlock.transactions.map(async transaction => {
-        if (!RegistryAgent.isRayonContract(transaction.to)) return;
+        if (this._contractAddressList.indexOf(transaction.to) === -1) return;
 
         const txReceipt: TxReceipt = await Web3Controller.getWeb3().eth.getTransactionReceipt(transaction.hash);
         const functionLog: FunctionLog = this._makeFunctionLog(txReceipt, transaction, txBlock);
