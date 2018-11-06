@@ -55,9 +55,10 @@ class ContractVC extends Component<{}, ContractVCState> {
 
   public async onContractFetched(contracts: newContract[]) {
     const selContractAddr = ContractDC.getFirstContractAddr();
-    const eventLogs = await ContractDC.getEventLogs(selContractAddr);
-    const functionLogs = await ContractDC.getFunctionLogs(selContractAddr);
-    this.setState({ ...this.state, contracts, eventLogs, functionLogs, selContractAddr, isLoading: false });
+    // const eventLogs = await ContractDC.getEventLogs(selContractAddr);
+    // const functionLogs = await ContractDC.getFunctionLogs(selContractAddr);
+    // this.setState({ ...this.state, contracts, eventLogs, functionLogs, selContractAddr, isLoading: false });
+    this.setState({ ...this.state, contracts, selContractAddr, isLoading: false });
   }
 
   public async onSelectContract(selContractAddr: string): Promise<void> {
