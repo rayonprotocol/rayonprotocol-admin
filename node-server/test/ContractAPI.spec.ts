@@ -179,10 +179,12 @@ describe('Get rayon token logs', function() {
       let newBlockTxHash;
       let newTransaction;
       before(done => {
-        rayonTokenInstance.methods.transfer(targetAddr, '5000000000000000000').send({ from: ownerAddr }, (err, txHash) => {
-          newBlockTxHash = txHash;
-          setTimeout(done, 4000);
-        });
+        rayonTokenInstance.methods
+          .transfer(targetAddr, '5000000000000000000')
+          .send({ from: ownerAddr }, (err, txHash) => {
+            newBlockTxHash = txHash;
+            setTimeout(done, 4000);
+          });
       });
       before(done => {
         Web3Controller.getWeb3().eth.getTransaction(newBlockTxHash, (err, transaction) => {
@@ -339,120 +341,6 @@ describe('Get rayon token logs', function() {
           body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
           done();
         });
-    });
-  });
-});
-
-describe('Get All logs', () => {
-  describe('Success case', () => {
-    describe('request event logs', () => {
-      let resData;
-      it('should return status 200', done => {
-        request(app)
-          .get(ContractAPI.URLForGetAllLogs)
-          .query({ type: ContractAPI.ABI_TYPE_EVENT })
-          .end((err, res) => {
-            resData = res.body.data;
-            res.status.should.be.equal(200);
-            done();
-          });
-      });
-      it('should return Array', done => {
-        resData.should.be.Array();
-        done();
-      });
-      it('should have these properties', done => {
-        resData[0].should.have.properties([
-          'blockNumber',
-          'txHash',
-          'status',
-          'contractAddress',
-          'eventName',
-          'functionName',
-          'inputData',
-          'calledTime',
-          'urlEtherscan',
-          'environment',
-        ]);
-        done();
-      });
-    });
-
-    describe('request function logs', () => {
-      let resData;
-      it('should return status 200', done => {
-        request(app)
-          .get(ContractAPI.URLForGetAllLogs)
-          .query({ type: ContractAPI.ABI_TYPE_FUNCTION })
-          .end((err, res) => {
-            resData = res.body.data;
-            res.status.should.be.equal(200);
-            done();
-          });
-      });
-      it('should return Array', done => {
-        resData.should.be.Array();
-        done();
-      });
-      it('should have these properties', done => {
-        resData[0].should.have.properties([
-          'blockNumber',
-          'txHash',
-          'status',
-          'contractAddress',
-          'functionName',
-          'inputData',
-          'calledTime',
-          'urlEtherscan',
-          'environment',
-        ]);
-        done();
-      });
-    });
-
-    describe('Fail case,', () => {
-      let body;
-      const fakeLogType = 'special';
-
-      it('should return status 400 when type missing', done => {
-        request(app)
-          .get(ContractAPI.URLForGetContractLogs)
-          .query({
-            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-          })
-          .end((err, res) => {
-            body = res.body;
-            res.status.should.be.equal(400);
-            body.result_message.should.be.equal('Log type missing');
-            done();
-          });
-      });
-      it('should return status 400 and error message when log type missing', done => {
-        request(app)
-          .get(ContractAPI.URLForGetContractLogs)
-          .query({
-            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-          })
-          .end((err, res) => {
-            body = res.body;
-            res.status.should.be.equal(400);
-            done();
-          });
-      });
-      it('should return status 400 and error message when request not rayon log type ', done => {
-        request(app)
-          .get(ContractAPI.URLForGetContractLogs)
-          .query({
-            address: RegistryAgent.getContracts()[ContractIndex.RAYON_TOKEN].address,
-            type: fakeLogType,
-          })
-          .end((err, res) => {
-            body = res.body;
-            res.status.should.be.equal(400);
-            body.result_message.should.be.equal(`${fakeLogType} is not rayon log type`);
-            done();
-          });
-      });
     });
   });
 });

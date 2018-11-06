@@ -8,6 +8,9 @@ import { newContract } from '../../../../shared/contract/model/Contract';
 // contoller
 import Web3Controller from 'common/dc/Web3Controller';
 
+// util
+import ObjectUtil from '../../../../shared/common/util/ObjectUtil';
+
 type ContractListener = (contracts: newContract[]) => void;
 
 class ContractDC {
@@ -40,9 +43,9 @@ class ContractDC {
   }
 
   public getFirstContractAddr(): string {
-    if (!this._contracts) return null;
-    const test = this._contracts.map(contract => contract.blockNumber);
-    return Math.min.apply(null, test);
+    if (ObjectUtil.isEmpty(this._contracts)) return null;
+    const test = this._contracts.reduce((a, b) => (a.blockNumber > b.blockNumber ? b : a));
+    return test.interfaceAddress;
   }
 
   public setMetamaskLoginListener(listener: (obj) => void) {
