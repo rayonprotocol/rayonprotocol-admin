@@ -2,7 +2,7 @@
 import RayonServerAgent from 'common/agent/RayonServerAgent';
 
 // model
-import Contract, {
+import {
   ABI_TYPE_EVENT,
   ABI_TYPE_FUNCTION,
   URLForGetContractLogs,

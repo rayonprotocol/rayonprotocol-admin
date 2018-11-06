@@ -24,8 +24,8 @@ class ContractBlockchainAgent {
       const resData = await this._contractInstance.methods.getRegistryInfoByIndex(i).call();
       const contract: newContract = {
         name: resData[0],
-        proxyAddress: resData[1],
-        interfaceAddress: resData[2],
+        proxyAddress: resData[1].toLowerCase(),
+        interfaceAddress: resData[2].toLowerCase(),
         version: resData[3],
         blockNumber: resData[4],
         updatedAt: resData[5],

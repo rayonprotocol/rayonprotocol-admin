@@ -11,6 +11,7 @@ import { EventLog } from '../../../../shared/common/model/TxLog';
 
 // util
 import DateUtil from '../../../../shared/common/util/DateUtil';
+import StringUtil from '../../../../shared/common/util/StringUtil';
 
 interface EventLogTableViewProps {
   eventLogs: EventLog[];
@@ -18,6 +19,7 @@ interface EventLogTableViewProps {
 
 class EventLogTableView extends Component<EventLogTableViewProps, {}> {
   renderInputs(inputData: string) {
+    if (StringUtil.isEmpty(inputData)) return 'No Data';
     const inputs = JSON.parse(inputData);
     return Object.keys(inputs).map((inputKey, index) => (
       <p key={index}>

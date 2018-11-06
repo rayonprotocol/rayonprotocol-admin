@@ -8,6 +8,7 @@ import { FunctionLog } from '../../../../shared/common/model/TxLog';
 
 // util
 import DateUtil from '../../../../shared/common/util/DateUtil';
+import StringUtil from '../../../../shared/common/util/StringUtil';
 
 // styles
 import styles from './FunctionLogTableView.scss';
@@ -18,6 +19,7 @@ interface FunctionLogTableViewProps {
 
 class FunctionLogTableView extends Component<FunctionLogTableViewProps, {}> {
   renderInputs(inputData: string) {
+    if (StringUtil.isEmpty(inputData)) return 'No Data';
     const inputs = JSON.parse(inputData);
     return Object.keys(inputs).map((inputKey, index) => (
       <p key={index}>

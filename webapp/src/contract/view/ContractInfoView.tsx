@@ -81,7 +81,7 @@ class ContractInfoView extends Component<ContractInfoViewProps, {}> {
               maxWidth: 100,
               filterable: false,
               Cell: row => (
-                <div className={styles.moreBtn} onClick={() => this.props.onSelectContract(row.original.interfaceAddress)}>
+                <div className={styles.moreBtn} onClick={() => this.props.onSelectContract(row.original.proxyAddress)}>
                   <span>&#x2295;</span>
                 </div>
               ),

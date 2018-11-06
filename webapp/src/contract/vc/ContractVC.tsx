@@ -62,7 +62,7 @@ class ContractVC extends Component<{}, ContractVCState> {
   }
 
   public async onSelectContract(selContractAddr: string): Promise<void> {
-    if (!this.state.selContract || this.state.selContract.interfaceAddress === selContractAddr) return;
+    if (!this.state.selContract || this.state.selContract.proxyAddress === selContractAddr) return;
 
     const eventLogs = await ContractDC.getEventLogs(selContractAddr);
     const functionLogs = await ContractDC.getFunctionLogs(selContractAddr);
@@ -70,8 +70,8 @@ class ContractVC extends Component<{}, ContractVCState> {
     this.setState({ ...this.state, eventLogs, functionLogs, selContract });
   }
 
-  public getSelContractByAddress(interfaceAddress: string) {
-    const filterContracts = this.state.contracts.filter(contract => contract.interfaceAddress === interfaceAddress);
+  public getSelContractByAddress(proxyAddress: string) {
+    const filterContracts = this.state.contracts.filter(contract => contract.proxyAddress === proxyAddress);
     return filterContracts.length ? filterContracts.pop() : undefined;
   }
 
