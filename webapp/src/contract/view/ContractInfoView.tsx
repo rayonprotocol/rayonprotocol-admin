@@ -8,6 +8,7 @@ import SectionTitle from 'common/view/section/SectionTitle';
 
 interface ContractInfoViewProps {
   contracts: newContract[];
+  onClickRegisterModelOpen: () => void;
 }
 
 class ContractInfoView extends Component<ContractInfoViewProps, {}> {
@@ -16,7 +17,7 @@ class ContractInfoView extends Component<ContractInfoViewProps, {}> {
       <Fragment>
         <SectionTitle title={'Contract'}>
           <div>
-            <div>Register</div>
+            <div onClick={this.props.onClickRegisterModelOpen}>Register</div>
             <div>Upgrade</div>
           </div>
         </SectionTitle>
