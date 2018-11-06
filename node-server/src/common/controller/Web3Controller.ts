@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import Web3 from 'web3';
 
 import ContractUtil from '../../../../shared/common/util/ContractUtil';
@@ -16,13 +14,11 @@ class Web3Controller {
     return this._web3;
   }
 
-  public getContractArtifact(contractAddress: string) {
-    const contractPath = `../../../../shared/build/${process.env.ENV_BLOCKCHAIN}/${contractAddress}.json`;
-    return JSON.parse(fs.readFileSync(path.join(__dirname, contractPath), 'utf8'));
-  }
-
   public getContractInstance(contractAddress: string) {
-    return new this._web3.eth.Contract(this.getContractArtifact(contractAddress).abi, contractAddress);
+    return new this._web3.eth.Contract(
+      ContractUtil.getContractArtifact(process.env.ENV_BLOCKCHAIN, contractAddress).abi,
+      contractAddress
+    );
   }
 
   public getHttpProvider() {

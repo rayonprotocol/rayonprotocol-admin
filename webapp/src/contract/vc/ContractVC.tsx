@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 
 // model
 import { EventLog, FunctionLog } from '../../../../shared/common/model/TxLog';
-import Contract from '../../../../shared/contract/model/Contract';
+import { newContract } from '../../../../shared/contract/model/Contract';
 
 // dc
 import ContractDC from 'contract/dc/ContractDC';
@@ -12,6 +12,7 @@ import Loading from 'common/view/loading/Loading';
 import Container from 'common/view/container/Container';
 import ContractLogView from 'contract/view/ContractLogView';
 import ContractOverviewView from 'contract/view/ContractOverviewView';
+import ContractInfoView from 'contract/view/ContractInfoView';
 import EventLogTableView from 'contract/view/EventLogTableView';
 import FunctionLogTableView from 'contract/view/FunctionLogTableView';
 
@@ -22,7 +23,7 @@ interface ContractVCState {
   functionLogs: FunctionLog[];
   eventLogs: EventLog[];
   selLogType: string;
-  contracts: Contract[];
+  contracts: newContract[];
   selContractAddr: string;
   isLoading: boolean;
 }
@@ -47,7 +48,7 @@ class ContractVC extends Component<{}, ContractVCState> {
     ContractDC.fetchAllContracts();
   }
 
-  public async onContractFetched(contracts: Contract[]) {
+  public async onContractFetched(contracts: newContract[]) {
     const selContractAddr = ContractDC.getFirstContractAddr();
     const eventLogs = await ContractDC.getEventLogs(selContractAddr);
     const functionLogs = await ContractDC.getFunctionLogs(selContractAddr);
@@ -73,7 +74,6 @@ class ContractVC extends Component<{}, ContractVCState> {
         return <EventLogTableView eventLogs={this.state.eventLogs} />;
       case ContractVC.TAB_FUNCTION:
         return <FunctionLogTableView functionLogs={this.state.functionLogs} />;
-
       default:
         break;
     }
@@ -82,7 +82,8 @@ class ContractVC extends Component<{}, ContractVCState> {
   render() {
     return (
       <Container className={styles.contractVC}>
-        {this.state.isLoading ? (
+        <ContractInfoView contracts={this.state.contracts} />
+        {/* {this.state.isLoading ? (
           <Loading />
         ) : (
           <Fragment>
@@ -100,7 +101,7 @@ class ContractVC extends Component<{}, ContractVCState> {
               {this.renderLogTable()}
             </ContractLogView>
           </Fragment>
-        )}
+        )} */}
       </Container>
     );
   }

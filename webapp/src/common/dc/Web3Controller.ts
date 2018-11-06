@@ -37,6 +37,13 @@ class Web3Controller {
       return ContractUtil.PROVIDER_LOCALHOST;
     return 'unknown';
   }
+
+  public getContractInstance(contractAddress: string) {
+    return new this._web3.eth.Contract(
+      ContractUtil.getContractArtifact(ENV_BLOCKCHAIN, contractAddress).abi,
+      contractAddress
+    );
+  }
 }
 
 export default new Web3Controller();

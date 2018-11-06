@@ -1,16 +1,17 @@
 // agent
 import ContractAgent from 'contract/agent/ContractAgent';
+import ContractBlockchainAgent from 'contract/agent/ContractBlockchainAgent';
 
 // model
-import Contract from '../../../../shared/contract/model/Contract';
+import { newContract } from '../../../../shared/contract/model/Contract';
 
 // contoller
 import Web3Controller from 'common/dc/Web3Controller';
 
-type ContractListener = (contracts: Contract[]) => void;
+type ContractListener = (contracts: newContract[]) => void;
 
 class ContractDC {
-  private _contracts: Contract[];
+  private _contracts: newContract[];
   private _contractListeners: Set<ContractListener> = new Set<ContractListener>();
 
   public async getEventLogs(address: string) {
@@ -21,7 +22,7 @@ class ContractDC {
     return await ContractAgent.fetchFunctionLogs(address);
   }
 
-  public addContractListener(listener: (contracts: Contract[]) => void) {
+  public addContractListener(listener: (contracts: newContract[]) => void) {
     this._contractListeners.add(listener);
   }
 
@@ -30,20 +31,36 @@ class ContractDC {
   }
 
   public async fetchAllContracts() {
-    if (this._contracts === undefined) this._contracts = await ContractAgent.fetchAllContract();
+    if (this._contracts === undefined) this._contracts = await ContractBlockchainAgent.fetchAllContractInfo();
     this.onContractsfetched(this._contracts);
   }
 
-  public onContractsfetched(contracts: Contract[]): void {
+  public onContractsfetched(contracts: newContract[]): void {
     this._contractListeners && this._contractListeners.forEach(listener => listener(contracts));
   }
 
   public getFirstContractAddr(): string {
-    return this._contracts === undefined ? null : this._contracts[0].address;
+    if (!this._contracts) return null;
+    const test = this._contracts.map(contract => contract.blockNumber);
+    return Math.min.apply(null, test);
   }
 
   public setMetamaskLoginListener(listener: (obj) => void) {
     Web3Controller.getWeb3().currentProvider['publicConfigStore'].on('update', listener);
+  }
+
+  // To Blockchain agent
+
+  public fetchAllContractInfo() {
+    ContractBlockchainAgent.fetchAllContractInfo();
+  }
+
+  public registerProxyContract(proxyAddress: string, blockNumber: number) {
+    ContractBlockchainAgent.registerProxyContract(proxyAddress, blockNumber);
+  }
+
+  public upgradeContract(contractAddress: string[]) {
+    ContractBlockchainAgent.upgradeContract(contractAddress);
   }
 }
 

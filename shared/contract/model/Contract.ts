@@ -9,6 +9,15 @@ export const URLForGetAllOwner = `${parentUrl}/contracts/owners/`;
 export const ABI_TYPE_FUNCTION: string = 'function';
 export const ABI_TYPE_EVENT: string = 'event';
 
+export interface newContract {
+  name: string;
+  proxyAddress: string;
+  interfaceAddress: string;
+  version: number;
+  blockNumber: number;
+  updatedAt: number;
+}
+
 export default interface Contract {
   address: string;
   name: string;

@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 
 class ContractUtil {
+  public ADDR_REGISTRY = '0xf9a8a966d310cb240c4edc98ca43eb7ff1c5d491';
   public AUTOMAITC_REQUEST_TIME_INTERVAL: number = 2000;
 
   public ROPSTEN_NETWORK_ID = 3;
@@ -26,6 +27,10 @@ class ContractUtil {
   public weiToToken = wei => {
     return new BigNumber(wei).dividedBy(new BigNumber(10).pow(18));
   };
+
+  public getContractArtifact(blockchainEnv: string, contractAddress: string) {
+    return require(`../../build/${blockchainEnv}/${contractAddress}.json`);
+  }
 }
 
 export default new ContractUtil();

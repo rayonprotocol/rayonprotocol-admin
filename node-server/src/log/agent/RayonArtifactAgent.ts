@@ -19,22 +19,18 @@ import {
 
 // util
 import ArrayUtil from '../../../../shared/common/util/ArrayUtil';
+import ContractUtil from '../../../../shared/common/util/ContractUtil';
 
 class RayonArtifactAgent {
   private _convertedAbi: ConvertedAbi = {};
 
   public startArtifactConvert(): void {
     RegistryAgent.getContractAddrList().forEach(contractAddress => {
-      const contractAbi = this._getContractArtifact(contractAddress).abi;
+      const contractAbi = ContractUtil.getContractArtifact(process.env.ENV_BLOCKCHAIN, contractAddress).abi;
       contractAbi.forEach(abiElement => {
         this._convertAndStoreAbi(contractAddress, abiElement);
       });
     });
-  }
-
-  private _getContractArtifact(contractAddress: string) {
-    const contractPath = `../../../../shared/build/${process.env.ENV_BLOCKCHAIN}/${contractAddress}.json`;
-    return JSON.parse(fs.readFileSync(path.join(__dirname, contractPath), 'utf8'));
   }
 
   private _convertAndStoreAbi(contractAddress: string, abiElement: AbiElement): void {

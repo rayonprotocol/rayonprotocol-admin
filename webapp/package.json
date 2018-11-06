@@ -8,7 +8,7 @@
     "copy-build": "rm -rf ./build && cp -r ../../rayonprotocol-ico/build ./ ",
     "clean-dist": "rm -f -r -d dist",
     "build": "npm run clean-dist && ENV_BLOCKCHAIN=ropsten NODE_ENV=production webpack -p --config=configs/webpack/prod.js",
-    "start:dev": "ENV_BLOCKCHAIN=development npm run start",
+    "start:dev": "ENV_BLOCKCHAIN=dev npm run start",
     "start:ropsten": "ENV_BLOCKCHAIN=ropsten npm run start",
     "start": "NODE_ENV=development webpack-dev-server --config=configs/webpack/dev.js",
     "start-prod": "npm run build && node express.js"
