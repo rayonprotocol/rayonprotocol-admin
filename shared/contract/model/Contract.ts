@@ -1,8 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { relativeUrl as parentUrl } from '../../interface/Ajax';
 
-export const URLForGetAllLogs = `${parentUrl}/contracts/logs/`;
-export const URLForGetContractLogs = `${parentUrl}/contracts/:address/logs/:type`;
+export const URLForGetContractLogs = `${parentUrl}/contracts/logs/`;
 export const URLForGetAllContracts = `${parentUrl}/contracts/`;
 export const URLForGetAllOwner = `${parentUrl}/contracts/owners/`;
 

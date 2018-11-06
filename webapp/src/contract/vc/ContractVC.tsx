@@ -11,10 +11,10 @@ import ContractDC from 'contract/dc/ContractDC';
 import Loading from 'common/view/loading/Loading';
 import Container from 'common/view/container/Container';
 import ContractLogView from 'contract/view/ContractLogView';
-import ContractOverviewView from 'contract/view/ContractOverviewView';
 import ContractInfoView from 'contract/view/ContractInfoView';
 import EventLogTableView from 'contract/view/EventLogTableView';
 import FunctionLogTableView from 'contract/view/FunctionLogTableView';
+import ContractOverviewView from 'contract/view/ContractOverviewView';
 import ContractRegisterModalView from 'contract/view/ContractRegisterModalView';
 import ContractUpgradeModalView from 'contract/view/ContractUpgradeModalView';
 
@@ -26,7 +26,7 @@ interface ContractVCState {
   eventLogs: EventLog[];
   selLogType: string;
   contracts: newContract[];
-  selContractAddr: string;
+  selContract: newContract;
   isLoading: boolean;
   isRegisterModalOpen: boolean;
   isUpgradeModalOpen: boolean;
@@ -55,18 +55,24 @@ class ContractVC extends Component<{}, ContractVCState> {
 
   public async onContractFetched(contracts: newContract[]) {
     const selContractAddr = ContractDC.getFirstContractAddr();
-    // const eventLogs = await ContractDC.getEventLogs(selContractAddr);
-    // const functionLogs = await ContractDC.getFunctionLogs(selContractAddr);
-    // this.setState({ ...this.state, contracts, eventLogs, functionLogs, selContractAddr, isLoading: false });
-    this.setState({ ...this.state, contracts, selContractAddr, isLoading: false });
+    const eventLogs = await ContractDC.getEventLogs(selContractAddr);
+    const functionLogs = await ContractDC.getFunctionLogs(selContractAddr);
+    const selContract = contracts[0];
+    this.setState({ ...this.state, contracts, eventLogs, functionLogs, selContract, isLoading: false });
   }
 
   public async onSelectContract(selContractAddr: string): Promise<void> {
-    if (this.state.selContractAddr === selContractAddr) return;
+    if (!this.state.selContract || this.state.selContract.interfaceAddress === selContractAddr) return;
 
     const eventLogs = await ContractDC.getEventLogs(selContractAddr);
     const functionLogs = await ContractDC.getFunctionLogs(selContractAddr);
-    this.setState({ ...this.state, eventLogs, functionLogs, selContractAddr });
+    const selContract = this.getSelContractByAddress(selContractAddr);
+    this.setState({ ...this.state, eventLogs, functionLogs, selContract });
+  }
+
+  public getSelContractByAddress(interfaceAddress: string) {
+    const filterContracts = this.state.contracts.filter(contract => contract.interfaceAddress === interfaceAddress);
+    return filterContracts.length ? filterContracts.pop() : undefined;
   }
 
   public onSelectLogType(type: string): void {
@@ -110,30 +116,30 @@ class ContractVC extends Component<{}, ContractVCState> {
     return (
       <Fragment>
         <Container className={styles.contractVC}>
-          <ContractInfoView
-            contracts={this.state.contracts}
-            onClickRegisterModalOpen={this.onClickRegisterModalOpenAndClose.bind(this)}
-            onClickUpgradeModalOpen={this.onClickUpgradeModalOpenAndClose.bind(this)}
-          />
-          {/* {this.state.isLoading ? (
-          <Loading />
-        ) : (
-          <Fragment>
-            <ContractOverviewView
-              contracts={this.state.contracts}
-              selContractAddr={this.state.selContractAddr}
-              onSelectContract={this.onSelectContract.bind(this)}
-            />
+          {this.state.isLoading ? (
+            <Loading />
+          ) : (
+            <Fragment>
+              <ContractInfoView
+                contracts={this.state.contracts}
+                onClickRegisterModalOpen={this.onClickRegisterModalOpenAndClose.bind(this)}
+                onClickUpgradeModalOpen={this.onClickUpgradeModalOpenAndClose.bind(this)}
+                onSelectContract={this.onSelectContract.bind(this)}
+              />
+              <ContractOverviewView
+                contract={this.state.selContract}
+                onSelectContract={this.onSelectContract.bind(this)}
+              />
 
-            <ContractLogView
-              selLogType={this.state.selLogType}
-              logTypes={[ContractVC.TAB_FUNCTION, ContractVC.TAB_EVENT]}
-              onSelectLogType={this.onSelectLogType.bind(this)}
-            >
-              {this.renderLogTable()}
-            </ContractLogView>
-          </Fragment>
-        )} */}
+              <ContractLogView
+                selLogType={this.state.selLogType}
+                logTypes={[ContractVC.TAB_FUNCTION, ContractVC.TAB_EVENT]}
+                onSelectLogType={this.onSelectLogType.bind(this)}
+              >
+                {this.renderLogTable()}
+              </ContractLogView>
+            </Fragment>
+          )}
         </Container>
         <ContractRegisterModalView
           isModalOpen={this.state.isRegisterModalOpen}

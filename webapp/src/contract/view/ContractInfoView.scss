@@ -1,0 +1,14 @@
+.modalButtonSection {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  .registerButton,
+  .upgradeButton {
+    flex: 1;
+    cursor: pointer;
+  }
+  .registerButton {
+    margin-right: 10px;
+  }
+}

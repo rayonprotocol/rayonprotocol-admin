@@ -4,7 +4,7 @@ class StringUtil {
   }
 
   static trimAddress(addr: string) {
-    return addr.slice(0, 5) + '...' + addr.slice(-5);
+    return addr.slice(0, 8) + '...' + addr.slice(-8);
   }
 
   static removeLastZeroInFloatString(str: string) {

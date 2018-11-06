@@ -1,66 +1,59 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 // model
-import Contract from '../../../../shared/contract/model/Contract';
+import { newContract } from '../../../../shared/contract/model/Contract';
 
 // view
 import SectionTitle from 'common/view/section/SectionTitle';
+
+// util
+import ObjectUtil from '../../../../shared/common/util/ObjectUtil';
 
 // styles
 import styles from './ContractOverviewView.scss';
 
 interface ContractOverviewViewProps {
-  contracts: Contract[];
-  selContractAddr: string;
+  contract: newContract;
   onSelectContract: (option: string) => void;
 }
 
 class ContractOverviewView extends Component<ContractOverviewViewProps, {}> {
-  public getContract(): Contract {
-    if (this.props.contracts === undefined) return;
-    const targetContract = this.props.contracts.filter(contract => {
-      if (contract.address === this.props.selContractAddr) return contract.owner;
-    });
-    return targetContract.length ? targetContract.pop() : null;
-  }
-
-  renderTitleAndCombobox() {
-    const { contracts } = this.props;
-    return (
-      <SectionTitle title={'Overview'}>
-        <div className={styles.contractCombobox}>
-          <div className={styles.combobox}>
-            <span className={styles.comboboxLabel}>{'Current contract : '}</span>
-            <select onChange={event => this.props.onSelectContract(event.target.value)}>
-              {contracts.map((contract, index) => {
-                return (
-                  <option key={index} value={contract.address}>
-                    {contract.name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-        </div>
-      </SectionTitle>
-    );
-  }
-
   render() {
-    const { selContractAddr } = this.props;
-    const contract = this.getContract();
+    const { contract } = this.props;
     return (
       <div className={styles.contractOverview}>
-        {this.renderTitleAndCombobox()}
+        <SectionTitle title={'Overview'} />
         <section className={styles.overview}>
-          <div className={styles.owner}>
-            <p>{'Contract Owner'}</p>
-            <p>{contract.owner}</p>
-          </div>
-          <div className={styles.addr}>
-            <p>{'Contract Address'}</p>
-            <p>{selContractAddr}</p>
-          </div>
+          {ObjectUtil.isEmpty(contract) ? (
+            <div>{'Contract is undefined'}</div>
+          ) : (
+            <Fragment>
+              <div>
+                <span>{'Name : '}</span>
+                <span>{contract.name}</span>
+              </div>
+              <div>
+                <span>{'Proxy Contract : '}</span>
+                <span>{contract.proxyAddress}</span>
+              </div>
+              <div>
+                <span>{'Interface Contract : '}</span>
+                <span>{contract.interfaceAddress}</span>
+              </div>
+              <div>
+                <span>{'Version : '}</span>
+                <span>{contract.version}</span>
+              </div>
+              <div>
+                <span>{'Updated : '}</span>
+                <span>{contract.updatedAt}</span>
+              </div>
+              <div>
+                <span>{'Deployed Block  :'}</span>
+                <span>{contract.blockNumber}</span>
+              </div>
+            </Fragment>
+          )}
         </section>
       </div>
     );
