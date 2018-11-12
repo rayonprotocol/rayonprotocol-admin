@@ -36,10 +36,11 @@ CREATE TABLE IF NOT EXISTS `holder_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `from` varchar(100) NOT NULL,
   `to` varchar(100) NOT NULL,
-  `amount` int(11) NOT NULL,
+  `amount` varchar(100) NOT NULL,
   `called_time` varchar(45) NOT NULL,
+  `environment` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=167;
+) ENGINE=InnoDB AUTO_INCREMENT=199;
 
 GRANT ALL PRIVILEGES ON rayon.* TO 'rayonlocal'@'%' identified by 'rayonlocal';
 FLUSH PRIVILEGES;
