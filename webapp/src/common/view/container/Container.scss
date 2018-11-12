@@ -4,6 +4,10 @@
   // min-width: 1200px;
   padding: 18px 20px;
   &.noTopPadding {
-    padding: 0px 25px;
+    padding-top: 0px;
+  }
+  &.noHorizontalPadding {
+    padding-right: 0px;
+    padding-left: 0px;
   }
 }

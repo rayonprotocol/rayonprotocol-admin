@@ -4,6 +4,7 @@ import UserDC from 'user/dc/UserDC';
 // view
 import TokenVC from 'token/vc/TokenVC';
 import ContractVC from 'contract/vc/ContractVC';
+import BorrowerVc from 'borrower/vc/BorrowerVc';
 import NoMetamaskView from 'main/view/NoMetamaskView';
 import OnlyAdminView from 'main/view/OnlyAdminView';
 
@@ -61,6 +62,11 @@ class RouterPathController {
     {
       path: '/kyc',
       component: OnlyAdminView,
+      exact: true,
+    },
+    {
+      path: '/borrower',
+      component: BorrowerVc,
       exact: true,
     },
   ];

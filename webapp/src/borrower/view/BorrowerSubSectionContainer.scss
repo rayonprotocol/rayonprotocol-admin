@@ -1,0 +1,11 @@
+.borrowerSubSectionContainer{
+  width: 100%;
+  h3 {
+    font-size: 26px;
+    padding: 15px 0px;
+  }
+
+  & + & {
+    margin-top: 40px;
+  }
+}

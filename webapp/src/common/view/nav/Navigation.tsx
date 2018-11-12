@@ -40,6 +40,10 @@ class Navigation extends Component<NavigationProps, NavigationState> {
       to: '/contract',
       name: 'Contract',
     },
+    {
+      to: '/borrower',
+      name: 'Borrower',
+    },
   ];
 
   constructor(props) {

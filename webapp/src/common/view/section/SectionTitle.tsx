@@ -6,7 +6,7 @@ import styles from './SectionTitle.scss';
 
 interface SectionTitleProps {
   className?: string;
-  title: string;
+  title: string | JSX.Element;
 }
 
 class SectionTitle extends Component<SectionTitleProps, {}> {

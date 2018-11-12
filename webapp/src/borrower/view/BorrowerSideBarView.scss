@@ -1,0 +1,30 @@
+.borrowerSideBarView {
+  flex: 1;
+  align-self: stretch;
+  max-width: 200px;
+  min-height: 400px;
+  padding-right: 5px;
+  margin-right: 25px;
+  border-right: solid 1px $rayon-gray;
+
+  ul {
+    margin-bottom: 15px;
+  }
+
+  li {
+    list-style: disc;
+    list-style-position: inside;
+    font-size: 14px;
+    &.selected {
+      font-weight: bold;
+    }
+  }
+  li + li {
+    margin-top: 10px;
+  }
+
+  .buttonWrap {
+    display: flex;
+    flex-direction: column;
+  }
+}

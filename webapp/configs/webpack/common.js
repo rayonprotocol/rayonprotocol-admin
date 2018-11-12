@@ -22,6 +22,7 @@ module.exports = {
       contract: path.join(__dirname, '../../src/contract'),
       kyc: path.join(__dirname, '../../src/kyc'),
       user: path.join(__dirname, '../../src/user'),
+      borrower: path.join(__dirname, '../../src/borrower'),
     },
   },
   context: resolve(__dirname, '../../src'),

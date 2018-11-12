@@ -3,20 +3,17 @@
 .borderTextInput {
   .title {
     margin-bottom: 5px;
-    @include set-font(12px, $rayon-gray);
+    @include set-font(12px, $rayon-black);
   }
   input {
     width: 100%;
     padding: 8px 15px;
-    text-align: right;
-    border: 1px solid $rayon-lake;
+    border: 1px solid $rayon-gray;
     border-radius: 4px;
     transition: border ease 0.1s;
     @include set-font(16px, $rayon-black);
-  }
-  &.lender {
-    input {
-      border: 1px solid $rayon-berry;
+    &:disabled {
+      @include set-font(16px, $rayon-deepgray);
     }
   }
 }
