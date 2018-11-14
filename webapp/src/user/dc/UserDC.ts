@@ -28,7 +28,6 @@ class UserDC {
       selectedAddress: (await Web3Controller.getWeb3().eth.getAccounts())[0],
       networkVersion: await Web3Controller.getWeb3().eth.net.getId(),
     };
-
     console.log('_initialize');
     if (!StringUtil.isEmpty(loginResult.selectedAddress) && (await this.isAdminUser(loginResult.selectedAddress))) {
       Web3Controller.setWeb3();
@@ -40,7 +39,8 @@ class UserDC {
   }
 
   private _setMetamaskLoginListener(listener: (obj) => void) {
-    Web3Controller.getWeb3().currentProvider['publicConfigStore'].on('update', listener);
+    const metaMaskWeb3 = (window as any).web3;
+    metaMaskWeb3.currentProvider.publicConfigStore.on('update', listener);
   }
 
   public addUserLoginStatusChangeListeners(listener: UserLoginListener): void {
@@ -65,6 +65,8 @@ class UserDC {
     if (userAddress === undefined) return false;
 
     const adminAddrList = await UserAgent.fetchAllOwner();
+    const adminAddrForDev = '0xFecF01A4f52Cb911C02FF656c8Cb4BbD91a8eaf6';
+    adminAddrList.push(adminAddrForDev);
     return ArrayUtil.isContainElement(ArrayUtil.makeLowerCase(adminAddrList), userAddress.toLowerCase());
   }
 
