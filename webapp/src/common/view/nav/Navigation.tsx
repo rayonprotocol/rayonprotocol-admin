@@ -85,7 +85,7 @@ class Navigation extends Component<NavigationProps, NavigationState> {
           {StringUtil.isEmpty(this.props.userAccount) ? (
             <p className={styles.emptyBlockies} />
           ) : (
-            <Blockies seed={this.props.userAccount} bgColor={'#fff'} />
+            <Blockies seed={(this.props.userAccount).toLowerCase()} />
           )}
         </span>
         <span className={styles.userAddr}>
