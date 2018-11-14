@@ -1,5 +1,4 @@
 export interface Borrower {
-  name: string;
   address: string;
   updatedEpochTime: number;
   updatedDate: string;

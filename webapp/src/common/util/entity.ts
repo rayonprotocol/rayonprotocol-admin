@@ -5,6 +5,7 @@ import memoize from 'lodash.memoize';
 
 function _indexByKeyInner<T, B extends boolean>(entities: T[], keySelector: (entity: T) => string, unique: B) {
   return entities.reduce((indexed, entity) => {
+    if (typeof entity === 'undefined') return indexed;
     const indexKey = keySelector(entity);
     if (unique) {
       (indexed[indexKey] as T) = entity;
@@ -43,6 +44,7 @@ export type Mapper<E, R> = { (entry: E): R };
  */
 function denormalize<C, M, P>(indexedEntities: IndexedEntities<C>, mapper: Mapper<C extends any[] ? C[number] : C, M>) {
   function embedEntity<T>(entity: T) {
+    if (typeof entity === 'undefined') return;
     return Object.assign(mapper.call(mapper, entity) as M, entity);
   }
 

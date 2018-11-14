@@ -58,6 +58,7 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
       BorrowerDC.registerBorrowersObserver(this.ub),
       BorrowerDC.registerBorrowerMembersObserver(this.ubm),
     );
+    BorrowerDC.fetchBorrowerApps();
   }
 
   componentWillUnmount() {
@@ -118,11 +119,13 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
     const { borrowerApps, isFormModalOpen, openedFormMode } = this.state;
     const indexedBorrowerAppWithMembers = this.getBorrowerAppWithMembers(this.state);
     const sortedBorrowerApps = [...(borrowerApps || [])].sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-    const selectedBorrowerAppAddress = this.getBorrowerAppAddressFromProps(this.props, this.state)
-      || sortedBorrowerApps.length && sortedBorrowerApps[0].address
+    const borrowerAppAddressQueryValue = this.getBorrowerAppAddressFromProps(this.props, this.state);
+    const selectedBorrowerAppAddress = borrowerAppAddressQueryValue
+      || sortedBorrowerApps[0] && sortedBorrowerApps[0].address
       || undefined;
     const borrowerAppWithMembers = indexedBorrowerAppWithMembers[selectedBorrowerAppAddress];
 
+    // console.log({ borrowerAppWithMembers });
     return (
       <Container>
         {!borrowerAppWithMembers
