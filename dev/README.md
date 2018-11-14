@@ -2,15 +2,15 @@
 contains all the preparation and environment required for development with Docker Compose.
 
 ## Containers
-Docker Compose run 3 container(app)s as a service
+Docker Compose runs 3 container(app)s as a service
 
 ### Ganache
 - running ganache-cli exposing `localhost:8545`
 
 ### Contract
-this container is started after Ganache is up
+this container will be started after Ganache is up
 
-- compile contracts (artifacts of compilation are shared through `.volume` directory - specified in `docker-compose.yml`)
+- compiling contracts (artifacts of compilation are shared through `.volume` directory - specified in `docker-compose.yml`)
 - sending sample transactions for each contract
 
 ### DB
