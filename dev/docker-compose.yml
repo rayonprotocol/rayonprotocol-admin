@@ -1,0 +1,37 @@
+version: '2.1'
+
+services:
+  ganache:
+    image: trufflesuite/ganache-cli
+    command: -b "${BLOCKTIME}" --mnemonic "${MNEMONIC}" -i ${NETWORK_ID}
+    extra_hosts:
+    - "localhost:10.0.2.2"
+    ports:
+      - 8545:8545
+  contract:
+    image: rayon-dev-contract
+    build: 
+      context: ./contract
+      args: 
+        - MNEMONIC
+        - NETWORK_ID
+        - ROOT_DIR
+    depends_on:
+      - ganache
+    network_mode: host
+    volumes:
+      - ./contract/.volume:${ROOT_DIR}/contract/artifacts
+    expose:
+      - 8545
+  db:
+    image: rayon-dev-db
+    command: --init-file /data/application/db/rayon.sql
+    environment:
+        - MYSQL_DATABASES=rayon
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_HOST=localhost
+    build: ./db
+    ports:
+      - 3306:3306
+    volumes:
+        - ./db/.volume:/var/lib/mysql
