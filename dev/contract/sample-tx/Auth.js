@@ -54,11 +54,11 @@ module.exports = async function (
 
   for (actorName in signaturesFromAttester) {
     const signature = signaturesFromAttester[actorName];
-    const discrption = `user: ${signature.address}, attester: ${attester}`;
+    const description = `user: ${signature.address}, attester: ${attester}`;
     await auth.methods
       .add(signature.messageHash, attester, signature.v, signature.r, signature.s)
       .send({ from: signature.address })
-      .then(logDone.bind(logDone, discrption))
-      .catch(logError.bind(logError, discrption));
+      .then(logDone.bind(logDone, description))
+      .catch(logError.bind(logError, description));
   }
 }

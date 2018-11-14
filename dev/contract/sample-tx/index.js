@@ -22,7 +22,7 @@ const indent = n => ([...Array(n)].map(() => ''));
 const info = chalk.black.bgWhite.bold;
 const error = chalk.bold.red;
 
-const actors = [
+const addresses = [
   'owner',
   'attester',
   'borrowerApp1',
@@ -73,7 +73,7 @@ const sendSampleTx = async () => {
   for (contractName in contractTxSenders) {
     const txSender = contractTxSenders[contractName];
     log(info(`${contractName}: sending tx(s)`));
-    await txSender(actors, web3, utils);
+    await txSender(addresses, web3, utils);
     log();
   }
 
