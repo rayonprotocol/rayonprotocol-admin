@@ -87,7 +87,7 @@ class BorrowerDC {
         default:
           return borrowerMembers;
       }
-    }, this.borrowersSubject.notify);
+    }, this.borrowerMembersSubject.notify);
 
   public addBorrowerApp = BorrowerContractAgent.addBorrowerApp;
 

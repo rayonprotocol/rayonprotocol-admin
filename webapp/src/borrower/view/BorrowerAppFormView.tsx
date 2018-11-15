@@ -25,6 +25,7 @@ interface BorrowerAppFormViewState {
     name: string
   };
   filledbBorrowerApp?: BorrowerApp;
+  confirmReady: boolean;
 }
 
 class BorrowerAppFormView extends Component<BorrowerAppFormViewProps, BorrowerAppFormViewState> {
@@ -38,6 +39,7 @@ class BorrowerAppFormView extends Component<BorrowerAppFormViewProps, BorrowerAp
         address: '',
         name: '',
       },
+    confirmReady: false,
   };
 
   createDraftChangedHandler = (draftProp: keyof BorrowerAppFormViewState['draft']) => (event: SyntheticEvent<HTMLInputElement>) => {
@@ -57,11 +59,12 @@ class BorrowerAppFormView extends Component<BorrowerAppFormViewProps, BorrowerAp
     const { address, name } = this.state.draft;
 
     onBorrowerAppSubmitted(address, name, mode);
+    this.setState(() => ({ confirmReady: true }));
   }
 
   render() {
     const { mode } = this.props;
-    const { name, address } = this.state.draft;
+    const { draft: { name, address }, confirmReady } = this.state;
     const formTitle = mode === FormMode.EDIT ? 'Edit borrower app' : 'Add borrower app';
 
     return (
@@ -76,7 +79,7 @@ class BorrowerAppFormView extends Component<BorrowerAppFormViewProps, BorrowerAp
             </li>
           </ul>
           <div className={styles.buttonWrap}>
-            <TextSubmitButton filled value='Submit' />
+            <TextSubmitButton filled disabled={confirmReady} value={confirmReady ? 'Confirm transaction' : 'Submit'} />
 
           </div>
         </BorrowerSubSectionContainer>

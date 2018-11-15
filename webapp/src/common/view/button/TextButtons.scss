@@ -11,4 +11,14 @@
     background-color: $rayon-lake;
     color: white;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+
+    &.bordered { border: solid 1px $rayon-deepgray; }
+    &.filled {
+      background-color: $rayon-lightgray;
+      color: $rayon-deepgray;
+    }
+  }
 }

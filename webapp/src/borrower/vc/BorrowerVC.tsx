@@ -132,7 +132,6 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
       || undefined;
     const borrowerAppWithMembers = indexedBorrowerAppWithMembers[selectedBorrowerAppAddress];
 
-    // console.log({ borrowerAppWithMembers });
     return (
       <Container>
         {!notifiedOnce
