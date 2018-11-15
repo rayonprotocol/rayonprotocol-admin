@@ -27,5 +27,5 @@ export interface MemberWithBorrower extends BorrowerMember {
 }
 
 export enum BorrowerQueryKey {
-  BORROEWR_APP_ADDRESS = 'baa',
+  BORROEWR_APP_ADDRESS = 'ba',
 }

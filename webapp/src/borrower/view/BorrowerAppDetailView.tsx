@@ -5,7 +5,6 @@ import styles from './BorrowerAppDetailView.scss';
 
 // model
 import { BorrowerAppWithMembers } from '../../../../shared/borrower/model/Borrower';
-import SectionTitle from 'common/view/section/SectionTitle';
 import BorrowerSubSectionContainer from './BorrowerSubSectionContainer';
 
 interface BorrowerAppDetailSubSectionViewProps {
@@ -33,7 +32,7 @@ const BorrowerAppDetailView: StatelessComponent<BorrowerAppDetailViewProps> = pr
   const { borrowerAppWithMembers } = props;
   const details = [
     {
-      title: 'Infromation',
+      title: 'Information',
       items: [
         {
           label: 'address',

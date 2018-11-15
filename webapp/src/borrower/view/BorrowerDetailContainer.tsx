@@ -6,7 +6,7 @@ import SectionTitle from 'common/view/section/SectionTitle';
 
 interface BorrowerDetailContainerProps {
   title: string;
-  buttonElement: JSX.Element;
+  buttonElement?: JSX.Element;
 }
 const BorrowerDetailContainer: StatelessComponent<BorrowerDetailContainerProps> = props => {
   return (

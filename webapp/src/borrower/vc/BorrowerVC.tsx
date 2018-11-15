@@ -25,7 +25,7 @@ import { TextButton } from 'common/view/button/TextButtons';
 type BorrowerVCProps = RouteComponentProps<{}>;
 
 interface BorrowerVCState {
-  isLoading: boolean;
+  notifiedOnce: boolean;
   borrowerApps: BorrowerApp[];
   borrowers: Borrower[];
   borrowerAppEntities: IndexedEntities<BorrowerApp>;
@@ -39,7 +39,7 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true,
+      notifiedOnce: false,
       borrowerApps: [] as BorrowerApp[],
       borrowerAppEntities: {} as IndexedEntities<BorrowerApp>,
       borrowers: [] as Borrower[],
@@ -54,28 +54,28 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
 
   componentDidMount() {
     this.observerUnregisterers.push(
-      BorrowerDC.registerBorrowerAppsObserver(this.uba),
-      BorrowerDC.registerBorrowersObserver(this.ub),
-      BorrowerDC.registerBorrowerMembersObserver(this.ubm),
+      BorrowerDC.registerBorrowerAppsObserver(this.updateBorrowerApps),
+      BorrowerDC.registerBorrowersObserver(this.updateBorrowers),
+      BorrowerDC.registerBorrowerMembersObserver(this.updateBorrowerMembers),
     );
-    BorrowerDC.fetchBorrowerApps();
   }
 
   componentWillUnmount() {
     this.observerUnregisterers.forEach(unregister => unregister());
   }
 
-  uba = (borrowerApps: BorrowerApp[]) => this.setState(() => ({
+  updateBorrowerApps = (borrowerApps: BorrowerApp[]) => this.setState(() => ({
+    notifiedOnce: borrowerApps && borrowerApps.length > 0,
     borrowerApps,
     borrowerAppEntities: indexByKey(borrowerApps, entry => entry.address, true),
   }))
 
-  ub = (borrowers: Borrower[]) => this.setState(() => ({
+  updateBorrowers = (borrowers: Borrower[]) => this.setState(() => ({
     borrowers,
     borrowerEntities: indexByKey(borrowers, entity => entity.address, true),
   }))
 
-  ubm = (borrowerMembers: BorrowerMember[]) => this.setState(() => ({
+  updateBorrowerMembers = (borrowerMembers: BorrowerMember[]) => this.setState(() => ({
     borrowerMemberEntities: indexByKey(borrowerMembers, entity => entity.borrowerAppAddress, false),
   }))
 
@@ -111,12 +111,19 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
       : this.setState(() => ({ isFormModalOpen: visible }));
   }
 
-  handleBorrowerAppSubmission = (name: string, address: string, formMode: FormMode) => {
-    console.log('will handle', { name, address, formMode });
+  handleBorrowerAppSubmission = async (address: string, name: string, formMode: FormMode) => {
+    try {
+      formMode === FormMode.ADD
+        ? await BorrowerDC.addBorrowerApp(address, name)
+        : await BorrowerDC.updateBorrowerApp(address, name);
+    } catch (e) {
+      console.log(e);
+    }
+    this.setState(() => ({ isFormModalOpen: false }));
   }
 
   render() {
-    const { borrowerApps, isFormModalOpen, openedFormMode } = this.state;
+    const { notifiedOnce, borrowerApps, isFormModalOpen, openedFormMode } = this.state;
     const indexedBorrowerAppWithMembers = this.getBorrowerAppWithMembers(this.state);
     const sortedBorrowerApps = [...(borrowerApps || [])].sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
     const borrowerAppAddressQueryValue = this.getBorrowerAppAddressFromProps(this.props, this.state);
@@ -128,7 +135,7 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
     // console.log({ borrowerAppWithMembers });
     return (
       <Container>
-        {!borrowerAppWithMembers
+        {!notifiedOnce
           ? <Loading />
           : (
             <BorrowerContainer>
@@ -136,7 +143,7 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
                 {isFormModalOpen && <BorrowerAppFormView
                   mode={openedFormMode}
                   borrowerApp={borrowerAppWithMembers}
-                  onBorrowerAppSumitted={this.handleBorrowerAppSubmission}
+                  onBorrowerAppSubmitted={this.handleBorrowerAppSubmission}
                 />}
               </RayonModalView>
               <BorrowerSideBarView
@@ -146,12 +153,19 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
                   <TextButton bordered onClick={this.createFormModalVisibilityHandler(true, FormMode.ADD)}>Add</TextButton>
                 }
               />
-              <BorrowerDetailContainer title={borrowerAppWithMembers.name} buttonElement={
-                <TextButton bordered onClick={this.createFormModalVisibilityHandler(true, FormMode.EDIT)}>Edit</TextButton>
-              }>
-                <BorrowerAppDetailView borrowerAppWithMembers={borrowerAppWithMembers} />
-                <BorrowerMemberTableView borrowerAppWithMembers={borrowerAppWithMembers} />
-              </BorrowerDetailContainer>
+              {borrowerAppWithMembers
+                ? (
+                  <BorrowerDetailContainer title={borrowerAppWithMembers.name} buttonElement={
+                    <TextButton bordered onClick={this.createFormModalVisibilityHandler(true, FormMode.EDIT)}>Edit</TextButton>
+                  }>
+                    <BorrowerAppDetailView borrowerAppWithMembers={borrowerAppWithMembers} />
+                    <BorrowerMemberTableView borrowerAppWithMembers={borrowerAppWithMembers} />
+                  </BorrowerDetailContainer>
+                )
+                : (
+                  <BorrowerDetailContainer title={'No borrower app found'}></BorrowerDetailContainer>
+                )}
+
             </BorrowerContainer>
           )
         }

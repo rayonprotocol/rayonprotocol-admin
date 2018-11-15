@@ -2,7 +2,10 @@ export default function createObserverSubject<T>(initialValueGetter: (...args: a
   const observers = new Set<(data: T) => void>();
 
   const notify = (data?: T) => {
-    Array.from(observers).forEach(ob => ob(data || initialValueGetter && initialValueGetter() || undefined));
+    const notifyingData = typeof data !== 'undefined'
+      ? data
+      : initialValueGetter && initialValueGetter() || undefined;
+    Array.from(observers).forEach(ob => ob(notifyingData));
   };
 
   const register = (observer: (data: T) => void, willNotImediatelyNofify?: boolean) => {

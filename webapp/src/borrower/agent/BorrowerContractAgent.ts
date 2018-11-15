@@ -2,6 +2,7 @@ import moment from 'moment';
 import Web3Controller from 'common/dc/Web3Controller';
 import txResultToArr from 'common/util/txResultToArr';
 import { BorrowerApp, Borrower, BorrowerMember } from '../../../../shared/borrower/model/Borrower';
+import createEventSubscriber from 'common/util/createEventSubscriber';
 
 const artifacts = {
   Borrower: require('../../../../dev/contract/.volume/borrower/Borrower.json'),
@@ -52,41 +53,44 @@ class BorrowerContractAgent {
     return !isNaN(joinedBorrowerCount) && Number(joinedBorrowerCount) || 0;
   }
 
-  public getBorrowerMemberByIndex = async (borrowerAppAddress: string, index: number): Promise<Borrower['address']> => {
+  public getBorrowerMemberByIndex = async (borrowerAppAddress: string, index: number): Promise<BorrowerMember> => {
     const borrowerAddress = await this.borrowerMember.methods.getJoinedBorrowerId(borrowerAppAddress, index).call();
-    return borrowerAddress;
+    return this.getBorrowerMember(borrowerAppAddress, borrowerAddress);
   }
 
-  public getBorrowerMemberJoinedEpochTime = async (borrowerAppAddress: string, borrowerAddress: string): Promise<BorrowerMember['joinedEpochTime']> => {
+  public getBorrowerMember = async (borrowerAppAddress: string, borrowerAddress: string): Promise<BorrowerMember> => {
     const joinedEpochTime = await this.borrowerMember.methods.getBorrowerMember(borrowerAppAddress, borrowerAddress).call();
-    return Number(joinedEpochTime);
+    return {
+      borrowerAppAddress,
+      borrowerAddress,
+      joinedEpochTime,
+      joinedDate: moment.unix(joinedEpochTime).format('YYYY-MM-DD'),
+    };
   }
 
   public getBorrowerMembers = async (borrowerAppAddress: string): Promise<BorrowerMember[]> => {
     const count = await this.getBorrowerMemberCount(borrowerAppAddress);
     if (!count) return [];
 
-    const borrowerAddresses = await Promise.all(
-      [...Array(count)].map((_, index) => {
-        return this.getBorrowerMemberByIndex(borrowerAppAddress, index)
-      }),
+    const borrowerMembers = await Promise.all(
+      [...Array(count)].map((_, index) => this.getBorrowerMemberByIndex(borrowerAppAddress, index)),
     );
-
-    const joinedEpochTimes = await Promise.all(
-      borrowerAddresses.map(borrowerAddress => this.getBorrowerMemberJoinedEpochTime(borrowerAppAddress, borrowerAddress))
-    );
-
-    const borrowerMembers: BorrowerMember[] = borrowerAddresses.map((borrowerAddress, index) => ({
-      borrowerAppAddress,
-      borrowerAddress,
-      joinedEpochTime: joinedEpochTimes[index],
-      joinedDate: moment.unix(joinedEpochTimes[index]).format('YYYY-MM-DD'),
-    }));
-
     return borrowerMembers;
+  }
+
+  subscribeBorrowerAppEvent = createEventSubscriber(this.borrowerApp);
+
+  subscribeBorrowerEvent = createEventSubscriber(this.borrower);
+
+  subscribeBorrowerMemberEvent = createEventSubscriber(this.borrowerMember);
+
+  public addBorrowerApp = async (address: string, name: string) => {
+    await this.borrowerApp.methods.add(address, name).send({ from: '0xFecF01A4f52Cb911C02FF656c8Cb4BbD91a8eaf6' });
+  }
+  public updateBorrowerApp = async (address: string, name: string) => {
+    await this.borrowerApp.methods.update(address, name).send({ from: '0xFecF01A4f52Cb911C02FF656c8Cb4BbD91a8eaf6' });
   }
 
 }
 
 export default new BorrowerContractAgent();
-

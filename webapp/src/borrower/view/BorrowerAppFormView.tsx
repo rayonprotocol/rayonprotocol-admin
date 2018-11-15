@@ -1,6 +1,4 @@
-import React, { StatelessComponent, Component, EventHandler, FormEvent, SyntheticEvent } from 'react';
-import { Link } from 'react-router-dom';
-import classNames from 'classnames';
+import React, { Component, FormEvent, SyntheticEvent } from 'react';
 // model
 import { BorrowerApp } from '../../../../shared/borrower/model/Borrower';
 
@@ -18,13 +16,13 @@ enum FormMode {
 interface BorrowerAppFormViewProps {
   mode: FormMode;
   borrowerApp?: BorrowerApp;
-  onBorrowerAppSumitted: (name: BorrowerApp['name'], address: BorrowerApp['address'], mode: FormMode) => void;
+  onBorrowerAppSubmitted: (address: BorrowerApp['address'], name: BorrowerApp['name'], mode: FormMode) => void;
 }
 
 interface BorrowerAppFormViewState {
   draft: {
+    address: string;
     name: string
-    address?: string;
   };
   filledbBorrowerApp?: BorrowerApp;
 }
@@ -34,11 +32,11 @@ class BorrowerAppFormView extends Component<BorrowerAppFormViewProps, BorrowerAp
   state = {
     draft: this.props.mode === FormMode.EDIT
       ? {
-        name: this.props.borrowerApp.name,
         address: this.props.borrowerApp.address,
+        name: this.props.borrowerApp.name,
       } : {
-        name: '',
         address: '',
+        name: '',
       },
   };
 
@@ -55,10 +53,10 @@ class BorrowerAppFormView extends Component<BorrowerAppFormViewProps, BorrowerAp
 
   handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { mode, onBorrowerAppSumitted } = this.props;
-    const { name, address } = this.state.draft;
+    const { mode, onBorrowerAppSubmitted } = this.props;
+    const { address, name } = this.state.draft;
 
-    onBorrowerAppSumitted(name, address, mode);
+    onBorrowerAppSubmitted(address, name, mode);
   }
 
   render() {
