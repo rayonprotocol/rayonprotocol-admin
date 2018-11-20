@@ -2,8 +2,8 @@ version: '2.1'
 
 services:
   ganache:
-    image: trufflesuite/ganache-cli
-    command: -b "${BLOCKTIME}" --mnemonic "${MNEMONIC}" -i ${NETWORK_ID}
+    image: trufflesuite/ganache-cli:v6.1.8
+    command: -b "${BLOCKTIME}"  --mnemonic "${MNEMONIC}" -i ${NETWORK_ID}
     extra_hosts:
     - "localhost:10.0.2.2"
     ports:
