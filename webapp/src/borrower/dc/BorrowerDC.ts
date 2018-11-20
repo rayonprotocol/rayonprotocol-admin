@@ -20,11 +20,9 @@ class BorrowerDC {
     BorrowerContractAgent.subscribeBorrowerEvent(this.accumulateBorrowers);
     BorrowerContractAgent.subscribeBorrowerMemberEvent(this.accumulateBorrowerMembers);
 
-    // borrower member and borrower data are dependent on borrower app data
-    this.registerBorrowerAppsObserver(this.fetchBorrowerMembers);
-    this.registerBorrowerMembersObserver(this.fetchBorrowers);
-
     this.fetchBorrowerApps();
+    this.fetchBorrowerMembers();
+    this.fetchBorrowers();
   }
 
   private borrowerAppsSubject = createObserverSubject<BorrowerApp[]>(
@@ -43,49 +41,49 @@ class BorrowerDC {
   public registerBorrowerMembersObserver = this.borrowerMembersSubject.register;
 
   private accumulateBorrowerApps = createEventAccumulator(this.store, 'BORROWER_APPS',
-    async (borrowerApps: BorrowerApp[], eventObject: ContractEventObject<{ id: string }>): Promise<BorrowerApp[]> => {
+    async (prevBorrowerApps: BorrowerApp[], eventObject: ContractEventObject<{ id: string }>): Promise<BorrowerApp[]> => {
       const { event, returnValues: { id: address } } = eventObject;
-      if (!address) return borrowerApps;
+      if (!address) return prevBorrowerApps;
 
       const borrowerApp = await BorrowerContractAgent.getBorrowerApp(address);
       switch (event) {
         case 'LogBorrowerAppAdded':
-          return borrowerApps.concat(borrowerApp);
+          return prevBorrowerApps.concat(borrowerApp);
         case 'LogBorrowerAppUpdated':
-          return borrowerApps.filter(b => b.address !== address).concat(borrowerApp);
+          return prevBorrowerApps.filter(b => b.address !== address).concat(borrowerApp);
         default:
-          return borrowerApps;
+          return prevBorrowerApps;
       }
     }, this.borrowerAppsSubject.notify);
 
   private accumulateBorrowers = createEventAccumulator(this.store, 'BORROWERS',
-    async (borrowers: Borrower[], eventObject: ContractEventObject<{ id: string }>): Promise<Borrower[]> => {
+    async (prevBorrowers: Borrower[], eventObject: ContractEventObject<{ id: string }>): Promise<Borrower[]> => {
       const { event, returnValues: { id: address } } = eventObject;
-      if (!address) return borrowers;
+      if (!address) return prevBorrowers;
 
       const borrower = await BorrowerContractAgent.getBorrower(address);
       switch (event) {
         case 'LogBorrowerAdded':
-          return borrowers.concat(borrower);
+          return prevBorrowers.concat(borrower);
         case 'LogBorrowerUpdated':
-          return borrowers.filter(b => b.address !== address).concat(borrower);
+          return prevBorrowers.filter(b => b.address !== address).concat(borrower);
         default:
-          return borrowers;
+          return prevBorrowers;
       }
     }, this.borrowersSubject.notify);
 
   private accumulateBorrowerMembers = createEventAccumulator(this.store, 'BORROWER_MEMBERS',
-    async (borrowerMembers: BorrowerMember[], eventObject: ContractEventObject<{ borrowerAppId: string; borrowerId: string; }>): Promise<BorrowerMember[]> => {
+    async (prevBorrowerMembers: BorrowerMember[], eventObject: ContractEventObject<{ borrowerAppId: string; borrowerId: string; }>): Promise<BorrowerMember[]> => {
       const { event, returnValues: { borrowerAppId: borrowerAppAddress, borrowerId: borrowerAddress } } = eventObject;
-      if (!borrowerAppAddress || borrowerAddress) return borrowerMembers;
+      if (!borrowerAppAddress || borrowerAddress) return prevBorrowerMembers;
       const borrowerMember = await BorrowerContractAgent.getBorrowerMember(borrowerAppAddress, borrowerAddress);
       switch (event) {
         case 'LogBorrowerMemberJoined':
-          return borrowerMembers.concat(borrowerMember);
+          return prevBorrowerMembers.concat(borrowerMember);
         case 'LogBorrowerMemberUnjoined':
-          return borrowerMembers.filter(m => m.borrowerAppAddress !== borrowerAppAddress && m.borrowerAddress !== borrowerAddress)
+          return prevBorrowerMembers.filter(m => m.borrowerAppAddress !== borrowerAppAddress && m.borrowerAddress !== borrowerAddress)
         default:
-          return borrowerMembers;
+          return prevBorrowerMembers;
       }
     }, this.borrowerMembersSubject.notify);
 
@@ -107,13 +105,8 @@ class BorrowerDC {
     this.borrowersSubject.notify(borrowers);
   }
 
-  public fetchBorrowerMembers = async (borrowerApps: BorrowerApp[]) => {
-    const membersForBorrowerApps = await Promise.all(borrowerApps.map(borrowerApp => BorrowerContractAgent.getBorrowerMembers(borrowerApp.address)));
-    const borrowerMembers = membersForBorrowerApps.reduce((flatten, membersForBorrowerApp) => {
-      return membersForBorrowerApp
-        ? [...flatten, ...membersForBorrowerApp]
-        : flatten;
-    }, []);
+  public fetchBorrowerMembers = async () => {
+    const borrowerMembers = await BorrowerContractAgent.getBorrowerMembers();
     this.store.set('BORROWER_MEMBERS', borrowerMembers);
     this.borrowerMembersSubject.notify(borrowerMembers);
   }

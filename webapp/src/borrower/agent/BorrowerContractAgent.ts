@@ -21,7 +21,8 @@ class BorrowerContractAgent {
 
   public getBorrowerAppIds = async (): Promise<Array<BorrowerApp['address']>> => {
     const ids: string[] = await this.borrowerApp.methods.getIds().call();
-    return ids;
+    console.log({ ids }, await this.borrowerApp.methods.getIds().call())
+    return ids || [];
   }
 
   public getBorrowerApp = async (borrowerAppAddress: string): Promise<BorrowerApp> => {
@@ -36,16 +37,16 @@ class BorrowerContractAgent {
 
   public getBorrowerIds = async () => {
     const ids: string[] = await this.borrower.methods.getIds().call();
-    return ids;
+    return ids || [];
   }
 
   public getBorrower = async (borrowerId: string): Promise<Borrower> => {
     const result = await this.borrower.methods.get(borrowerId).call();
     const [address, updatedEpochTime] = txResultToArr(result);
-    return {
-      address, updatedEpochTime,
-      updatedDate: updatedEpochTime && moment.unix(updatedEpochTime).format('YYYY-MM-DD') || undefined,
-    };
+    return this.mapDateProp('updatedEpochTime', 'updatedDate')({
+      address,
+      updatedEpochTime,
+    });
   }
 
   public getBorrowerMemberCount = async (borrowerAppAddress: string): Promise<number> => {
@@ -60,21 +61,43 @@ class BorrowerContractAgent {
 
   public getBorrowerMember = async (borrowerAppAddress: string, borrowerAddress: string): Promise<BorrowerMember> => {
     const joinedEpochTime = await this.borrowerMember.methods.getBorrowerMember(borrowerAppAddress, borrowerAddress).call();
-    return {
+    return this.mapDateProp('joinedEpochTime', 'joinedDate')({
       borrowerAppAddress,
       borrowerAddress,
       joinedEpochTime,
-      joinedDate: moment.unix(joinedEpochTime).format('YYYY-MM-DD'),
-    };
+    });
   }
 
-  public getBorrowerMembers = async (borrowerAppAddress: string): Promise<BorrowerMember[]> => {
+  private mapDateProp = (fromProp, toProp) => (obj) => !isNaN(obj[fromProp])
+    ? Object.assign({}, obj, { [toProp]: moment.unix(obj[fromProp]).format('YYYY-MM-DD') })
+    : obj
+
+  public getBorrowerAppMembers = async (borrowerAppAddress: string): Promise<BorrowerMember[]> => {
     const count = await this.getBorrowerMemberCount(borrowerAppAddress);
     if (!count) return [];
-
     const borrowerMembers = await Promise.all(
       [...Array(count)].map((_, index) => this.getBorrowerMemberByIndex(borrowerAppAddress, index)),
     );
+    return borrowerMembers;
+  }
+
+  public getBorrowerMembers = async (): Promise<BorrowerMember[]> => {
+    const countRaw = await this.borrowerMember.methods.getJoinedTotalCount().call();
+    const count = !isNaN(countRaw) ? Number(countRaw) : 0;
+    if (!count) return [];
+
+    const rawBorrowerMembers = await Promise.all(
+      [...Array(count)].map((_, index) => this.borrowerMember.methods.getBorrowerMemberByIndex(index).call()),
+    );
+
+    const borrowerMembers: BorrowerMember[] = rawBorrowerMembers.map(txResultToArr).map(([borrowerAddress, borrowerAppAddress, joinedEpochTime]) =>
+      this.mapDateProp('joinedEpochTime', 'joinedDate')({
+        borrowerAppAddress,
+        borrowerAddress,
+        joinedEpochTime,
+      }),
+    );
+
     return borrowerMembers;
   }
 
