@@ -1,25 +1,23 @@
 module.exports = async function (
   { owner, borrowerApp1, borrowerApp2, borrower1, borrower2, borrower3, borrower4, borrower5 }, // addresses
   web3, // web3 instance
-  { getContract, logDone, logError }, // utils
+  { getContract, logTx }, // utils
 ) {
   const Auth = getContract('kyc/Auth');
   const BorrowerApp = getContract('borrower/BorrowerApp');
   const Borrower = getContract('borrower/Borrower');
 
   const authSettingDescription = `Auth: ${Auth.options.address}`;
-  await Borrower.methods
-    .setAuthContractAddress(Auth.options.address)
-    .send({ from: owner })
-    .then(logDone.bind(logDone, authSettingDescription))
-    .catch(logError.bind(logError, authSettingDescription));
+  await await logTx(
+    Borrower.methods.setAuthContractAddress(Auth.options.address).send({ from: owner }),
+    authSettingDescription
+  );
 
   const borrowerAppSettingDescription = `BorrowerApp: ${BorrowerApp.options.address}`;
-  await Borrower.methods
-    .setBorrowerAppContractAddress(BorrowerApp.options.address)
-    .send({ from: owner })
-    .then(logDone.bind(logDone, borrowerAppSettingDescription))
-    .catch(logError.bind(logError, borrowerAppSettingDescription));
+  await logTx(
+    Borrower.methods.setBorrowerAppContractAddress(BorrowerApp.options.address).send({ from: owner }),
+    borrowerAppSettingDescription
+  );
 
   const borrowersForBorrowerApps = [
     {
@@ -68,11 +66,10 @@ module.exports = async function (
     for (const borrowerAndSig of borrowerApp.borrowers) {
       const { address: borrowerAddress, v, r, s } = borrowerAndSig;
       const description = `borrower: ${borrowerAddress}, borrower app: ${borrowerApp.address}`;
-      await Borrower.methods
-        .add(borrowerAddress, v, r, s)
-        .send({ from: borrowerApp.address })
-        .then(logDone.bind(logDone, description))
-        .catch(logError.bind(logError, description));
+      await logTx(
+        Borrower.methods.add(borrowerAddress, v, r, s).send({ from: borrowerApp.address }),
+        description
+      );
     }
   }
 }

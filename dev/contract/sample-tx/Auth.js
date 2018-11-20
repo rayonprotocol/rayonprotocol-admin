@@ -7,7 +7,7 @@ module.exports = async function (
     borrower5: user5,
   }, // addresses
   web3, // web3 instance
-  { getContract, logDone, logError }, // utils
+  { getContract, logTx }, // utils
 ) {
   const kycAttester = getContract('kyc/KycAttester');
   const auth = getContract('kyc/Auth');
@@ -49,16 +49,19 @@ module.exports = async function (
       s: '0x433aef939bf88839457c25ae0d0be0e529b9a2c7e8b6a6e6eb2f6eb7f05ad7e4'
     }
   };
+  const kycAttesterSettingDescription = `KycAttester: ${kycAttester.options.address}`;
 
-  await auth.methods.setKycAttesterContractAddress(kycAttester.options.address).send({ from: owner });
+  await logTx(
+    auth.methods.setKycAttesterContractAddress(kycAttester.options.address).send({ from: owner }),
+    kycAttesterSettingDescription
+  );
 
   for (actorName in signaturesFromAttester) {
     const signature = signaturesFromAttester[actorName];
     const description = `user: ${signature.address}, attester: ${attester}`;
-    await auth.methods
-      .add(signature.messageHash, attester, signature.v, signature.r, signature.s)
-      .send({ from: signature.address })
-      .then(logDone.bind(logDone, description))
-      .catch(logError.bind(logError, description));
+    await logTx(
+      auth.methods.add(signature.messageHash, attester, signature.v, signature.r, signature.s).send({ from: signature.address }),
+      description
+    );
   }
 }

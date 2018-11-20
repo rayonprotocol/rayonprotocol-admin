@@ -1,13 +1,13 @@
 module.exports = async function (
   { owner, attester }, // addresses
   web3, // web3 instance
-  { getContract, logDone, logError }, // utils
+  { getContract, logTx }, // utils
 ) {
   const kycAttester = getContract('kyc/KycAttester');
   const description = `attester: ${attester}`;
 
-  await kycAttester.methods.add(attester, 'RayonAttester')
-    .send({ from: owner })
-    .then(logDone.bind(logDone, description))
-    .catch(logError.bind(logError, description));
+  await logTx(
+    kycAttester.methods.add(attester, 'RayonAttester').send({ from: owner }),
+    description
+  );
 }

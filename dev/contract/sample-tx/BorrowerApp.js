@@ -1,7 +1,7 @@
 module.exports = async function (
   { owner, borrowerApp1, borrowerApp2, borrowerApp3 }, // addresses
   web3, // web3 instance
-  { getContract, logDone, logError }, // utils
+  { getContract, logTx }, // utils
 ) {
   const borrowerApp = getContract('borrower/BorrowerApp');
   const borrowerAppData = [
@@ -12,10 +12,9 @@ module.exports = async function (
 
   for (const ba of borrowerAppData) {
     const description = `borrower app: ${ba.address}`;
-    await borrowerApp.methods
-      .add(ba.address, ba.name)
-      .send({ from: owner })
-      .then(logDone.bind(logDone, description))
-      .catch(logError.bind(logError, description));
+    await logTx(
+      borrowerApp.methods.add(ba.address, ba.name).send({ from: owner }),
+      description
+    );
   }
 }

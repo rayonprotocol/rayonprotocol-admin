@@ -1,25 +1,23 @@
 module.exports = async function (
   { owner, borrowerApp1, borrowerApp2, borrower1, borrower2, borrower3, borrower4, borrower5 }, // addresses
   web3, // web3 instance
-  { getContract, logDone, logError }, // utils
+  { getContract, logTx }, // utils
 ) {
   const BorrowerApp = getContract('borrower/BorrowerApp');
   const Borrower = getContract('borrower/Borrower');
   const BorrowerMember = getContract('borrower/BorrowerMember');
 
   const borrowerSettingDescription = `Borrower: ${Borrower.options.address}`;
-  await BorrowerMember.methods
-    .setBorrowerContractAddress(Borrower.options.address)
-    .send({ from: owner })
-    .then(logDone.bind(logDone, borrowerSettingDescription))
-    .catch(logError.bind(logError, borrowerSettingDescription));
+  await logTx(
+    BorrowerMember.methods.setBorrowerContractAddress(Borrower.options.address).send({ from: owner }),
+    borrowerSettingDescription
+  );
 
   const borrowerAppSettingDescription = `BorrowerApp: ${BorrowerApp.options.address}`;
-  await BorrowerMember.methods
-    .setBorrowerAppContractAddress(BorrowerApp.options.address)
-    .send({ from: owner })
-    .then(logDone.bind(logDone, borrowerAppSettingDescription))
-    .catch(logError.bind(logError, borrowerAppSettingDescription));
+  await logTx(
+    BorrowerMember.methods.setBorrowerAppContractAddress(BorrowerApp.options.address).send({ from: owner }),
+    borrowerAppSettingDescription
+  );
 
   const borrowersForBorrowerApps = [
     {
@@ -68,11 +66,10 @@ module.exports = async function (
     for (const borrowerAndSig of borrowerApp.borrowers) {
       const { address: borrowerAddress, v, r, s } = borrowerAndSig;
       const description = `borrower: ${borrowerAddress}, borrower app: ${borrowerApp.address}`;
-      await BorrowerMember.methods
-        .join(borrowerAddress, v, r, s)
-        .send({ from: borrowerApp.address })
-        .then(logDone.bind(logDone, description))
-        .catch(logError.bind(logError, description));
+      await logTx(
+        BorrowerMember.methods.join(borrowerAddress, v, r, s).send({ from: borrowerApp.address }),
+        description
+      );
     }
   }
 }

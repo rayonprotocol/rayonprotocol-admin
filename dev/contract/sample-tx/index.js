@@ -13,7 +13,6 @@ const {
   NETWORK_ID,
   ARTIFACT_DIR,
 } = process.env; // envrionment varables
-
 const provider = new HDWalletProvider(MNEMONIC, `http://localhost:8545`, 0, 10); // address_index=0, num_addresses=10
 const web3 = new Web3(provider);
 
@@ -41,6 +40,18 @@ const addresses = [
 
 function getUtils() {
   const contractInstances = {};
+  const logDone = (description) => {
+    log(...indent(2), chalk.green.bold('Done'));
+    log(...indent(2), `..for ${description}`);
+    log();
+  };
+  const logError = (...args) => {
+    const err = args.pop();
+    const description = args.pop();
+    log(...indent(2), error(err.message));
+    if (description) log(...indent(2), `..for ${description}`);
+    log();
+  };
   return {
     getContract: (artifactPath) => {
       if (contractInstances[artifactPath]) return contractInstances[artifactPath];
@@ -50,18 +61,14 @@ function getUtils() {
       contractInstances[artifactPath] = contractInstance;
       return contractInstance;
     },
-    logDone: (description) => {
-      log(...indent(2), chalk.green.bold('Done'));
-      log(...indent(2), `..for ${description}`);
-      log();
+    logTx: async function (txPromiEvent, description) {
+      await new Promise((resolve, reject) => txPromiEvent
+        .once('transactionHash', resolve)
+        .once('error', reject)
+      )
+      .then(() => logDone(description))
+      .catch(e => logError(description, e));
     },
-    logError: (...args) => {
-      const err = args.pop();
-      const description = args.pop();
-      log(...indent(2), error(err.message));
-      if (description) log(...indent(2), `..for ${description}`);
-      log();
-    }
   }
 }
 
@@ -69,7 +76,6 @@ const utils = getUtils();
 
 const sendSampleTx = async () => {
   const contractTxSenders = { KycAttester, Auth, BorrowerApp, Borrower, BorrowerMember }; // the order of tx senders matters
-
   for (contractName in contractTxSenders) {
     const txSender = contractTxSenders[contractName];
     log(info(`${contractName}: sending tx(s)`));
@@ -79,7 +85,8 @@ const sendSampleTx = async () => {
 
   log(chalk.blue.bold('All Done'));
   log();
+  provider.engine.stop();
   process.exit();
 };
 
-sendSampleTx();
+sendSampleTx().catch(console.log);
