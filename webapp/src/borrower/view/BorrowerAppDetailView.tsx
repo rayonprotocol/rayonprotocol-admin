@@ -5,7 +5,9 @@ import styles from './BorrowerAppDetailView.scss';
 
 // model
 import { BorrowerAppWithMembers } from '../../../../shared/borrower/model/Borrower';
-import BorrowerSubSectionContainer from './BorrowerSubSectionContainer';
+
+// view
+import SubSectionContainer from 'common/view/container/SubSectionContainer';
 
 interface BorrowerAppDetailSubSectionViewProps {
   items: Array<{ label: string; value: string | number }>;
@@ -53,9 +55,9 @@ const BorrowerAppDetailView: StatelessComponent<BorrowerAppDetailViewProps> = pr
   return (
     <Fragment>
       {details.map((detail, i) => (
-        <BorrowerSubSectionContainer key={i} title={detail.title}>
+        <SubSectionContainer key={i} title={detail.title}>
           <BorrowerAppDetailSubSectionView key={i} items={detail.items} />
-        </BorrowerSubSectionContainer>
+        </SubSectionContainer>
       ))}
     </Fragment>
   );

@@ -1,0 +1,18 @@
+.personalDataCategoryFormView {
+  width: 100%;
+  
+  li {
+    font-size: 14px;
+  }
+  li + li {
+    margin-top: 10px;
+  }
+
+  ul {
+    margin-bottom: 15px;
+  }
+  .buttonWrap {
+    display: flex;
+    flex-direction: column;
+  }
+}

@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
+import { createSelector } from 'reselect';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import queryString from 'query-string';
 
-import { indexByKey, denormalize, IndexedEntities } from '../../common/util/entity';
+import { indexByKey, denormalize } from '../../common/util/entity';
 
 // model
 import { BorrowerApp, Borrower, BorrowerMember, BorrowerQueryKey } from '../../../../shared/borrower/model/Borrower';
+import { PersonalDataItem, PersonalDataCategory } from '../../../../shared/personaldata/model/PerosnalData';
 
 // dc
 import BorrowerDC from 'borrower/dc/BorrowerDC';
+import PersonalDataDC from 'personaldata/dc/PersonalDataDC';
 
 // view
 import Loading from 'common/view/loading/Loading';
@@ -21,6 +24,7 @@ import BorrowerMemberTableView from 'borrower/view/BorrowerMemberTableView';
 import RayonModalView from 'common/view/modal/RayonModalView';
 import BorrowerAppFormView, { FormMode } from 'borrower/view/BorrowerAppFormView';
 import { TextButton } from 'common/view/button/TextButtons';
+import BorrowerDataItemTableView from 'borrower/view/BorrowerDataItemTableView';
 
 type BorrowerVCProps = RouteComponentProps<{}>;
 
@@ -28,24 +32,89 @@ interface BorrowerVCState {
   notifiedOnce: boolean;
   borrowerApps: BorrowerApp[];
   borrowers: Borrower[];
-  borrowerAppEntities: IndexedEntities<BorrowerApp>;
-  borrowerEntities: IndexedEntities<Borrower>;
-  borrowerMemberEntities: IndexedEntities<BorrowerMember[]>;
+  borrowerMembers: BorrowerMember[];
+  dataItems: PersonalDataItem[];
+  dataCategories: PersonalDataCategory[];
+  selectedBorrowerAppAddress: BorrowerApp['address'];
+  selectedBorrowerAddress: Borrower['address'];
   isFormModalOpen: boolean;
+  isTableModalOpen: boolean;
   openedFormMode: FormMode;
 }
 
+const borrowerAppEntitiesSelector = ({ borrowerApps }: BorrowerVCState) => indexByKey(borrowerApps, entity => entity.address, true);
+const borrowerEntitiesSelector = ({ borrowers }: BorrowerVCState) => indexByKey(borrowers, entity => entity.address, true);
+const borrowerMemberEntitiesSelector = ({ borrowerMembers }: BorrowerVCState) => indexByKey(borrowerMembers, entity => entity.borrowerAppAddress, false);
+const dataItemEntitiesSelector = ({ dataItems }: BorrowerVCState) => indexByKey(dataItems, entity => entity.borrowerAddress, false);
+const dataCategoryEntitiesSelector = ({ dataCategories }: BorrowerVCState) => indexByKey(dataCategories, entity => entity.code, true);
+
+const dataItemWithCategorySelector = createSelector(
+  dataItemEntitiesSelector,
+  dataCategoryEntitiesSelector,
+  (dataItemEntities, dataCategoryEntities) => denormalize(
+    dataItemEntities,
+    entity => ({
+      category: dataCategoryEntities[entity.code],
+    }),
+  ),
+);
+
+const borrowerWithDataItemsSelector = createSelector(
+  borrowerEntitiesSelector,
+  dataItemWithCategorySelector,
+  (borrowerEntities, dataItemWithCategoryEntities) => denormalize(
+    borrowerEntities,
+    entity => ({
+      dataItems: dataItemWithCategoryEntities[entity.address],
+    }),
+  ),
+);
+
+const borrowerMemberWithBorrowerSelector = createSelector(
+  borrowerMemberEntitiesSelector,
+  borrowerWithDataItemsSelector,
+  (borrowerMemberEntities, borrowerWithDataItemsEntities) => denormalize(
+    borrowerMemberEntities,
+    entity => ({
+      borrower: borrowerWithDataItemsEntities[entity.borrowerAddress],
+    }),
+  ));
+
+const borrowerAppWithMembersSelector = createSelector(
+  borrowerAppEntitiesSelector,
+  borrowerMemberWithBorrowerSelector,
+  (borrowerAppEntities, borrowerMemberWithBorrowerEntities) => denormalize(
+    borrowerAppEntities,
+    entity => ({
+      members: borrowerMemberWithBorrowerEntities[entity.address],
+    }),
+  ));
+
 class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
+  static getDerivedStateFromProps = (props: BorrowerVCProps, state: BorrowerVCState): BorrowerVCState => {
+    const { location } = props;
+    const { borrowerApps } = state;
+    const query = queryString.parse(location.search);
+    const borrowerAppAddressQueryValue = query[BorrowerQueryKey.BORROEWR_APP_ADDRESS];
+    const selectedBorrowerAppAddress = borrowerAppAddressQueryValue
+      || borrowerApps[0] && borrowerApps[0].address
+      || undefined;
+    return { ...state, selectedBorrowerAppAddress };
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       notifiedOnce: false,
-      borrowerApps: [] as BorrowerApp[],
-      borrowerAppEntities: {} as IndexedEntities<BorrowerApp>,
-      borrowers: [] as Borrower[],
-      borrowerEntities: {} as IndexedEntities<Borrower>,
-      borrowerMemberEntities: {} as IndexedEntities<BorrowerMember[]>,
+      borrowerApps: [],
+      borrowers: [],
+      borrowerMembers: [],
+      dataItems: [],
+      dataCategories: [],
+      selectedBorrowerAppAddress: undefined,
+      selectedBorrowerAddress: undefined,
       isFormModalOpen: false,
+      isTableModalOpen: false,
       openedFormMode: undefined,
     };
   }
@@ -57,6 +126,8 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
       BorrowerDC.registerBorrowerAppsObserver(this.updateBorrowerApps),
       BorrowerDC.registerBorrowersObserver(this.updateBorrowers),
       BorrowerDC.registerBorrowerMembersObserver(this.updateBorrowerMembers),
+      PersonalDataDC.registerDataItemsObserver(this.updateDataItems),
+      PersonalDataDC.registerDataCategoriesObserver(this.updateDataCategories),
     );
   }
 
@@ -66,41 +137,16 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
 
   updateBorrowerApps = (borrowerApps: BorrowerApp[]) => this.setState(() => ({
     notifiedOnce: borrowerApps && borrowerApps.length > 0,
-    borrowerApps,
-    borrowerAppEntities: indexByKey(borrowerApps, entry => entry.address, true),
+    borrowerApps: borrowerApps.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0),
   }))
 
-  updateBorrowers = (borrowers: Borrower[]) => this.setState(() => ({
-    borrowers,
-    borrowerEntities: indexByKey(borrowers, entity => entity.address, true),
-  }))
+  updateBorrowers = (borrowers: Borrower[]) => this.setState(() => ({ borrowers }));
 
-  updateBorrowerMembers = (borrowerMembers: BorrowerMember[]) => this.setState(() => ({
-    borrowerMemberEntities: indexByKey(borrowerMembers, entity => entity.borrowerAppAddress, false),
-  }))
+  updateBorrowerMembers = (borrowerMembers: BorrowerMember[]) => this.setState(() => ({ borrowerMembers }));
 
-  getBorrowerAppWithMembers({ borrowerAppEntities, borrowerMemberEntities, borrowerEntities }: BorrowerVCState) {
-    const indexedBorrowerMemberWithBorrower = denormalize(
-      borrowerMemberEntities,
-      entry => ({
-        borrower: borrowerEntities[entry.borrowerAddress],
-      }),
-    );
+  updateDataItems = (dataItems: PersonalDataItem[]) => this.setState(() => ({ dataItems }));
 
-    const indexedBorrowerAppWithMembers = denormalize(
-      borrowerAppEntities,
-      entry => ({
-        members: indexedBorrowerMemberWithBorrower[entry.address],
-      }),
-    );
-
-    return indexedBorrowerAppWithMembers;
-  }
-
-  getBorrowerAppAddressFromProps = (props: BorrowerVCProps, state: BorrowerVCState): string => {
-    const query = queryString.parse(props.location.search);
-    return query[BorrowerQueryKey.BORROEWR_APP_ADDRESS];
-  }
+  updateDataCategories = (dataCategories: PersonalDataCategory[]) => this.setState(() => ({ dataCategories }));
 
   createFormModalVisibilityHandler = (visible: BorrowerVCState['isFormModalOpen'], formMode?: BorrowerVCState['openedFormMode']) => () => {
     typeof formMode !== 'undefined'
@@ -109,6 +155,15 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
         isFormModalOpen: visible,
       }))
       : this.setState(() => ({ isFormModalOpen: visible }));
+  }
+
+  createTableModalVisibilityHandler = (visible: BorrowerVCState['isTableModalOpen']) => (borrowerAddress: Borrower['address']) => {
+    typeof borrowerAddress !== 'undefined'
+      ? this.setState(() => ({
+        selectedBorrowerAddress: borrowerAddress,
+        isTableModalOpen: visible,
+      }))
+      : this.setState(() => ({ isTableModalOpen: visible }));
   }
 
   handleBorrowerAppSubmission = async (address: string, name: string, formMode: FormMode) => {
@@ -123,14 +178,14 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
   }
 
   render() {
-    const { notifiedOnce, borrowerApps, isFormModalOpen, openedFormMode } = this.state;
-    const indexedBorrowerAppWithMembers = this.getBorrowerAppWithMembers(this.state);
-    const sortedBorrowerApps = [...(borrowerApps || [])].sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-    const borrowerAppAddressQueryValue = this.getBorrowerAppAddressFromProps(this.props, this.state);
-    const selectedBorrowerAppAddress = borrowerAppAddressQueryValue
-      || sortedBorrowerApps[0] && sortedBorrowerApps[0].address
-      || undefined;
+    const {
+      notifiedOnce, borrowerApps, selectedBorrowerAppAddress, selectedBorrowerAddress,
+      isFormModalOpen, isTableModalOpen, openedFormMode,
+    } = this.state;
+    const indexedBorrowerWithDataItem = borrowerWithDataItemsSelector(this.state);
+    const indexedBorrowerAppWithMembers = borrowerAppWithMembersSelector(this.state);
     const borrowerAppWithMembers = indexedBorrowerAppWithMembers[selectedBorrowerAppAddress];
+    const borrowerWithDataItems = indexedBorrowerWithDataItem[selectedBorrowerAddress];
 
     return (
       <Container>
@@ -138,18 +193,23 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
           ? <Loading />
           : (
             <BorrowerContainer>
-              <RayonModalView narrow isModalOpen={isFormModalOpen} onRequestClose={this.createFormModalVisibilityHandler(false)}>
+              <RayonModalView narrow isModalOpen={isFormModalOpen && !isTableModalOpen} onRequestClose={this.createFormModalVisibilityHandler(false)}>
                 {isFormModalOpen && <BorrowerAppFormView
                   mode={openedFormMode}
                   borrowerApp={borrowerAppWithMembers}
                   onBorrowerAppSubmitted={this.handleBorrowerAppSubmission}
                 />}
               </RayonModalView>
+              <RayonModalView wide isModalOpen={isTableModalOpen && !isFormModalOpen} onRequestClose={this.createTableModalVisibilityHandler(false)}>
+                {isTableModalOpen && <BorrowerDataItemTableView
+                  borrower={borrowerWithDataItems}
+                />}
+              </RayonModalView>
               <BorrowerSideBarView
-                borrowerApps={sortedBorrowerApps}
+                borrowerApps={borrowerApps}
                 selectedBorrowerAppAddress={selectedBorrowerAppAddress}
                 buttonElement={
-                  <TextButton bordered onClick={this.createFormModalVisibilityHandler(true, FormMode.ADD)}>Add</TextButton>
+                  <TextButton bordered onClick={this.createFormModalVisibilityHandler(true, FormMode.ADD)}>Add New Borrower App</TextButton>
                 }
               />
               {borrowerAppWithMembers
@@ -158,7 +218,7 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
                     <TextButton bordered onClick={this.createFormModalVisibilityHandler(true, FormMode.EDIT)}>Edit</TextButton>
                   }>
                     <BorrowerAppDetailView borrowerAppWithMembers={borrowerAppWithMembers} />
-                    <BorrowerMemberTableView borrowerAppWithMembers={borrowerAppWithMembers} />
+                    <BorrowerMemberTableView borrowerAppWithMembers={borrowerAppWithMembers} onPersonalDataClick={this.createTableModalVisibilityHandler(true)} />
                   </BorrowerDetailContainer>
                 )
                 : (

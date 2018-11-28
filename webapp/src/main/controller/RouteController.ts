@@ -5,6 +5,7 @@ import UserDC from 'user/dc/UserDC';
 import TokenVC from 'token/vc/TokenVC';
 import ContractVC from 'contract/vc/ContractVC';
 import BorrowerVc from 'borrower/vc/BorrowerVc';
+import PersonalDataVC from 'personaldata/vc/PersonalDataVC';
 import NoMetamaskView from 'main/view/NoMetamaskView';
 import OnlyAdminView from 'main/view/OnlyAdminView';
 
@@ -67,6 +68,11 @@ class RouterPathController {
     {
       path: '/borrower',
       component: BorrowerVc,
+      exact: true,
+    },
+    {
+      path: '/personaldata',
+      component: PersonalDataVC,
       exact: true,
     },
   ];

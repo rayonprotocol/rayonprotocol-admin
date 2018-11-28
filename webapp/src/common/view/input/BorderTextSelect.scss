@@ -1,0 +1,19 @@
+ 
+
+.borderTextInput {
+  .title {
+    margin-bottom: 5px;
+    @include set-font(12px, $rayon-black);
+  }
+  select {
+    width: 100%;
+    padding: 8px 15px;
+    border: 1px solid $rayon-gray;
+    border-radius: 4px;
+    transition: border ease 0.1s;
+    @include set-font(16px, $rayon-black);
+    &:disabled {
+      @include set-font(16px, $rayon-deepgray);
+    }
+  }
+}

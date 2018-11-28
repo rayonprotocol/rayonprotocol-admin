@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { StatelessComponent } from 'react';
 import classNames from 'classnames';
 
 // styles
@@ -12,17 +12,13 @@ interface BorderTextInputProps {
   disabled?: boolean;
 }
 
-class BorderTextInput extends Component<BorderTextInputProps, {}> {
-  render() {
-    return (
-      <div
-        className={classNames(styles.borderTextInput, this.props.className)}
-      >
-        <label className={styles.title}>{this.props.title}</label>
-        <input disabled={this.props.disabled} onChange={this.props.onChangeTextInput} type={'text'} value={this.props.value}/>
-      </div>
-    );
-  }
-}
+const BorderTextInput: StatelessComponent<BorderTextInputProps> = props => (
+  <div
+    className={classNames(styles.borderTextInput, props.className)}
+  >
+    <label className={styles.title}>{props.title}</label>
+    <input disabled={props.disabled} onChange={props.onChangeTextInput} type={'text'} value={props.value} />
+  </div>
+);
 
 export default BorderTextInput;

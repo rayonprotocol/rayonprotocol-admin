@@ -5,12 +5,25 @@
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
+  &.danger {
+    color: $rayon-berry;
+  }
   
-  &.bordered { border: solid 1px $rayon-lake; }
+  &.bordered {
+    border: solid 1px $rayon-lake;
+    &.danger {
+      border: solid 1px $rayon-berry;
+    }
+  }
+
   &.filled {
     background-color: $rayon-lake;
     color: white;
+    &.danger {
+      background-color: $rayon-berry;
+    }
   }
+  
 
   &:disabled {
     cursor: not-allowed;

@@ -4,8 +4,10 @@ import { BorrowerApp } from '../../../../shared/borrower/model/Borrower';
 
 // styles
 import styles from './BorrowerAppFormView.scss';
+
+// view
+import SubSectionContainer from 'common/view/container/SubSectionContainer';
 import BorderTextInput from 'common/view/input/BorderTextInput';
-import BorrowerSubSectionContainer from './BorrowerSubSectionContainer';
 import { TextSubmitButton } from 'common/view/button/TextButtons';
 
 enum FormMode {
@@ -42,7 +44,7 @@ class BorrowerAppFormView extends Component<BorrowerAppFormViewProps, BorrowerAp
     confirmReady: false,
   };
 
-  createDraftChangedHandler = (draftProp: keyof BorrowerAppFormViewState['draft']) => (event: SyntheticEvent<HTMLInputElement>) => {
+  handleDraftPropChange = (draftProp: keyof BorrowerAppFormViewState['draft'], event: SyntheticEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
     this.setState(() => ({
       ...this.state,
@@ -69,20 +71,20 @@ class BorrowerAppFormView extends Component<BorrowerAppFormViewProps, BorrowerAp
 
     return (
       <form className={styles.borrowerAppFormView} onSubmit={this.handleSubmit}>
-        <BorrowerSubSectionContainer title={formTitle}>
+        <SubSectionContainer title={formTitle}>
           <ul>
             <li>
-              <BorderTextInput title='Name' onChangeTextInput={this.createDraftChangedHandler('name')} value={name} />
+              <BorderTextInput title='Name' onChangeTextInput={this.handleDraftPropChange.bind(null, 'name')} value={name} />
             </li>
             <li>
-              <BorderTextInput title='Address' disabled={mode === FormMode.EDIT} onChangeTextInput={this.createDraftChangedHandler('address')} value={address} />
+              <BorderTextInput title='Address' disabled={mode === FormMode.EDIT} onChangeTextInput={this.handleDraftPropChange.bind(null, 'address')} value={address} />
             </li>
           </ul>
           <div className={styles.buttonWrap}>
             <TextSubmitButton filled disabled={confirmReady} value={confirmReady ? 'Confirm transaction' : 'Submit'} />
 
           </div>
-        </BorrowerSubSectionContainer>
+        </SubSectionContainer>
       </form>
     );
   }

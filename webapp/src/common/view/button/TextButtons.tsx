@@ -6,23 +6,26 @@ import styles from './TextButtons.scss';
 
 interface StyleVariation {
   bordered?: boolean;
+  danger?: boolean;
   filled?: boolean;
 }
 
 interface TextButtonProps extends StyleVariation, React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> { }
 
+const mergeClassNames = (props: TextButtonProps) => classNames(styles.textButton, {
+  [styles.bordered]: props.bordered,
+  [styles.filled]: props.filled,
+  [styles.danger]: props.danger,
+}, props.className);
+
 const TextButton: StatelessComponent<TextButtonProps> = props => {
   const {
-    children, className, bordered, filled,
+    children, className, bordered, filled, danger,
     ...otherProps
   } = props;
-  const mergedClassName = classNames(styles.textButton, {
-    [styles.bordered]: bordered,
-    [styles.filled]: filled,
-  }, className);
 
   return (
-    <button className={mergedClassName} {...otherProps}>{children}</button>
+    <button className={mergeClassNames({className, bordered, filled, danger})} {...otherProps}>{children}</button>
   );
 }
 
@@ -30,16 +33,12 @@ interface TextSubmitButtonProps extends StyleVariation, React.DetailedHTMLProps<
 
 const TextSubmitButton: StatelessComponent<TextSubmitButtonProps> = props => {
   const {
-    className, bordered, filled,
+    className, bordered, filled, danger,
     type, ...otherProps
   } = props;
-  const mergedClassName = classNames(styles.textButton, {
-    [styles.bordered]: bordered,
-    [styles.filled]: filled,
-  }, className);
 
   return (
-    <input type='submit' className={mergedClassName} {...otherProps} />
+    <input type='submit' className={mergeClassNames({className, bordered, filled, danger})} {...otherProps} />
   );
 }
 

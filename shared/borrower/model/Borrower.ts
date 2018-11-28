@@ -1,3 +1,5 @@
+import { PersonalDataItem, PersonalDataCategory, PersonalDataItemWithCategory } from '../../personaldata/model/PerosnalData'
+
 export interface Borrower {
   address: string;
   updatedEpochTime: number;
@@ -18,14 +20,21 @@ export interface BorrowerMember {
   joinedDate: string;
 }
 
+
+export enum BorrowerQueryKey {
+  BORROEWR_APP_ADDRESS = 'ba',
+}
+
+// Derived models
+
 export interface BorrowerAppWithMembers extends BorrowerApp {
   members: MemberWithBorrower[];
 }
 
 export interface MemberWithBorrower extends BorrowerMember {
-  borrower: Borrower;
+  borrower: BorrowerWithDataItems;
 }
 
-export enum BorrowerQueryKey {
-  BORROEWR_APP_ADDRESS = 'ba',
+export interface BorrowerWithDataItems extends Borrower {
+  dataItems: PersonalDataItemWithCategory[];
 }

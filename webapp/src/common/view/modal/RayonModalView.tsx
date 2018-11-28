@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 
 interface RayonModalViewProps {
   isModalOpen: boolean;
-  onRequestClose: () => void;
+  onRequestClose: (...args: any[]) => void;
   wide?: boolean;
   narrow?: boolean;
 }

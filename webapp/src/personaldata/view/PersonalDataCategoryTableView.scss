@@ -1,0 +1,44 @@
+.etcCell {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  
+  li {
+    a {
+      text-decoration: underline;
+    }
+  }
+  li + li {
+    margin-left: 10px;
+  }
+}
+
+
+.borrowerMemberTableView {
+  width: 100%;
+
+  .borrowerAppName {
+    margin-top: 0px;
+  }
+}
+
+.borrowerAppSubSection{
+  h3 {
+    font-size: 26px;
+    padding: 15px 0px;
+  }
+  li {
+    display: flex;
+    flex-direction: row;
+
+    h4 + p {
+      margin-left: 10px;
+    }
+  }
+  li + li {
+    margin-top: 10px;
+  }
+}

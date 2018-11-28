@@ -9,13 +9,13 @@ import styles from './BorrowerMemberTableView.scss';
 // model
 import { BorrowerAppWithMembers, MemberWithBorrower } from '../../../../shared/borrower/model/Borrower';
 
-// util
-import DateUtil from '../../../../shared/common/util/DateUtil';
-import SectionTitle from 'common/view/section/SectionTitle';
-import BorrowerSubSectionContainer from './BorrowerSubSectionContainer';
+// view
+import SubSectionContainer from 'common/view/container/SubSectionContainer';
+import { TextButton } from 'common/view/button/TextButtons';
 
 interface BorrowerMemberTableViewProps {
   borrowerAppWithMembers: BorrowerAppWithMembers;
+  onPersonalDataClick: (borrowerAddress: MemberWithBorrower['borrowerAddress']) => void;
 }
 
 const BorrowerMemberTableView: StatelessComponent<BorrowerMemberTableViewProps> = props => {
@@ -54,9 +54,10 @@ const BorrowerMemberTableView: StatelessComponent<BorrowerMemberTableViewProps> 
     {
       id: 'personalData',
       Header: 'Personal Data',
-      accessor: 'personalData', // personalData required
+      accessor: borrowerPropSelector('dataItems'),
       maxWidth: 100,
       filterable: false,
+      Cell: ({ row }) => row.personalData && row.personalData.length || 0,
     },
     {
       id: 'etc',
@@ -64,7 +65,7 @@ const BorrowerMemberTableView: StatelessComponent<BorrowerMemberTableViewProps> 
       accessor: 'etc',
       maxWidth: 300,
       filterable: false,
-      Cell: row => (
+      Cell: ({ row }) => (
         <ul className={styles.etcCell}>
           <li>
             <a href={'/'} target={'_blank'}>Token</a>
@@ -73,14 +74,14 @@ const BorrowerMemberTableView: StatelessComponent<BorrowerMemberTableViewProps> 
             <a href={'/'} target={'_blank'}>Activity</a>
           </li>
           <li>
-            <a href={'/'} target={'_blank'}>Persontal Data</a>
+            <TextButton bordered onClick={props.onPersonalDataClick.bind(null, row.address)}>Persontal Data</TextButton>
           </li>
         </ul>
       )
     },
   ]
 
-  return <BorrowerSubSectionContainer title='Borrowers'>
+  return <SubSectionContainer title='Borrowers'>
     <ReactTable
       data={props.borrowerAppWithMembers.members}
       filterable
@@ -89,7 +90,7 @@ const BorrowerMemberTableView: StatelessComponent<BorrowerMemberTableViewProps> 
       defaultPageSize={10}
       className={'-striped -highlight'}
     />
-  </BorrowerSubSectionContainer>;
+  </SubSectionContainer>;
 };
 
 export default BorrowerMemberTableView;
