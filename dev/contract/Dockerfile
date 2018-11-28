@@ -13,8 +13,6 @@ ENV REPO_DIR ${ROOT_DIR}/contract/repos
 ENV ARTIFACT_DIR ${ROOT_DIR}/contract/artifacts
 ENV TXAPP_DIR ${ROOT_DIR}/sample-tx
 
-RUN echo "Build number: $ARTIFACT_DIR"
-
 RUN apk add --no-cache make gcc g++ python git bash curl
 RUN npm install -g yarn truffle
 

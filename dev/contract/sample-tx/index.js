@@ -7,6 +7,8 @@ const Auth = require('./Auth');
 const BorrowerApp = require('./BorrowerApp');
 const Borrower = require('./Borrower');
 const BorrowerMember = require('./BorrowerMember');
+const PersonalDataCategory = require('./PersonalDataCategory');
+const PersonalDataList = require('./PersonalDataList');
 
 const {
   MNEMONIC,
@@ -66,8 +68,8 @@ function getUtils() {
         .once('transactionHash', resolve)
         .once('error', reject)
       )
-      .then(() => logDone(description))
-      .catch(e => logError(description, e));
+        .then(() => logDone(description))
+        .catch(e => logError(description, e));
     },
   }
 }
@@ -75,7 +77,9 @@ function getUtils() {
 const utils = getUtils();
 
 const sendSampleTx = async () => {
-  const contractTxSenders = { KycAttester, Auth, BorrowerApp, Borrower, BorrowerMember }; // the order of tx senders matters
+  const contractTxSenders = {
+    KycAttester, Auth, BorrowerApp, Borrower, BorrowerMember, PersonalDataCategory, PersonalDataList,
+  }; // the order of tx senders matters
   for (contractName in contractTxSenders) {
     const txSender = contractTxSenders[contractName];
     log(info(`${contractName}: sending tx(s)`));

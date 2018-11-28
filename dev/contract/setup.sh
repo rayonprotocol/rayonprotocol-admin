@@ -11,6 +11,7 @@ function setup_repos() {
   declare -a repo_names=(
     "borrower"
     "kyc"
+    "personaldata"
   )
 
   mkdir -p $REPO_DIR
@@ -28,6 +29,6 @@ function setup_repos() {
 
   ls $REPO_DIR
 }
-echo $MNEMONIC
+
 setup-txapp
 setup_repos
