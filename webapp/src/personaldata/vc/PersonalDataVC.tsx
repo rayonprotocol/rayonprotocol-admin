@@ -22,15 +22,15 @@ import BorrowerDC from 'borrower/dc/BorrowerDC';
 type PersonalDataVCProps = RouteComponentProps<{}>;
 
 interface PersonalDataVCState {
-  notifiedOnce: boolean;
   isFormModalOpen: boolean;
   dataCategories: PersonalDataCategory[];
   borrowerApps: BorrowerApp[];
   openedFormMode: FormMode;
   selectedDataCategoryCode: number;
 }
+
 const borrowerAppEntitiesSelector = ({ borrowerApps }: PersonalDataVCState) => indexByKey(borrowerApps, entity => entity.address, true);
-const dataCategoryEntitiesSelector = ({ dataCategories }: PersonalDataVCState) => indexByKey(dataCategories, entity => entity.code, true); ;
+const dataCategoryEntitiesSelector = ({ dataCategories }: PersonalDataVCState) => indexByKey(dataCategories, entity => entity.code, true);;
 
 const dataCategoryWithBorrowAppsSelector = createSelector(
   borrowerAppEntitiesSelector,
@@ -46,7 +46,6 @@ class PersonalDataVC extends Component<PersonalDataVCProps, PersonalDataVCState>
   constructor(props) {
     super(props);
     this.state = {
-      notifiedOnce: false,
       isFormModalOpen: false,
       dataCategories: [],
       borrowerApps: [],
@@ -59,23 +58,18 @@ class PersonalDataVC extends Component<PersonalDataVCProps, PersonalDataVCState>
 
   componentDidMount() {
     this.observerUnregisterers.push(
-      PersonalDataDC.registerDataCategoriesObserver(this.updateDataCategories),
-      BorrowerDC.registerBorrowerAppsObserver(this.updateBorrowerApps),
+      PersonalDataDC.registerDataCategoriesObserver(dataCategories => this.setState(() => ({
+        dataCategories: dataCategories.sort((a, b) => a.code - b.code),
+      }))),
+      BorrowerDC.registerBorrowerAppsObserver(borrowerApps => this.setState(() => ({
+        borrowerApps: borrowerApps.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0),
+      }))),
     );
   }
 
   componentWillUnmount() {
     this.observerUnregisterers.forEach(unregister => unregister());
   }
-
-  updateDataCategories = (dataCategories: PersonalDataCategory[]) => this.setState(() => ({
-    notifiedOnce: dataCategories && dataCategories.length > 0,
-    dataCategories: dataCategories.sort((a, b) => a.code - b.code),
-  }))
-
-  updateBorrowerApps = (borrowerApps: BorrowerApp[]) => this.setState(() => ({
-    borrowerApps: borrowerApps.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0),
-  }))
 
   createFormModalVisibilityHandler = (visible: PersonalDataVCState['isFormModalOpen'], formMode?: PersonalDataVCState['openedFormMode']) => (dataCategoryCode?: number) => {
     typeof formMode !== 'undefined'
@@ -120,17 +114,20 @@ class PersonalDataVC extends Component<PersonalDataVCProps, PersonalDataVCState>
   }
 
   render() {
-    const { notifiedOnce, isFormModalOpen, openedFormMode, borrowerApps, selectedDataCategoryCode } = this.state;
+    const { isFormModalOpen, openedFormMode, dataCategories, borrowerApps, selectedDataCategoryCode } = this.state;
     const dataCategoryWithBorrowApps = dataCategoryWithBorrowAppsSelector(this.state);
     const dataCategoryEntities = dataCategoryEntitiesSelector(this.state);
-
+    const isLoading = !dataCategories || !dataCategories.length;
     return (
       <Container>
-        {!notifiedOnce
+        {isLoading
           ? <Loading />
           : (
             <Fragment>
-              <RayonModalView narrow isModalOpen={isFormModalOpen} onRequestClose={this.createFormModalVisibilityHandler(false)}>
+              <RayonModalView narrow
+                isModalOpen={isFormModalOpen}
+                onRequestClose={this.createFormModalVisibilityHandler(false)}
+              >
                 {isFormModalOpen && <PersonalDataCategoryFormView
                   mode={openedFormMode}
                   dataCategory={dataCategoryEntities[selectedDataCategoryCode]}

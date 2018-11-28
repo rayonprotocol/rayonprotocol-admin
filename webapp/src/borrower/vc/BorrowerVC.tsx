@@ -29,7 +29,6 @@ import BorrowerDataItemTableView from 'borrower/view/BorrowerDataItemTableView';
 type BorrowerVCProps = RouteComponentProps<{}>;
 
 interface BorrowerVCState {
-  notifiedOnce: boolean;
   borrowerApps: BorrowerApp[];
   borrowers: Borrower[];
   borrowerMembers: BorrowerMember[];
@@ -105,7 +104,6 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
   constructor(props) {
     super(props);
     this.state = {
-      notifiedOnce: false,
       borrowerApps: [],
       borrowers: [],
       borrowerMembers: [],
@@ -123,30 +121,19 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
 
   componentDidMount() {
     this.observerUnregisterers.push(
-      BorrowerDC.registerBorrowerAppsObserver(this.updateBorrowerApps),
-      BorrowerDC.registerBorrowersObserver(this.updateBorrowers),
-      BorrowerDC.registerBorrowerMembersObserver(this.updateBorrowerMembers),
-      PersonalDataDC.registerDataItemsObserver(this.updateDataItems),
-      PersonalDataDC.registerDataCategoriesObserver(this.updateDataCategories),
+      BorrowerDC.registerBorrowerAppsObserver(borrowerApps => this.setState(() => ({
+        borrowerApps: borrowerApps.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0),
+      }))),
+      BorrowerDC.registerBorrowersObserver(borrowers => this.setState(() => ({ borrowers }))),
+      BorrowerDC.registerBorrowerMembersObserver(borrowerMembers => this.setState(() => ({ borrowerMembers }))),
+      PersonalDataDC.registerDataItemsObserver(dataItems => this.setState(() => ({ dataItems }))),
+      PersonalDataDC.registerDataCategoriesObserver(dataCategories => this.setState(() => ({ dataCategories }))),
     );
   }
 
   componentWillUnmount() {
     this.observerUnregisterers.forEach(unregister => unregister());
   }
-
-  updateBorrowerApps = (borrowerApps: BorrowerApp[]) => this.setState(() => ({
-    notifiedOnce: borrowerApps && borrowerApps.length > 0,
-    borrowerApps: borrowerApps.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0),
-  }))
-
-  updateBorrowers = (borrowers: Borrower[]) => this.setState(() => ({ borrowers }));
-
-  updateBorrowerMembers = (borrowerMembers: BorrowerMember[]) => this.setState(() => ({ borrowerMembers }));
-
-  updateDataItems = (dataItems: PersonalDataItem[]) => this.setState(() => ({ dataItems }));
-
-  updateDataCategories = (dataCategories: PersonalDataCategory[]) => this.setState(() => ({ dataCategories }));
 
   createFormModalVisibilityHandler = (visible: BorrowerVCState['isFormModalOpen'], formMode?: BorrowerVCState['openedFormMode']) => () => {
     typeof formMode !== 'undefined'
@@ -179,9 +166,10 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
 
   render() {
     const {
-      notifiedOnce, borrowerApps, selectedBorrowerAppAddress, selectedBorrowerAddress,
+      borrowerApps, selectedBorrowerAppAddress, selectedBorrowerAddress,
       isFormModalOpen, isTableModalOpen, openedFormMode,
     } = this.state;
+    const isLoading = !borrowerApps || !borrowerApps.length;
     const indexedBorrowerWithDataItem = borrowerWithDataItemsSelector(this.state);
     const indexedBorrowerAppWithMembers = borrowerAppWithMembersSelector(this.state);
     const borrowerAppWithMembers = indexedBorrowerAppWithMembers[selectedBorrowerAppAddress];
@@ -189,18 +177,24 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
 
     return (
       <Container>
-        {!notifiedOnce
+        {isLoading
           ? <Loading />
           : (
             <BorrowerContainer>
-              <RayonModalView narrow isModalOpen={isFormModalOpen && !isTableModalOpen} onRequestClose={this.createFormModalVisibilityHandler(false)}>
+              <RayonModalView narrow
+                isModalOpen={isFormModalOpen && !isTableModalOpen}
+                onRequestClose={this.createFormModalVisibilityHandler(false)}
+              >
                 {isFormModalOpen && <BorrowerAppFormView
                   mode={openedFormMode}
                   borrowerApp={borrowerAppWithMembers}
                   onBorrowerAppSubmitted={this.handleBorrowerAppSubmission}
                 />}
               </RayonModalView>
-              <RayonModalView wide isModalOpen={isTableModalOpen && !isFormModalOpen} onRequestClose={this.createTableModalVisibilityHandler(false)}>
+              <RayonModalView wide
+                isModalOpen={isTableModalOpen && !isFormModalOpen}
+                onRequestClose={this.createTableModalVisibilityHandler(false)}
+              >
                 {isTableModalOpen && <BorrowerDataItemTableView
                   borrower={borrowerWithDataItems}
                 />}
