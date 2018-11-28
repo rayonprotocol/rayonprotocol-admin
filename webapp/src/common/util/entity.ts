@@ -1,5 +1,3 @@
-import memoize from 'lodash.memoize';
-
 /**
  * index entities by key in form of plain old javascript object
  * @param entities
