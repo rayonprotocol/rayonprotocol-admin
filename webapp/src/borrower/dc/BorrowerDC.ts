@@ -54,7 +54,7 @@ class BorrowerDC {
         default:
           return prevBorrowerApps;
       }
-    }, this.borrowerAppsSubject.notify);
+    }, (err, nextBorrowerApps) => this.borrowerAppsSubject.notify(nextBorrowerApps));
 
   private accumulateBorrowers = createEventAccumulator(this.store, 'BORROWERS',
     async (prevBorrowers: Borrower[], eventObject: ContractEventObject<{ id: string }>): Promise<Borrower[]> => {
@@ -70,7 +70,7 @@ class BorrowerDC {
         default:
           return prevBorrowers;
       }
-    }, this.borrowersSubject.notify);
+    }, (err, nextBorrowers) => this.borrowersSubject.notify(nextBorrowers));
 
   private accumulateBorrowerMembers = createEventAccumulator(this.store, 'BORROWER_MEMBERS',
     async (prevBorrowerMembers: BorrowerMember[], eventObject: ContractEventObject<{ borrowerAppId: string; borrowerId: string; }>): Promise<BorrowerMember[]> => {
@@ -85,7 +85,7 @@ class BorrowerDC {
         default:
           return prevBorrowerMembers;
       }
-    }, this.borrowerMembersSubject.notify);
+    }, (err, nextBorrowerMembers) => this.borrowerMembersSubject.notify(nextBorrowerMembers));
 
   public addBorrowerApp = BorrowerContractAgent.addBorrowerApp;
 

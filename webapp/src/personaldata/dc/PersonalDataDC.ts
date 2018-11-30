@@ -65,7 +65,7 @@ class PersonalDataDC {
         default:
           return prevPersonalDataItems;
       }
-    }, this.dataItemsSubject.notify);
+    }, (err, nextPersonalDataItems) => this.dataItemsSubject.notify(nextPersonalDataItems));
 
   private accumulateDataCategory = createEventAccumulator(this.store, 'DATA_CATEGORIES',
     async (prevPersonalDataCategories: PersonalDataCategory[], eventObject: ContractEventObject<{ code: string }>): Promise<PersonalDataCategory[]> => {
@@ -88,7 +88,7 @@ class PersonalDataDC {
         default:
           return prevPersonalDataCategories;
       }
-    }, this.dataCategoriesSubject.notify);
+    }, (err, nextPersonalDataCategories) => this.dataCategoriesSubject.notify(nextPersonalDataCategories));
 
   public addDataCategory = PersonalDataContractAgent.addDataCategory;
 
