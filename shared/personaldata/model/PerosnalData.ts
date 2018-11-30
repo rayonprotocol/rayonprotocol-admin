@@ -1,15 +1,8 @@
 export enum RewardCycle {
-  DAILY = 'd',
-  WEEKLY = 'w',
-  MONTHLY = 'm',
-  ANNUALLY = 'a',
-};
-
-export enum RewardCycleName {
-  d = 'DAILY',
-  w = 'WEEKLY',
-  m = 'MONTHLY',
-  a = 'ANNUALLY',
+  DAILY,
+  WEEKLY,
+  MONTHLY,
+  ANNUALLY,
 };
 
 export interface PersonalDataCategory {

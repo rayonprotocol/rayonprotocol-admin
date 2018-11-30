@@ -1,0 +1,11 @@
+.buttonWrap {
+  display: flex;
+  width: 100%;
+  padding-top: 20px;
+  justify-content: flex-end;
+  align-items: center;
+
+  .button + .button {
+    margin-left: 20px;
+  }
+}

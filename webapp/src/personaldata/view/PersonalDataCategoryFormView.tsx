@@ -15,7 +15,6 @@ import { BorrowerApp } from '../../../../shared/borrower/model/Borrower';
 enum FormMode {
   ADD = 'add',
   EDIT = 'edit',
-  REMOVE = 'remove',
 }
 
 // treat form data as string type
@@ -34,60 +33,35 @@ interface SelectOptionData {
   label?: string | number;
 }
 
-interface PersonalDataCategoryFormDataElementsProps {
-  mode: FormMode;
-  formData: FormData;
-  borrowerAppAddressOptions: SelectOptionData[];
-  rewardCycleOptions: SelectOptionData[];
-  onElementValueChange: (elementName: keyof FormData, event: SyntheticEvent<HTMLInputElement> | SyntheticEvent<HTMLSelectElement>) => void;
+interface FormSelectConfig {
+  type: typeof BorderTextSelect;
+  optionData: SelectOptionData[];
+  editable: boolean;
 }
-
+interface PersonalDataCategoryFormDataElementsProps {
+  formData: FormData;
+  elementConfigs: { [elementName in keyof FormData]: {
+    type: typeof BorderTextInput;
+    editable: boolean;
+  } | FormSelectConfig };
+  onFormDataChange: (elementName: keyof FormData, event: SyntheticEvent<HTMLInputElement> | SyntheticEvent<HTMLSelectElement>) => void;
+}
 const PersonalDataCategoryFormDataElements = (props: PersonalDataCategoryFormDataElementsProps) => {
   const capitalizeName = (name: keyof FormData) => name.slice(0, 1).toUpperCase().concat(name.slice(1));
   const optionDataToElement = ({ label, value }: SelectOptionData) =>
     <option key={value} value={value}>{typeof label !== 'undefined' ? label : value}</option>;
-  const { mode, formData, borrowerAppAddressOptions, rewardCycleOptions, onElementValueChange } = props;
-
-  const elementConfigs: { [elementName in keyof FormData]: { type: ComponentType, editable: boolean } } = { // the order of config props matters
-    code: {
-      type: BorderTextInput,
-      editable: mode === FormMode.ADD,
-    },
-    category1: {
-      type: BorderTextInput,
-      editable: mode === FormMode.ADD || mode === FormMode.EDIT,
-    },
-    category2: {
-      type: BorderTextInput,
-      editable: mode === FormMode.ADD || mode === FormMode.EDIT,
-    },
-    category3: {
-      type: BorderTextInput,
-      editable: mode === FormMode.ADD || mode === FormMode.EDIT,
-    },
-    borrowerAppAddress: {
-      type: BorderTextSelect,
-      editable: mode === FormMode.ADD,
-    },
-    score: {
-      type: BorderTextInput,
-      editable: mode === FormMode.ADD || mode === FormMode.EDIT,
-    },
-    rewardCycle: {
-      type: BorderTextSelect,
-      editable: mode === FormMode.ADD || mode === FormMode.EDIT,
-    },
-  };
+  const { formData, elementConfigs, onFormDataChange } = props;
   const elementNames = Object.keys(elementConfigs);
+
   const formDataElements = elementNames.map((elementName: keyof FormData) => {
-    const { type, editable } = elementConfigs[elementName];
-    switch (type) {
+    const config = elementConfigs[elementName];
+    switch (config.type) {
       case BorderTextInput: return (
         <li key={elementName}>
           <BorderTextInput
-            disabled={!editable}
+            disabled={!config.editable}
             title={capitalizeName(elementName)}
-            onChangeTextInput={onElementValueChange.bind(null, elementName)}
+            onChangeTextInput={onFormDataChange.bind(null, elementName)}
             value={typeof formData[elementName] !== 'undefined' ? formData[elementName] : ''}
           />
         </li>
@@ -95,15 +69,12 @@ const PersonalDataCategoryFormDataElements = (props: PersonalDataCategoryFormDat
       case BorderTextSelect: return (
         <li key={elementName}>
           <BorderTextSelect
-            disabled={!editable}
+            disabled={!config.editable}
             title={capitalizeName(elementName)}
             value={formData[elementName]}
-            onChangeTextOption={onElementValueChange.bind(null, elementName)}
+            onChangeTextOption={onFormDataChange.bind(null, elementName)}
           >
-            {Array.prototype.map.call(
-              elementName === 'rewardCycle' ? rewardCycleOptions : borrowerAppAddressOptions,
-              optionDataToElement,
-            )}
+            {(config as FormSelectConfig).optionData.map(optionDataToElement)}
           </BorderTextSelect>
         </li>
       );
@@ -136,7 +107,16 @@ interface PersonalDataCategoryFormViewState {
 }
 
 class PersonalDataCategoryFormView extends Component<PersonalDataCategoryFormViewProps, PersonalDataCategoryFormViewState> {
-  rewardCycleOptions = Object.keys(RewardCycle).map(rewardCycleName => ({ value: RewardCycle[rewardCycleName], label: rewardCycleName }))
+  rewardCycleOptions: SelectOptionData[] = [
+    RewardCycle.DAILY,
+    RewardCycle.WEEKLY,
+    RewardCycle.MONTHLY,
+    RewardCycle.ANNUALLY,
+  ].map(rewardCycle => {
+    const rewardCycleName = RewardCycle[rewardCycle];
+    return ({ value: rewardCycle, label: rewardCycleName })
+  });
+
   state = {
     draft: this.props.mode === FormMode.ADD
       ? {
@@ -160,7 +140,6 @@ class PersonalDataCategoryFormView extends Component<PersonalDataCategoryFormVie
 
   handleDraftPropChange = (draftPropName: keyof PersonalDataCategoryFormViewState['draft'], event: SyntheticEvent<HTMLInputElement> | SyntheticEvent<HTMLSelectElement>) => {
     const value: string = (event.currentTarget.value || '').trim();
-    console.log(draftPropName, value);
     this.setState(() => ({
       draft: {
         ...this.state.draft,
@@ -172,32 +151,66 @@ class PersonalDataCategoryFormView extends Component<PersonalDataCategoryFormVie
   handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { mode, onDataCategorySubmitted } = this.props;
-    console.log({ draft: this.state.draft });
     onDataCategorySubmitted(this.state.draft, mode);
     this.setState(() => ({ confirmReady: true }));
   }
 
-  render() {
+  getElementConfigs = () => {
     const { mode, borrowerApps } = this.props;
+    const rewardCycleOptions = this.rewardCycleOptions;
+
+    return ({ // the order of config props matters
+      code: {
+        type: BorderTextInput,
+        editable: mode === FormMode.ADD,
+      },
+      category1: {
+        type: BorderTextInput,
+        editable: mode === FormMode.ADD || mode === FormMode.EDIT,
+      },
+      category2: {
+        type: BorderTextInput,
+        editable: mode === FormMode.ADD || mode === FormMode.EDIT,
+      },
+      category3: {
+        type: BorderTextInput,
+        editable: mode === FormMode.ADD || mode === FormMode.EDIT,
+      },
+      borrowerAppAddress: {
+        type: BorderTextSelect,
+        optionData: borrowerApps.map(({ name, address }) => ({ value: address, label: name })),
+        editable: mode === FormMode.ADD,
+      },
+      score: {
+        type: BorderTextInput,
+        editable: mode === FormMode.ADD || mode === FormMode.EDIT,
+      },
+      rewardCycle: {
+        type: BorderTextSelect,
+        optionData: rewardCycleOptions,
+        editable: mode === FormMode.ADD || mode === FormMode.EDIT,
+      },
+    });
+  }
+
+  render() {
+    const { mode } = this.props;
     const { draft, confirmReady } = this.state;
     const formTitle = ({
       [FormMode.ADD]: 'Add personal data category',
       [FormMode.EDIT]: 'Edit personal data category',
-      [FormMode.REMOVE]: 'Remove personal data category',
     })[mode];
     return (
       <form className={styles.personalDataCategoryFormView} onSubmit={this.handleSubmit}>
         <SubSectionContainer title={formTitle}>
           <ul>
             <PersonalDataCategoryFormDataElements
-              mode={mode}
               formData={draft}
-              borrowerAppAddressOptions={borrowerApps.map(({ name, address }) => ({ value: address, label: name }))}
-              rewardCycleOptions={this.rewardCycleOptions}
-              onElementValueChange={this.handleDraftPropChange} />
+              elementConfigs={this.getElementConfigs()}
+              onFormDataChange={this.handleDraftPropChange} />
           </ul>
           <div className={styles.buttonWrap}>
-            <TextSubmitButton filled danger={mode === FormMode.REMOVE} disabled={confirmReady} value={confirmReady ? 'Confirm transaction' : 'Submit'} />
+            <TextSubmitButton filled disabled={confirmReady} value={confirmReady ? 'Confirm transaction' : 'Submit'} />
           </div>
         </SubSectionContainer>
       </form>

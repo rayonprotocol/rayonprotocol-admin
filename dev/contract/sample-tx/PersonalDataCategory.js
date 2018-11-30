@@ -9,12 +9,11 @@ module.exports = async function (
 ) {
   const PersonalDataCategory = getContract('personaldata/PersonalDataCategory');
   const BorrowerApp = getContract('borrower/BorrowerApp');
-
   const REWARD_CYCLE = {
-    DAILY: 'd',
-    WEEKLY: 'w',
-    MONTHLY: 'm',
-    ANNUALLY: 'a',
+    DAILY: 0,
+    WEEKLY: 1,
+    MONTHLY: 2,
+    ANNUALLY: 3,
   };
 
   const categories = [

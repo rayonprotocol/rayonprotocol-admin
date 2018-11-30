@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
 
-interface RayonModalViewProps {
+export interface RayonModalViewProps {
   isModalOpen: boolean;
   onRequestClose: (...args: any[]) => void;
   wide?: boolean;

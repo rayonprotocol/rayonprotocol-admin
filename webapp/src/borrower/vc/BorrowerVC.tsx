@@ -28,6 +28,12 @@ import BorrowerDataItemTableView from 'borrower/view/BorrowerDataItemTableView';
 
 type BorrowerVCProps = RouteComponentProps<{}>;
 
+enum ModalState {
+  CLOSED,
+  FORM_OPEN,
+  TABLE_OPEN,
+}
+
 interface BorrowerVCState {
   borrowerApps: BorrowerApp[];
   borrowers: Borrower[];
@@ -36,9 +42,8 @@ interface BorrowerVCState {
   dataCategories: PersonalDataCategory[];
   selectedBorrowerAppAddress: BorrowerApp['address'];
   selectedBorrowerAddress: Borrower['address'];
-  isFormModalOpen: boolean;
-  isTableModalOpen: boolean;
-  openedFormMode: FormMode;
+  modal: ModalState;
+  formMode: FormMode;
 }
 
 const borrowerAppEntitiesSelector = ({ borrowerApps }: BorrowerVCState) => indexByKey(borrowerApps, entity => entity.address, true);
@@ -111,9 +116,8 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
       dataCategories: [],
       selectedBorrowerAppAddress: undefined,
       selectedBorrowerAddress: undefined,
-      isFormModalOpen: false,
-      isTableModalOpen: false,
-      openedFormMode: undefined,
+      modal: ModalState.CLOSED,
+      formMode: undefined,
     };
   }
 
@@ -135,22 +139,16 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
     this.observerUnregisterers.forEach(unregister => unregister());
   }
 
-  createFormModalVisibilityHandler = (visible: BorrowerVCState['isFormModalOpen'], formMode?: BorrowerVCState['openedFormMode']) => () => {
+  createFormModalVisibilityHandler = (modal: BorrowerVCState['modal'], formMode?: BorrowerVCState['formMode']) => () => {
     typeof formMode !== 'undefined'
-      ? this.setState(() => ({
-        openedFormMode: formMode,
-        isFormModalOpen: visible,
-      }))
-      : this.setState(() => ({ isFormModalOpen: visible }));
+      ? this.setState(() => ({ formMode, modal }))
+      : this.setState(() => ({ modal: ModalState.CLOSED }));
   }
 
-  createTableModalVisibilityHandler = (visible: BorrowerVCState['isTableModalOpen']) => (borrowerAddress: Borrower['address']) => {
-    typeof borrowerAddress !== 'undefined'
-      ? this.setState(() => ({
-        selectedBorrowerAddress: borrowerAddress,
-        isTableModalOpen: visible,
-      }))
-      : this.setState(() => ({ isTableModalOpen: visible }));
+  createTableModalVisibilityHandler = (modal: BorrowerVCState['modal']) => (selectedBorrowerAddress: Borrower['address']) => {
+    typeof selectedBorrowerAddress !== 'undefined'
+      ? this.setState(() => ({ modal, selectedBorrowerAddress }))
+      : this.setState(() => ({ modal: ModalState.CLOSED }));
   }
 
   handleBorrowerAppSubmission = async (address: string, name: string, formMode: FormMode) => {
@@ -161,13 +159,13 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
     } catch (e) {
       console.log(e);
     }
-    this.setState(() => ({ isFormModalOpen: false }));
+    this.setState(() => ({ modal: ModalState.CLOSED }));
   }
 
   render() {
     const {
       borrowerApps, selectedBorrowerAppAddress, selectedBorrowerAddress,
-      isFormModalOpen, isTableModalOpen, openedFormMode,
+      modal, formMode,
     } = this.state;
     const isLoading = !borrowerApps || !borrowerApps.length;
     const indexedBorrowerWithDataItem = borrowerWithDataItemsSelector(this.state);
@@ -182,20 +180,20 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
           : (
             <BorrowerContainer>
               <RayonModalView narrow
-                isModalOpen={isFormModalOpen && !isTableModalOpen}
-                onRequestClose={this.createFormModalVisibilityHandler(false)}
+                isModalOpen={modal === ModalState.FORM_OPEN}
+                onRequestClose={this.createFormModalVisibilityHandler(ModalState.CLOSED)}
               >
-                {isFormModalOpen && <BorrowerAppFormView
-                  mode={openedFormMode}
+                {modal === ModalState.FORM_OPEN && <BorrowerAppFormView
+                  mode={formMode}
                   borrowerApp={borrowerAppWithMembers}
                   onBorrowerAppSubmitted={this.handleBorrowerAppSubmission}
                 />}
               </RayonModalView>
               <RayonModalView wide
-                isModalOpen={isTableModalOpen && !isFormModalOpen}
-                onRequestClose={this.createTableModalVisibilityHandler(false)}
+                isModalOpen={modal === ModalState.TABLE_OPEN}
+                onRequestClose={this.createTableModalVisibilityHandler(ModalState.CLOSED)}
               >
-                {isTableModalOpen && <BorrowerDataItemTableView
+                {modal === ModalState.TABLE_OPEN && <BorrowerDataItemTableView
                   borrower={borrowerWithDataItems}
                 />}
               </RayonModalView>
@@ -203,16 +201,16 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
                 borrowerApps={borrowerApps}
                 selectedBorrowerAppAddress={selectedBorrowerAppAddress}
                 buttonElement={
-                  <TextButton bordered onClick={this.createFormModalVisibilityHandler(true, FormMode.ADD)}>Add New Borrower App</TextButton>
+                  <TextButton bordered onClick={this.createFormModalVisibilityHandler(ModalState.FORM_OPEN, FormMode.ADD)}>Add New Borrower App</TextButton>
                 }
               />
               {borrowerAppWithMembers
                 ? (
                   <BorrowerDetailContainer title={borrowerAppWithMembers.name} buttonElement={
-                    <TextButton bordered onClick={this.createFormModalVisibilityHandler(true, FormMode.EDIT)}>Edit</TextButton>
+                    <TextButton bordered onClick={this.createFormModalVisibilityHandler(ModalState.FORM_OPEN, FormMode.EDIT)}>Edit</TextButton>
                   }>
                     <BorrowerAppDetailView borrowerAppWithMembers={borrowerAppWithMembers} />
-                    <BorrowerMemberTableView borrowerAppWithMembers={borrowerAppWithMembers} onPersonalDataClick={this.createTableModalVisibilityHandler(true)} />
+                    <BorrowerMemberTableView borrowerAppWithMembers={borrowerAppWithMembers} onPersonalDataClick={this.createTableModalVisibilityHandler(ModalState.TABLE_OPEN)} />
                   </BorrowerDetailContainer>
                 )
                 : (
