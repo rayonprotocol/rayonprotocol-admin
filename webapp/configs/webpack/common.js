@@ -24,6 +24,7 @@ module.exports = {
       user: path.join(__dirname, '../../src/user'),
       borrower: path.join(__dirname, '../../src/borrower'),
       personaldata: path.join(__dirname, '../../src/personaldata'),
+      registry: path.join(__dirname, '../../src/registry'),
     },
   },
   context: resolve(__dirname, '../../src'),

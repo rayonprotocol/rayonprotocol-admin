@@ -1,11 +1,11 @@
-import { ContractEventObject } from './createEventSubscriber';
+import { ContractEventObject, EventProcessor } from './createEventSubscriber';
 
 export default function createEventAccumulator<K extends string, T, RV>(
   map: Map<K, any>,
   key: K,
   accumulator: (preStaate: T, eventObject: ContractEventObject<RV>) => Promise<T>,
   callback?: (error: Error, nextState?: T) => void,
-) {
+): EventProcessor<RV> {
   return async (eventObject: ContractEventObject<RV>) => {
     try {
       const prevState: T = map.get(key) as T;

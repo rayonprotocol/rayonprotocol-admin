@@ -6,16 +6,17 @@ import { BorrowerApp, Borrower, BorrowerMember } from '../../../../shared/borrow
 import createObserverSubject from 'common/util/createObserverSubject';
 import { ContractEventObject } from 'common/util/createEventSubscriber';
 import createEventAccumulator from 'common/util/createEventAccumulator';
+import AsyncInitiatable from 'common/util/AsyncInitiatable';
 
-
-class BorrowerDC {
+class BorrowerDC extends AsyncInitiatable {
   private store = new Map<'BORROWER_APPS' | 'BORROWERS' | 'BORROWER_MEMBERS', BorrowerApp[] | Borrower[] | BorrowerMember[]>([
     ['BORROWER_APPS', []],
     ['BORROWERS', []],
     ['BORROWER_MEMBERS', []],
   ]);
 
-  constructor() {
+  protected async init() {
+    await BorrowerContractAgent.initiation;
     BorrowerContractAgent.subscribeBorrowerAppEvent(this.accumulateBorrowerApps);
     BorrowerContractAgent.subscribeBorrowerEvent(this.accumulateBorrowers);
     BorrowerContractAgent.subscribeBorrowerMemberEvent(this.accumulateBorrowerMembers);
@@ -41,7 +42,7 @@ class BorrowerDC {
   public registerBorrowerMembersObserver = this.borrowerMembersSubject.register;
 
   private accumulateBorrowerApps = createEventAccumulator(this.store, 'BORROWER_APPS',
-    async (prevBorrowerApps: BorrowerApp[], eventObject: ContractEventObject<{ id: string }>): Promise<BorrowerApp[]> => {
+    async (prevBorrowerApps: BorrowerApp[], eventObject: ContractEventObject): Promise<BorrowerApp[]> => {
       const { event, returnValues: { id: address } } = eventObject;
       if (!address) return prevBorrowerApps;
 
@@ -57,7 +58,7 @@ class BorrowerDC {
     }, (err, nextBorrowerApps) => this.borrowerAppsSubject.notify(nextBorrowerApps));
 
   private accumulateBorrowers = createEventAccumulator(this.store, 'BORROWERS',
-    async (prevBorrowers: Borrower[], eventObject: ContractEventObject<{ id: string }>): Promise<Borrower[]> => {
+    async (prevBorrowers: Borrower[], eventObject: ContractEventObject): Promise<Borrower[]> => {
       const { event, returnValues: { id: address } } = eventObject;
       if (!address) return prevBorrowers;
 
@@ -73,7 +74,7 @@ class BorrowerDC {
     }, (err, nextBorrowers) => this.borrowersSubject.notify(nextBorrowers));
 
   private accumulateBorrowerMembers = createEventAccumulator(this.store, 'BORROWER_MEMBERS',
-    async (prevBorrowerMembers: BorrowerMember[], eventObject: ContractEventObject<{ borrowerAppId: string; borrowerId: string; }>): Promise<BorrowerMember[]> => {
+    async (prevBorrowerMembers: BorrowerMember[], eventObject: ContractEventObject): Promise<BorrowerMember[]> => {
       const { event, returnValues: { borrowerAppId: borrowerAppAddress, borrowerId: borrowerAddress } } = eventObject;
       if (!borrowerAppAddress || borrowerAddress) return prevBorrowerMembers;
       const borrowerMember = await BorrowerContractAgent.getBorrowerMember(borrowerAppAddress, borrowerAddress);

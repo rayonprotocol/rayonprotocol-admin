@@ -123,7 +123,8 @@ class BorrowerVC extends Component<BorrowerVCProps, BorrowerVCState> {
 
   observerUnregisterers = [];
 
-  componentDidMount() {
+  async componentDidMount() {
+    await Promise.all([BorrowerDC.initiation, PersonalDataDC.initiation]);
     this.observerUnregisterers.push(
       BorrowerDC.registerBorrowerAppsObserver(borrowerApps => this.setState(() => ({
         borrowerApps: borrowerApps.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0),

@@ -9,6 +9,7 @@ import { BorrowerApp } from '../../../../shared/borrower/model/Borrower';
 
 // dc
 import PersonalDataDC from 'personaldata/dc/PersonalDataDC';
+import BorrowerDC from 'borrower/dc/BorrowerDC';
 
 // view
 import Loading from 'common/view/loading/Loading';
@@ -17,7 +18,6 @@ import RayonModalView from 'common/view/modal/RayonModalView';
 import PersonalDataCategoryFormView, { FormMode, FormData } from 'personaldata/view/PersonalDataCategoryFormView';
 import { PersonalDataCategory, PersonalDataItem } from '../../../../shared/personaldata/model/PerosnalData';
 import PersonalDataCategoryTableView from 'personaldata/view/PersonalDataCategoryTableView';
-import BorrowerDC from 'borrower/dc/BorrowerDC';
 import ConfirmModalView from 'common/view/modal/ConfirmModalView';
 
 type PersonalDataVCProps = RouteComponentProps<{}>;
@@ -76,11 +76,17 @@ class PersonalDataVC extends Component<PersonalDataVCProps, PersonalDataVCState>
 
   observerUnregisterers = [];
 
-  componentDidMount() {
+  async componentDidMount() {
+    await Promise.all([PersonalDataDC.initiation, BorrowerDC.initiation]);
+    console.log('PersonalDataDC Initiated')
     this.observerUnregisterers.push(
-      PersonalDataDC.registerDataCategoriesObserver(dataCategories => this.setState(() => ({
-        dataCategories: dataCategories.sort((a, b) => a.code - b.code),
-      }))),
+      PersonalDataDC.registerDataCategoriesObserver(dataCategories => {
+        console.log({ dataCategories })
+        this.setState(() => ({
+          dataCategories: dataCategories.sort((a, b) => a.code - b.code),
+        }))
+      }
+      ),
       PersonalDataDC.registerDataItemsObserver(dataItems => this.setState(() => ({ dataItems }))),
       BorrowerDC.registerBorrowerAppsObserver(borrowerApps => this.setState(() => ({
         borrowerApps: borrowerApps.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0),

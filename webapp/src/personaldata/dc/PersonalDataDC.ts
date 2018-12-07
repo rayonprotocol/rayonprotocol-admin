@@ -6,10 +6,10 @@ import { PersonalDataCategory, PersonalDataItem, RewardCycle } from '../../../..
 import createObserverSubject from 'common/util/createObserverSubject';
 import { ContractEventObject } from 'common/util/createEventSubscriber';
 import createEventAccumulator from 'common/util/createEventAccumulator';
+import AsyncInitiatable from 'common/util/AsyncInitiatable';
 
 type PersonalDataStoreKey = 'DATA_CATEGORIES' | 'DATA_ITEMS';
 type PersonalDataStoreValue = PersonalDataCategory[] | PersonalDataItem[];
-
 
 interface PersonalDataCategoryUpdateEventArgs {
   code: string;
@@ -21,19 +21,21 @@ interface PersonalDataCategoryUpdateEventArgs {
   address: string;
 }
 
-class PersonalDataDC {
+class PersonalDataDC extends AsyncInitiatable {
   private store = new Map<PersonalDataStoreKey, PersonalDataStoreValue>([
     ['DATA_CATEGORIES', []],
     ['DATA_ITEMS', []],
   ]);
 
-  constructor() {
+  protected async init() {
+    await PersonalDataContractAgent.initiation;
     PersonalDataContractAgent.subscribeDataListEvent(this.accumulateDataItem);
     PersonalDataContractAgent.subscribeDataCategoryEvent(this.accumulateDataCategory);
 
     this.fetchDataItems();
     this.fetchDataCategories();
   }
+
   private dataItemsSubject = createObserverSubject<PersonalDataItem[]>(
     () => this.store.get('DATA_ITEMS') as PersonalDataItem[],
   );
@@ -97,7 +99,7 @@ class PersonalDataDC {
   public removeDataCategory = PersonalDataContractAgent.removeDataCategory;
 
   public fetchDataItems = async () => {
-    const dataItems = await PersonalDataContractAgent.getDataItems()
+    const dataItems = await PersonalDataContractAgent.getDataItems();
     this.store.set('DATA_ITEMS', dataItems);
     this.dataItemsSubject.notify(dataItems);
   }
