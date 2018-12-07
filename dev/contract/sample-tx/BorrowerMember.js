@@ -1,11 +1,11 @@
 module.exports = async function (
   { owner, borrowerApp1, borrowerApp2, borrower1, borrower2, borrower3, borrower4, borrower5 }, // addresses
   web3, // web3 instance
-  { getContract, logTx }, // utils
+  { getContractFromRegistry, logTx }, // utils
 ) {
-  const BorrowerApp = getContract('borrower/BorrowerApp');
-  const Borrower = getContract('borrower/Borrower');
-  const BorrowerMember = getContract('borrower/BorrowerMember');
+  const BorrowerApp = await getContractFromRegistry('borrower/BorrowerApp');
+  const Borrower = await getContractFromRegistry('borrower/Borrower');
+  const BorrowerMember = await getContractFromRegistry('borrower/BorrowerMember');
 
   const borrowerSettingDescription = `Borrower: ${Borrower.options.address}`;
   await logTx(
@@ -40,7 +40,7 @@ module.exports = async function (
           v: 27,
           r: '0x93e44805097e2dad6eb1bb70476138f05583b23e9a2affa1bbdb7dae70ba9bca',
           s: '0x721feeae7178352e841fe83c69f5eb06ab2f802299aec9d5a93f67c131b7596a',
-        }
+        },
       ],
     },
     {
@@ -57,9 +57,9 @@ module.exports = async function (
           v: 27,
           r: '0x84405a141eb28e4062def544a7df15357a21371a4d9057cf331c03d8bed1cdec',
           s: '0x1ca990e2920a5e5ad051e29ff9b35e4d8ffc8f4a62c7eb587e926ffa248dfd34',
-        }
-      ]
-    }
+        },
+      ],
+    },
   ];
 
   for (const borrowerApp of borrowersForBorrowerApps) {
@@ -72,4 +72,4 @@ module.exports = async function (
       );
     }
   }
-}
+};

@@ -5,10 +5,10 @@ module.exports = async function (
     borrowerApp3,
   }, // addresses
   web3, // web3 instance
-  { getContract, logTx }, // utils
+  { getContractFromRegistry, logTx }, // utils
 ) {
-  const PersonalDataCategory = getContract('personaldata/PersonalDataCategory');
-  const BorrowerApp = getContract('borrower/BorrowerApp');
+  const PersonalDataCategory = await getContractFromRegistry('personaldata/PersonalDataCategory');
+  const BorrowerApp = await getContractFromRegistry('borrower/BorrowerApp');
   const REWARD_CYCLE = {
     DAILY: 0,
     WEEKLY: 1,

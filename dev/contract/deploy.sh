@@ -17,6 +17,8 @@ function check_rpc() {
 function migrate_contracts() {
   prefix="rayonprotocol-contract"
   declare -a repo_names=(
+    "common"
+    "registry"
     "borrower"
     "kyc"
     "personaldata"

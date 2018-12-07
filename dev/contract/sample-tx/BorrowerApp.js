@@ -1,9 +1,9 @@
 module.exports = async function (
   { owner, borrowerApp1, borrowerApp2, borrowerApp3 }, // addresses
   web3, // web3 instance
-  { getContract, logTx }, // utils
+  { getContractFromRegistry, logTx }, // utils
 ) {
-  const borrowerApp = getContract('borrower/BorrowerApp');
+  const borrowerApp = await getContractFromRegistry('borrower/BorrowerApp');
   const borrowerAppData = [
     { address: borrowerApp1, name: 'RayonBA' },
     { address: borrowerApp2, name: 'Finda' },
@@ -17,4 +17,4 @@ module.exports = async function (
       description
     );
   }
-}
+};

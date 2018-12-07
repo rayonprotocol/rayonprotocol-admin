@@ -9,6 +9,8 @@ function setup-txapp() {
 function setup_repos() {
   prefix="rayonprotocol-contract"
   declare -a repo_names=(
+    "common"
+    "registry"
     "borrower"
     "kyc"
     "personaldata"
@@ -16,7 +18,7 @@ function setup_repos() {
 
   mkdir -p $REPO_DIR
   cd $REPO_DIR
-  git clone https://github.com/rayonprotocol/$prefix-common.git # clone only
+  git clone https://github.com/rayonprotocol/rayonprotocol-ico.git # clone only
 
   for repo_name in "${repo_names[@]}"
   do
