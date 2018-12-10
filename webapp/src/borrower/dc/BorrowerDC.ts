@@ -5,7 +5,7 @@ import BorrowerContractAgent from 'borrower/agent/BorrowerContractAgent';
 import { BorrowerApp, Borrower, BorrowerMember } from '../../../../shared/borrower/model/Borrower';
 import createObserverSubject from 'common/util/createObserverSubject';
 import { ContractEventObject } from 'common/util/createEventSubscriber';
-import createEventAccumulator from 'common/util/createEventAccumulator';
+import attatchStoreToReducer from 'common/util/attatchStoreToReducer';
 import AsyncInitiatable from 'common/util/AsyncInitiatable';
 
 class BorrowerDC extends AsyncInitiatable {
@@ -17,9 +17,27 @@ class BorrowerDC extends AsyncInitiatable {
 
   protected async init() {
     await BorrowerContractAgent.initiation;
-    BorrowerContractAgent.subscribeBorrowerAppEvent(this.accumulateBorrowerApps);
-    BorrowerContractAgent.subscribeBorrowerEvent(this.accumulateBorrowers);
-    BorrowerContractAgent.subscribeBorrowerMemberEvent(this.accumulateBorrowerMembers);
+    BorrowerContractAgent.subscribeBorrowerAppEvent(
+      attatchStoreToReducer(
+        this.store, 'BORROWER_APPS',
+        this.borrowerAppsReducer,
+        this.borrowerAppsSubject.notify,
+      ),
+    );
+    BorrowerContractAgent.subscribeBorrowerEvent(
+      attatchStoreToReducer(
+        this.store, 'BORROWERS',
+        this.borrowersReducer,
+        this.borrowersSubject.notify,
+      ),
+    );
+    BorrowerContractAgent.subscribeBorrowerMemberEvent(
+      attatchStoreToReducer(
+        this.store, 'BORROWER_MEMBERS',
+        this.borrowerMembersReducer,
+        this.borrowerMembersSubject.notify,
+      ),
+    );
 
     this.fetchBorrowerApps();
     this.fetchBorrowerMembers();
@@ -41,52 +59,49 @@ class BorrowerDC extends AsyncInitiatable {
   );
   public registerBorrowerMembersObserver = this.borrowerMembersSubject.register;
 
-  private accumulateBorrowerApps = createEventAccumulator(this.store, 'BORROWER_APPS',
-    async (prevBorrowerApps: BorrowerApp[], eventObject: ContractEventObject): Promise<BorrowerApp[]> => {
-      const { event, returnValues: { id: address } } = eventObject;
-      if (!address) return prevBorrowerApps;
+  private borrowerAppsReducer = async (prevBorrowerApps: BorrowerApp[], eventObject: ContractEventObject): Promise<BorrowerApp[]> => {
+    const { event, returnValues: { id: address } } = eventObject;
+    if (!address) return prevBorrowerApps;
 
-      const borrowerApp = await BorrowerContractAgent.getBorrowerApp(address);
-      switch (event) {
-        case 'LogBorrowerAppAdded':
-          return prevBorrowerApps.concat(borrowerApp);
-        case 'LogBorrowerAppUpdated':
-          return prevBorrowerApps.filter(b => b.address !== address).concat(borrowerApp);
-        default:
-          return prevBorrowerApps;
-      }
-    }, (err, nextBorrowerApps) => this.borrowerAppsSubject.notify(nextBorrowerApps));
+    const borrowerApp = await BorrowerContractAgent.getBorrowerApp(address);
+    switch (event) {
+      case 'LogBorrowerAppAdded':
+        return prevBorrowerApps.concat(borrowerApp);
+      case 'LogBorrowerAppUpdated':
+        return prevBorrowerApps.filter(b => b.address !== address).concat(borrowerApp);
+      default:
+        return prevBorrowerApps;
+    }
+  }
 
-  private accumulateBorrowers = createEventAccumulator(this.store, 'BORROWERS',
-    async (prevBorrowers: Borrower[], eventObject: ContractEventObject): Promise<Borrower[]> => {
-      const { event, returnValues: { id: address } } = eventObject;
-      if (!address) return prevBorrowers;
+  private borrowersReducer = async (prevBorrowers: Borrower[], eventObject: ContractEventObject): Promise<Borrower[]> => {
+    const { event, returnValues: { id: address } } = eventObject;
+    if (!address) return prevBorrowers;
 
-      const borrower = await BorrowerContractAgent.getBorrower(address);
-      switch (event) {
-        case 'LogBorrowerAdded':
-          return prevBorrowers.concat(borrower);
-        case 'LogBorrowerUpdated':
-          return prevBorrowers.filter(b => b.address !== address).concat(borrower);
-        default:
-          return prevBorrowers;
-      }
-    }, (err, nextBorrowers) => this.borrowersSubject.notify(nextBorrowers));
+    const borrower = await BorrowerContractAgent.getBorrower(address);
+    switch (event) {
+      case 'LogBorrowerAdded':
+        return prevBorrowers.concat(borrower);
+      case 'LogBorrowerUpdated':
+        return prevBorrowers.filter(b => b.address !== address).concat(borrower);
+      default:
+        return prevBorrowers;
+    }
+  }
 
-  private accumulateBorrowerMembers = createEventAccumulator(this.store, 'BORROWER_MEMBERS',
-    async (prevBorrowerMembers: BorrowerMember[], eventObject: ContractEventObject): Promise<BorrowerMember[]> => {
-      const { event, returnValues: { borrowerAppId: borrowerAppAddress, borrowerId: borrowerAddress } } = eventObject;
-      if (!borrowerAppAddress || borrowerAddress) return prevBorrowerMembers;
-      const borrowerMember = await BorrowerContractAgent.getBorrowerMember(borrowerAppAddress, borrowerAddress);
-      switch (event) {
-        case 'LogBorrowerMemberJoined':
-          return prevBorrowerMembers.concat(borrowerMember);
-        case 'LogBorrowerMemberUnjoined':
-          return prevBorrowerMembers.filter(m => m.borrowerAppAddress !== borrowerAppAddress && m.borrowerAddress !== borrowerAddress)
-        default:
-          return prevBorrowerMembers;
-      }
-    }, (err, nextBorrowerMembers) => this.borrowerMembersSubject.notify(nextBorrowerMembers));
+  private borrowerMembersReducer = async (prevBorrowerMembers: BorrowerMember[], eventObject: ContractEventObject): Promise<BorrowerMember[]> => {
+    const { event, returnValues: { borrowerAppId: borrowerAppAddress, borrowerId: borrowerAddress } } = eventObject;
+    if (!borrowerAppAddress || borrowerAddress) return prevBorrowerMembers;
+    const borrowerMember = await BorrowerContractAgent.getBorrowerMember(borrowerAppAddress, borrowerAddress);
+    switch (event) {
+      case 'LogBorrowerMemberJoined':
+        return prevBorrowerMembers.concat(borrowerMember);
+      case 'LogBorrowerMemberUnjoined':
+        return prevBorrowerMembers.filter(m => m.borrowerAppAddress !== borrowerAppAddress && m.borrowerAddress !== borrowerAddress)
+      default:
+        return prevBorrowerMembers;
+    }
+  }
 
   public addBorrowerApp = BorrowerContractAgent.addBorrowerApp;
 

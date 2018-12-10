@@ -78,15 +78,10 @@ class PersonalDataVC extends Component<PersonalDataVCProps, PersonalDataVCState>
 
   async componentDidMount() {
     await Promise.all([PersonalDataDC.initiation, BorrowerDC.initiation]);
-    console.log('PersonalDataDC Initiated')
     this.observerUnregisterers.push(
-      PersonalDataDC.registerDataCategoriesObserver(dataCategories => {
-        console.log({ dataCategories })
-        this.setState(() => ({
-          dataCategories: dataCategories.sort((a, b) => a.code - b.code),
-        }))
-      }
-      ),
+      PersonalDataDC.registerDataCategoriesObserver(dataCategories => this.setState(() => ({
+        dataCategories: dataCategories.sort((a, b) => a.code - b.code),
+      }))),
       PersonalDataDC.registerDataItemsObserver(dataItems => this.setState(() => ({ dataItems }))),
       BorrowerDC.registerBorrowerAppsObserver(borrowerApps => this.setState(() => ({
         borrowerApps: borrowerApps.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0),

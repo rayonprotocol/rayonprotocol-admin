@@ -5,7 +5,7 @@ import PersonalDataContractAgent from 'personaldata/agent/PersonalDataContractAg
 import { PersonalDataCategory, PersonalDataItem, RewardCycle } from '../../../../shared/personaldata/model/PerosnalData';
 import createObserverSubject from 'common/util/createObserverSubject';
 import { ContractEventObject } from 'common/util/createEventSubscriber';
-import createEventAccumulator from 'common/util/createEventAccumulator';
+import attatchStoreToReducer from 'common/util/attatchStoreToReducer';
 import AsyncInitiatable from 'common/util/AsyncInitiatable';
 
 type PersonalDataStoreKey = 'DATA_CATEGORIES' | 'DATA_ITEMS';
@@ -29,8 +29,20 @@ class PersonalDataDC extends AsyncInitiatable {
 
   protected async init() {
     await PersonalDataContractAgent.initiation;
-    PersonalDataContractAgent.subscribeDataListEvent(this.accumulateDataItem);
-    PersonalDataContractAgent.subscribeDataCategoryEvent(this.accumulateDataCategory);
+    PersonalDataContractAgent.subscribeDataListEvent(
+      attatchStoreToReducer(
+        this.store, 'DATA_ITEMS',
+        this.dataItemsReducer,
+        this.dataItemsSubject.notify,
+      ),
+    );
+    PersonalDataContractAgent.subscribeDataCategoryEvent(
+      attatchStoreToReducer(
+        this.store, 'DATA_CATEGORIES',
+        this.dataCategoriesReducer,
+        this.dataCategoriesSubject.notify,
+      ),
+    );
 
     this.fetchDataItems();
     this.fetchDataCategories();
@@ -46,51 +58,49 @@ class PersonalDataDC extends AsyncInitiatable {
   );
   public registerDataCategoriesObserver = this.dataCategoriesSubject.register;
 
-  private accumulateDataItem = createEventAccumulator(this.store, 'DATA_ITEMS',
-    async (prevPersonalDataItems: PersonalDataItem[], eventObject: ContractEventObject<{ borrowerId: string; categoryCode: string; borrowerAppId: string; }>): Promise<PersonalDataItem[]> => {
-      const { event, returnValues: { borrowerId: borrowerAddress, categoryCode: rawCategoryCode, borrowerAppId: borrowerAppAddress } } = eventObject;
-      if (!borrowerAddress || typeof rawCategoryCode === 'undefined' || !borrowerAppAddress) return prevPersonalDataItems;
-      const categoryCode = Number(rawCategoryCode);
+  private dataItemsReducer = async (prevPersonalDataItems: PersonalDataItem[], eventObject: ContractEventObject<{ borrowerId: string; categoryCode: string; borrowerAppId: string; }>): Promise<PersonalDataItem[]> => {
+    const { event, returnValues: { borrowerId: borrowerAddress, categoryCode: rawCategoryCode, borrowerAppId: borrowerAppAddress } } = eventObject;
+    if (!borrowerAddress || typeof rawCategoryCode === 'undefined' || !borrowerAppAddress) return prevPersonalDataItems;
+    const categoryCode = Number(rawCategoryCode);
 
-      switch (event) {
-        case 'LogPersonalDataAdded': {
-          const dataCategory = await PersonalDataContractAgent.getDataItem(borrowerAddress, categoryCode);
-          return prevPersonalDataItems.concat(dataCategory);
-        }
-        case 'LogPersonalDataUpdated': {
-          const dataCategory = await PersonalDataContractAgent.getDataItem(borrowerAddress, categoryCode);
-          return prevPersonalDataItems.filter(b => b.borrowerAddress === borrowerAddress && b.code === categoryCode).concat(dataCategory);
-        }
-        case 'LogPersonalDataDeleted': {
-          return prevPersonalDataItems.filter(b => b.borrowerAddress === borrowerAddress && b.code === categoryCode);
-        }
-        default:
-          return prevPersonalDataItems;
+    switch (event) {
+      case 'LogPersonalDataAdded': {
+        const dataCategory = await PersonalDataContractAgent.getDataItem(borrowerAddress, categoryCode);
+        return prevPersonalDataItems.concat(dataCategory);
       }
-    }, (err, nextPersonalDataItems) => this.dataItemsSubject.notify(nextPersonalDataItems));
-
-  private accumulateDataCategory = createEventAccumulator(this.store, 'DATA_CATEGORIES',
-    async (prevPersonalDataCategories: PersonalDataCategory[], eventObject: ContractEventObject<{ code: string }>): Promise<PersonalDataCategory[]> => {
-      const { event, returnValues: { code: rawCode } } = eventObject;
-      if (!rawCode) return prevPersonalDataCategories;
-      const code = Number(rawCode);
-
-      switch (event) {
-        case 'LogPersonalDataCategoryAdded': {
-          const dataCategory = await PersonalDataContractAgent.getDataCategory(code);
-          return prevPersonalDataCategories.concat(dataCategory);
-        }
-        case 'LogPersonalDataCategoryUpdated': {
-          const dataCategory = await PersonalDataContractAgent.getDataCategory(code);
-          return prevPersonalDataCategories.filter(b => b.code !== code).concat(dataCategory);
-        }
-        case 'LogPersonalDataCategoryDeleted': {
-          return prevPersonalDataCategories.filter(b => b.code !== code);
-        }
-        default:
-          return prevPersonalDataCategories;
+      case 'LogPersonalDataUpdated': {
+        const dataCategory = await PersonalDataContractAgent.getDataItem(borrowerAddress, categoryCode);
+        return prevPersonalDataItems.filter(b => b.borrowerAddress === borrowerAddress && b.code === categoryCode).concat(dataCategory);
       }
-    }, (err, nextPersonalDataCategories) => this.dataCategoriesSubject.notify(nextPersonalDataCategories));
+      case 'LogPersonalDataDeleted': {
+        return prevPersonalDataItems.filter(b => b.borrowerAddress === borrowerAddress && b.code === categoryCode);
+      }
+      default:
+        return prevPersonalDataItems;
+    }
+  }
+
+  private dataCategoriesReducer = async (prevPersonalDataCategories: PersonalDataCategory[], eventObject: ContractEventObject<{ code: string }>): Promise<PersonalDataCategory[]> => {
+    const { event, returnValues: { code: rawCode } } = eventObject;
+    if (!rawCode) return prevPersonalDataCategories;
+    const code = Number(rawCode);
+
+    switch (event) {
+      case 'LogPersonalDataCategoryAdded': {
+        const dataCategory = await PersonalDataContractAgent.getDataCategory(code);
+        return prevPersonalDataCategories.concat(dataCategory);
+      }
+      case 'LogPersonalDataCategoryUpdated': {
+        const dataCategory = await PersonalDataContractAgent.getDataCategory(code);
+        return prevPersonalDataCategories.filter(b => b.code !== code).concat(dataCategory);
+      }
+      case 'LogPersonalDataCategoryDeleted': {
+        return prevPersonalDataCategories.filter(b => b.code !== code);
+      }
+      default:
+        return prevPersonalDataCategories;
+    }
+  }
 
   public addDataCategory = PersonalDataContractAgent.addDataCategory;
 
